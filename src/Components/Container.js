@@ -1,52 +1,31 @@
 import { useState, useEffect } from "react";
 import FormContainer from "./FormContainer";
 import NotesContainer from "./NotesContainer";
+import useGetNotes from "./Hooks/useGetNotes";
+import usePostData from "./Hooks/usePostData";
+import usePostImage from "./Hooks/usePostImage";
 
 const Container = () => {
-  const [notes, setNotes] = useState([]);
-  const [lastUpdate, setLastUpdate] = useState(Date.now());
-
-  useEffect(() => {
-    (async () => {
-      const fetchNotes = await fetch("http://localhost:3001/notes");
-      const notesData = await fetchNotes.json();
-      console.log(notesData);
-      setNotes(notesData);
-    })();
-  }, [lastUpdate]);
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const notes = useGetNotes(lastUpdate);
+  const { postText } = usePostData();
+  const { postImage, isLoading, error } = usePostImage();
 
   const addNote = async (noteObj) => {
-    const newNotes = notes.concat(noteObj);
-
     const { title, content, images } = noteObj;
 
-    const textPostResponse = await fetch("http://localhost:3001/submit-form", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-      body: JSON.stringify({ title, content }),
+    const textPostData = await postText("http://localhost:3001/submit-form", {
+      title,
+      content,
     });
 
-    const textPostData = await textPostResponse.json();
-
-    const formData = new FormData();
-    for (let i = 0; i < images.length; i++) {
-      formData.append("file", images[i]);
-    }
-
-    const imgPostResponse = await fetch(
-      "http://localhost:3001/upload/" + textPostData._id,
-      {
-        method: "POST",
-        body: formData,
-      }
+    const imagePostData = await postImage(
+      "http://localhost:3001/upload/",
+      images,
+      textPostData
     );
-
-    const imgPostData = await imgPostResponse.json();
+    console.log(imagePostData);
     setLastUpdate(Date.now());
-    // console.log(imgPostData);
   };
 
   return (
