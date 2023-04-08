@@ -1,33 +1,37 @@
 import { useEffect, useState } from "react";
 
 const usePostData = () => {
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const postText = async (url, postData) => {
-    console.log("posting text data");
+  const postData = async (url, data) => {
     setIsLoading(true);
+    console.log("posting image data", data);
+    const { title, content, images } = data;
 
     try {
+      const formData = new FormData();
+      for (let i = 0; i < images.length; i++) {
+        formData.append("file", images[i]);
+      }
+      formData.append("title", title);
+      formData.append("content", content);
+
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "cors",
-        body: JSON.stringify(postData),
+        body: formData,
       });
 
       const data = await response.json();
       setIsLoading(false);
       return data;
     } catch (error) {
-      setError(error);
       setIsLoading(false);
+      setError(error);
     }
   };
 
-  return { postText, isLoading, error };
+  return { postData, isLoading, error };
 };
 
 export default usePostData;
