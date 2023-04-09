@@ -1,6 +1,6 @@
-const DivInput = ({ props }) => {
+const DivInput = ({ props, className }) => {
   return (
-    <div>
+    <div className="editable-div-container">
       <div {...props}></div>
     </div>
   );

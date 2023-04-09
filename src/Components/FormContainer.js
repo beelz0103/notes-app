@@ -3,11 +3,15 @@ import useFileInput from "./Hooks/useFileInput";
 import useEditableDiv from "./Hooks/useEditableDiv";
 import FileInput from "./FormComponents/FileInput";
 import DivInput from "./FormComponents/DivInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+
+const element = <FontAwesomeIcon icon={faEnvelope} />;
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
-  const contentInputDiv = useEditableDiv();
-  const titleInputDiv = useEditableDiv();
+  const contentInputDiv = useEditableDiv("content");
+  const titleInputDiv = useEditableDiv("title");
 
   const handleSubmit = () => {
     if (titleInputDiv.empty || contentInputDiv.empty) {
@@ -27,7 +31,7 @@ const FormContainer = ({ addNote }) => {
   };
 
   return (
-    <div className="form">
+    <div className="form form-container">
       <DivInput props={titleInputDiv.props} />
       <DivInput props={contentInputDiv.props} />
       <FileInput

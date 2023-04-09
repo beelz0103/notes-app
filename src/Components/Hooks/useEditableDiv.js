@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const useEditableDiv = () => {
+const useEditableDiv = (divClass) => {
   const [value, setValue] = useState("");
   const [empty, setEmpty] = useState(true);
   const ref = useRef(null);
@@ -45,7 +45,7 @@ const useEditableDiv = () => {
     ref: ref,
     onInput: handleOnInput,
     onBlur: handleOnBlur,
-    className: "editable-div",
+    className: `editable-div ${divClass}`,
     role: "textbox",
     contentEditable: true,
     "data-placeholder": "Take a note",
