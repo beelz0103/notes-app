@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import useFileInput from "./Hooks/useFileInput";
-import usePreloadImages from "./Hooks/usePreloadImages";
 import useEditableDiv from "./Hooks/useEditableDiv";
 import FileInput from "./Form Components/FileInput";
+import DivInput from "./Form Components/DivInput";
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
@@ -23,12 +23,8 @@ const FormContainer = ({ addNote }) => {
 
   return (
     <div className="form">
-      <div>
-        <div {...titleInputDiv.props}></div>
-      </div>
-      <div>
-        <div {...contentInputDiv.props}></div>
-      </div>
+      <DivInput props={titleInputDiv.props} />
+      <DivInput props={contentInputDiv.props} />
       <FileInput files={fileInput.files} inputProps={fileInput.props} />
       <button onClick={handleSubmit}>Add</button>
     </div>
