@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import FormImageContainer from "./FormImageContainer";
 
-const FileInput = ({ inputProps, files }) => {
+const FileInput = ({ inputProps, files, removeSingleFile }) => {
   const ref = useRef(null);
 
   return (
@@ -10,7 +10,7 @@ const FileInput = ({ inputProps, files }) => {
         Choose File
       </button>
       <input ref={ref} {...inputProps}></input>
-      <FormImageContainer files={files} />
+      <FormImageContainer files={files} removeSingleFile={removeSingleFile} />
     </div>
   );
 };

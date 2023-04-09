@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const useFileInput = () => {
   const [files, setFiles] = useState([]);
@@ -14,8 +15,18 @@ const useFileInput = () => {
   };
 
   const handleChange = (event) => {
-    setFiles([...files, ...Array.from(event.target.files)]);
-    console.log([...files, ...Array.from(event.target.files)]);
+    const fileList = Array.from(event.target.files).map((file) => {
+      return {
+        id: "id_" + uuidv4(),
+        file,
+      };
+    });
+    setFiles([...files, ...fileList]);
+  };
+
+  const removeSingleFile = (id) => {
+    const newFiles = files.filter((file) => file.id !== id);
+    setFiles(newFiles);
   };
 
   const inputProps = {
@@ -26,7 +37,14 @@ const useFileInput = () => {
     onClick: handleClick,
   };
 
-  return { inputProps, props: inputProps, files, setFiles, resetFiles };
+  return {
+    inputProps,
+    props: inputProps,
+    files,
+    setFiles,
+    resetFiles,
+    removeSingleFile,
+  };
 };
 
 export default useFileInput;

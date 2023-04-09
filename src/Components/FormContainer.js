@@ -30,7 +30,11 @@ const FormContainer = ({ addNote }) => {
     <div className="form">
       <DivInput props={titleInputDiv.props} />
       <DivInput props={contentInputDiv.props} />
-      <FileInput files={fileInput.files} inputProps={fileInput.props} />
+      <FileInput
+        files={fileInput.files}
+        inputProps={fileInput.props}
+        removeSingleFile={fileInput.removeSingleFile}
+      />
       <button onClick={handleSubmit}>Add</button>
     </div>
   );
