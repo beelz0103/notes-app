@@ -1,17 +1,38 @@
 import { useState, useEffect, useRef } from "react";
 
 const useEditableDiv = () => {
-  const [value, setValue] = useState("Test");
+  const [value, setValue] = useState("");
+  const [empty, setEmpty] = useState(true);
   const ref = useRef(null);
 
-  const handleOnInput = (event) => {
-    console.log(event.target.textContent.trim() === "");
-    setValue(event.target.innerHTML);
+  const fieldEmpty = () => {
+    if (ref.current.textContent.trim() === "") {
+      setEmpty(true);
+      return true;
+    } else {
+      setEmpty(false);
+      return false;
+    }
   };
 
-  const handleOnBlur = (event) => {
-    console.log(event.target.textContent.trim() === "");
-    setValue(event.target.innerHTML);
+  const handleOnInput = () => {
+    if (fieldEmpty(ref.current.textContent)) {
+      setValue("");
+      console.log("");
+    } else {
+      setValue(ref.current.innerHTML);
+      console.log(ref.current.innerHTML);
+    }
+  };
+
+  const handleOnBlur = () => {
+    if (fieldEmpty(ref.current.textContent)) {
+      setValue("");
+      console.log("");
+    } else {
+      setValue(ref.current.innerHTML);
+      console.log(ref.current.innerHTML);
+    }
   };
 
   const resetValue = () => {
@@ -30,7 +51,7 @@ const useEditableDiv = () => {
     suppressContentEditableWarning: true,
   };
 
-  return { value, props, resetValue };
+  return { value, empty, props, resetValue };
 };
 
 export default useEditableDiv;

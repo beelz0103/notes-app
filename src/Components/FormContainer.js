@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import useFileInput from "./Hooks/useFileInput";
 import useEditableDiv from "./Hooks/useEditableDiv";
-import FileInput from "./Form Components/FileInput";
-import DivInput from "./Form Components/DivInput";
+import FileInput from "./FormComponents/FileInput";
+import DivInput from "./FormComponents/DivInput";
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
@@ -10,6 +10,11 @@ const FormContainer = ({ addNote }) => {
   const titleInputDiv = useEditableDiv();
 
   const handleSubmit = () => {
+    if (titleInputDiv.empty || contentInputDiv.empty) {
+      console.log("input fields cant be empty"); //I dont want to implement input errors now
+      return;
+    }
+
     addNote({
       title: titleInputDiv.value,
       content: contentInputDiv.value,
