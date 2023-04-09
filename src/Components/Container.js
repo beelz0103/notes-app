@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FormContainer from "./FormContainer";
 import NotesContainer from "./NotesContainer";
 import useGetNotes from "./Hooks/useGetNotes";
@@ -9,16 +9,14 @@ const Container = () => {
   const notes = useGetNotes(lastUpdate);
   const { postData, isLoading, error } = usePostData();
 
-  const addNote = async (noteObj) => {
-    const { title, content, images } = noteObj;
+  const addNote = async (note) => {
+    const { title, content, images } = note;
 
-    const data = await postData("http://localhost:3001/note/create", {
+    await postData("http://localhost:3001/note/create", {
       title,
       content,
       images,
     });
-
-    console.log(data);
 
     setLastUpdate(Date.now());
   };

@@ -1,107 +1,73 @@
 import { useState, useEffect, useRef } from "react";
+import useFileInput from "./Hooks/useFileInput";
+import usePreloadImages from "./Hooks/usePreloadImages";
+import useEditableDiv from "./Hooks/useEditableDiv";
 
 const FormContainer = ({ addNote }) => {
-  const [title, setTitle] = useState("Test"); //set this to "" later
-  const [content, setContent] = useState("Test Content"); //set this to "" later
-  const [allFiles, setAllFiles] = useState([]);
-  const editableDivRef = useRef("");
+  const { inputProps, files, setFiles, resetFiles } = useFileInput();
+  const fileInput = useFileInput();
+  const contentInputDiv = useEditableDiv();
+  const titleInputDiv = useEditableDiv();
 
-  const submitHandler = () => {
-    const note = {
-      title,
-      content,
-      images: allFiles,
-    };
+  const handleSubmit = () => {
+    addNote({
+      title: titleInputDiv.value,
+      content: contentInputDiv.value,
+      images: fileInput.files,
+    });
 
-    addNote(note);
-    setTitle("");
-    setContent("");
-    setAllFiles([]);
-    editableDivRef.current.textContent = "";
-  };
-
-  const titleChangeHandler = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const contentChangeHandler = (event) => {
-    setContent(event.target.innerHTML);
+    contentInputDiv.resetValue();
+    titleInputDiv.resetValue();
+    fileInput.resetFiles();
+    setFiles([]);
   };
 
   return (
     <div className="form">
       <div>
-        <input
-          value={title}
-          onChange={titleChangeHandler}
-          placeholder="title"
-        />
+        <div {...titleInputDiv.props}></div>
       </div>
-
       <div>
-        <div
-          ref={editableDivRef}
-          onInput={contentChangeHandler}
-          onBlur={contentChangeHandler}
-          className="text-area"
-          role="textbox"
-          contentEditable={true}
-          data-placeholder="Take a note"
-          suppressContentEditableWarning
-        >
-          Test Content
-          {/* remove later Test Content  */}
-        </div>
+        <div {...contentInputDiv.props}></div>
       </div>
-      <ImageUploader allFiles={allFiles} setAllFiles={setAllFiles} />
-      <button onClick={submitHandler}>Add</button>
+      <FileInput files={fileInput.files} inputProps={fileInput.props} />
+      <button onClick={handleSubmit}>Add</button>
+    </div>
+  );
+};
+
+const FileInput = ({ inputProps, files }) => {
+  const ref = useRef(null);
+
+  return (
+    <div className="image-uploader">
+      <button className="upload-btn" onClick={() => ref.current.click()}>
+        Choose File
+      </button>
+      <input ref={ref} {...inputProps}></input>
+      <ThumbnailContainer files={files} />
+    </div>
+  );
+};
+
+const ThumbnailContainer = ({ files }) => {
+  return (
+    <div className="thumbnail-container">
+      {files.length === 0 ? null : <Thumbnail files={files} />}
+    </div>
+  );
+};
+
+const Thumbnail = ({ files }) => {
+  const srcList = usePreloadImages(files);
+
+  return (
+    <div>
+      {srcList.map((src, index) => {
+        return <img key={index} src={src} alt="error" />;
+      })}
     </div>
   );
 };
 
 export default FormContainer;
-
-const ImageUploader = ({ allFiles, setAllFiles }) => {
-  const fileInput = useRef(null);
-
-  const handleFileUpload = (event) => {
-    setAllFiles([...allFiles, ...Array.from(event.target.files)]);
-  };
-
-  return (
-    <div className="image-uploader">
-      <button className="upload-btn" onClick={() => fileInput.current.click()}>
-        Choose File
-      </button>
-      <input
-        onChange={handleFileUpload}
-        type="file"
-        multiple
-        onClick={(event) => (event.target.value = null)}
-        style={{ display: "none" }}
-        ref={fileInput}
-      />
-      <div className="image-container">
-        {allFiles.length === 0 ? null : <ImageThumbnail fileList={allFiles} />}
-      </div>
-    </div>
-  );
-};
-
-const ImageThumbnail = ({ fileList }) => {
-  return (
-    <div>
-      {fileList.map((val, index) => {
-        const source = URL.createObjectURL(val);
-        return (
-          <img
-            key={index}
-            src={source}
-            onClick={(event) => (event.target.value = null)}
-            alt="img"
-          />
-        );
-      })}
-    </div>
-  );
-};
