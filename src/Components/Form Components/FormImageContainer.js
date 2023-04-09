@@ -1,14 +1,14 @@
 import usePreloadImages from "../Hooks/usePreloadImages";
 
-const ThumbnailContainer = ({ files }) => {
+const FormImageContainer = ({ files }) => {
   return (
-    <div className="thumbnail-container">
-      {files.length === 0 ? null : <Thumbnail files={files} />}
+    <div className="image-container">
+      {files.length === 0 ? null : <Images files={files} />}
     </div>
   );
 };
 
-const Thumbnail = ({ files }) => {
+const Images = ({ files }) => {
   const srcList = usePreloadImages(files);
 
   return (
@@ -20,4 +20,4 @@ const Thumbnail = ({ files }) => {
   );
 };
 
-export default ThumbnailContainer;
+export default FormImageContainer;

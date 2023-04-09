@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import useFileInput from "./Hooks/useFileInput";
 import usePreloadImages from "./Hooks/usePreloadImages";
 import useEditableDiv from "./Hooks/useEditableDiv";
-import ThumbnailContainer from "./Form Components/ThumbnailContainer";
+import FileInput from "./Form Components/FileInput";
 
 const FormContainer = ({ addNote }) => {
-  const { inputProps, files, setFiles, resetFiles } = useFileInput();
   const fileInput = useFileInput();
   const contentInputDiv = useEditableDiv();
   const titleInputDiv = useEditableDiv();
@@ -20,7 +19,6 @@ const FormContainer = ({ addNote }) => {
     contentInputDiv.resetValue();
     titleInputDiv.resetValue();
     fileInput.resetFiles();
-    setFiles([]);
   };
 
   return (
@@ -33,20 +31,6 @@ const FormContainer = ({ addNote }) => {
       </div>
       <FileInput files={fileInput.files} inputProps={fileInput.props} />
       <button onClick={handleSubmit}>Add</button>
-    </div>
-  );
-};
-
-const FileInput = ({ inputProps, files }) => {
-  const ref = useRef(null);
-
-  return (
-    <div className="image-uploader">
-      <button className="upload-btn" onClick={() => ref.current.click()}>
-        Choose File
-      </button>
-      <input ref={ref} {...inputProps}></input>
-      <ThumbnailContainer files={files} />
     </div>
   );
 };
