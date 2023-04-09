@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import useFileInput from "./Hooks/useFileInput";
 import usePreloadImages from "./Hooks/usePreloadImages";
 import useEditableDiv from "./Hooks/useEditableDiv";
+import ThumbnailContainer from "./Form Components/ThumbnailContainer";
 
 const FormContainer = ({ addNote }) => {
   const { inputProps, files, setFiles, resetFiles } = useFileInput();
@@ -46,26 +47,6 @@ const FileInput = ({ inputProps, files }) => {
       </button>
       <input ref={ref} {...inputProps}></input>
       <ThumbnailContainer files={files} />
-    </div>
-  );
-};
-
-const ThumbnailContainer = ({ files }) => {
-  return (
-    <div className="thumbnail-container">
-      {files.length === 0 ? null : <Thumbnail files={files} />}
-    </div>
-  );
-};
-
-const Thumbnail = ({ files }) => {
-  const srcList = usePreloadImages(files);
-
-  return (
-    <div>
-      {srcList.map((src, index) => {
-        return <img key={index} src={src} alt="error" />;
-      })}
     </div>
   );
 };
