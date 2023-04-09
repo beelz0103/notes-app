@@ -12,7 +12,7 @@ const usePostData = () => {
     try {
       const formData = new FormData();
       for (let i = 0; i < images.length; i++) {
-        formData.append("file", images[i]);
+        formData.append("file", images[i].file);
       }
       formData.append("title", title);
       formData.append("content", content);
