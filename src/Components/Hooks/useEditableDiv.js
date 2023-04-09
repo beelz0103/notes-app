@@ -38,6 +38,7 @@ const useEditableDiv = () => {
   const resetValue = () => {
     setValue("");
     ref.current.textContent = "";
+    setEmpty(true);
   };
 
   const props = {
