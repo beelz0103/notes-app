@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
 body {
   margin: 0;
   padding: 0;
@@ -32,29 +34,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.upload-btn {
-  height: 46px;
-  width: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.upload-image {
-  font-size: 24px;
-  color: "#757575";
-  opacity: 0.53;
-}
-
-.upload-btn:hover {
-  border-radius: 50%;
-  background-color: gray;
-  opacity: 0.87;
-  background-color: rgba(95, 99, 104, 0.157);
 }
 
 .editable-div-container {
@@ -93,6 +72,133 @@ body {
   opacity: 0.8;
 }
 
-img {
-  height: 100px;
+.upload-btn {
+  height: 46px;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.image-icon {
+  font-size: 24px;
+  color: "#757575";
+  opacity: 0.53;
+}
+
+.upload-btn:hover {
+  border-radius: 50%;
+  background-color: gray;
+  opacity: 0.87;
+  background-color: rgba(95, 99, 104, 0.157);
+}
+
+.add-note-btn {
+  color: white;
+  margin-top: 20px;
+  height: 46px;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  width: fit-content;
+  font-size: 18px;
+  gap: 5px;
+  border: 3px solid rgba(95, 99, 104, 0.157);
+  border-radius: 8px;
+  padding: 10px;
+  background-color: rgb(0, 0, 0, 0.8);
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+}
+
+.add-icon {
+  color: "#757575";
+  opacity: 0.53;
+}
+
+.add-note-btn:hover {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0, 0.8);
+  transition: 0.1s ease-in-out;
+}
+
+.upload-container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.upload-image-div {
+  position: relative;
+}
+
+.uplimg-delt-btn {
+  height: 28px;
+  width: 28px;
+  background-color: #666666;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 10px;
+}
+
+.uplimg-delt-btn > * {
+  pointer-events: none;
+}
+
+.uplimg-delt-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  transition: 0.1s ease-in-out;
+}
+
+.uplimg-delt-icon {
+  font-size: 14px;
+  color: white;
+}
+
+.hide-btn {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 300ms, opacity 300ms;
+}
+
+.show-btn {
+  visibility: visible;
+  opacity: 100;
+  transition: visibility 0s linear 0s, opacity 300ms;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.chunk-container {
+  display: flex;
+}
+
+.chunk-container > div {
+  flex-grow: 1;
+}
+
+.upload-image-div > img {
+  width: 100%;
+  display: block;
 }

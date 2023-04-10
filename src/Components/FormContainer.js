@@ -5,6 +5,7 @@ import FileInput from "./FormComponents/FileInput";
 import DivInput from "./FormComponents/DivInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const element = <FontAwesomeIcon icon={faEnvelope} />;
 
@@ -39,7 +40,9 @@ const FormContainer = ({ addNote }) => {
         inputProps={fileInput.props}
         removeSingleFile={fileInput.removeSingleFile}
       />
-      <button onClick={handleSubmit}>Add</button>
+      <div className="add-note-btn" onClick={handleSubmit}>
+        <div>Add Note</div>
+      </div>
     </div>
   );
 };
