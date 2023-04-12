@@ -14,10 +14,18 @@ const Container = () => {
     setLastUpdate(Date.now());
   };
 
+  const updateNote = async (note, _id) => {
+    console.log(note);
+    console.log(_id);
+    await postData(`http://localhost:3001/note/${_id}/update`, note);
+    console.log("update note");
+    setLastUpdate(Date.now());
+  };
+
   return (
     <div className="container">
       <FormContainer addNote={addNote} />
-      <NotesContainer notes={notes} />
+      <NotesContainer notes={notes} updateNote={updateNote} />
     </div>
   );
 };

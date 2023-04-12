@@ -5,13 +5,14 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 
 const FormImageContainer = ({ files, removeSingleFile }) => {
-  return (
-    <div className="image-container">
-      {files.length === 0 ? null : (
-        <Images files={files} removeSingleFile={removeSingleFile} />
-      )}
-    </div>
-  );
+  if (files)
+    return (
+      <div className="image-container">
+        {files.length === 0 ? null : (
+          <Images files={files} removeSingleFile={removeSingleFile} />
+        )}
+      </div>
+    );
 };
 
 const Images = ({ files, removeSingleFile }) => {

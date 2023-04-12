@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-const useEditableDiv = (divClass) => {
-  const [value, setValue] = useState("");
-  const [empty, setEmpty] = useState(true);
+const useEditableDiv = (divClass, initialValue = "") => {
+  const [value, setValue] = useState(initialValue);
+  const [empty, setEmpty] = useState(initialValue === "" ? true : false);
   const ref = useRef(null);
 
   const fieldEmpty = () => {
