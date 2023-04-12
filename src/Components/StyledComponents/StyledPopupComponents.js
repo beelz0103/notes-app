@@ -1,22 +1,11 @@
 import styled from "styled-components";
 
-const StyledNoteOuterContainer = styled.div.attrs()`
-  margin: 16px;
-
-  &:hover {
-    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
-      0 2px 6px 2px rgba(60, 64, 67, 0.149);
-    border-radius: 6px;
-  }
-`;
-
-const StyledNoteOuterContainerExpanded = styled.div.attrs()`
+const PopupContainerStyled = styled.div.attrs()`
   margin: 16px;
   width: 600px;
   position: fixed;
   z-index: 1;
   top: 100px;
-
   background-color: white;
   left: 140px;
   box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
@@ -30,7 +19,7 @@ const StyledNoteOuterContainerExpanded = styled.div.attrs()`
   }
 `;
 
-const NoteInnerContainer = styled.div`
+const PopupInnerContainer = styled.div`
   border: 1px solid transparent;
   border-color: #e0e0e0;
   border-radius: 5px;
@@ -65,23 +54,24 @@ const ContentDiv = styled.div`
   box-sizing: border-box;
 `;
 
-const NoteControlsMainContainer = styled.div`
+const ControlsContainerStyled = styled.div`
   margin: 4px 0;
   display: flex;
   justify-content: space-between;
+
+  box-shadow: ${(props) =>
+    props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
 `;
 
-const FooterDiv = styled.div``;
-
-//the height 34px is the icon height, margin left and right of the icons is 3px, so basically remove the border
-// icons div themselves are 32px x 32px but its border is 1px
-const NoteControlsSubContainer = styled.div.attrs()`
-  height: 36px;
-  box-sizing: border-box;
-  border: 1px solid gray;
-  border-radius: 5px;
+const StyledFooter = styled.div`
+  padding: 5px 10px;
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  letter-spacing: 0.025em;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.8);
 `;
 
 const StyledButton = styled.div.attrs()`
@@ -103,16 +93,14 @@ const StyledButton = styled.div.attrs()`
 `;
 
 export {
-  StyledNoteOuterContainer,
-  NoteInnerContainer,
+  PopupInnerContainer,
   NoteContentContainer,
-  NoteControlsSubContainer,
-  NoteControlsMainContainer,
+  ControlsContainerStyled,
   NoteContentImageContainer,
   NoteContentInfo,
   TitleDiv,
   ContentDiv,
-  FooterDiv,
   StyledButton,
-  StyledNoteOuterContainerExpanded,
+  PopupContainerStyled,
+  StyledFooter,
 };

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import parse from "html-react-parser";
-import useFileInput from "./Hooks/useFileInput";
-import useEditableDiv from "./Hooks/useEditableDiv";
-import FileInput from "./FormComponents/FileInput";
-import DivInput from "./FormComponents/DivInput";
+import useFileInput from "../Hooks/useFileInput";
+import useEditableDiv from "../Hooks/useEditableDiv";
+import FileInput from "../FormComponents/FileInput";
+import DivInput from "../FormComponents/DivInput";
 
 import {
   StyledNoteOuterContainer,
@@ -16,43 +16,88 @@ import {
   TitleDiv,
   ContentDiv,
   FooterDiv,
-  StyledCloseButton,
-} from "./StyledComponents/StyledComponents";
-import HTMLReactParser from "html-react-parser";
-import NoteImageContainer from "./FormComponents/NoteImageContainer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+  StyledButton,
+  StyledNoteOuterContainerExpanded,
+} from "../StyledComponents/StyledComponents";
+import NoteImageContainer from "../FormComponents/NoteImageContainer";
+import { Modal } from "../StyledComponents/Modal";
 
-const NotesContainer = ({ notes, updateNote }) => {
+const NoteOuterContiner = ({ note, showModal, normalDisplay }) => {
+  const ref = useRef(null);
+  const [clicked, setClicked] = useState(false);
+  const [prevClassName, setPrev] = useState(null);
+  const clickHandler = () => {
+    showModal(note, setClicked);
+    if (!clicked) {
+      setClicked(true);
+      setPrev(ref.current.className);
+      ref.current.className = ref.current.className; //+ " note-pop-up";
+    } else {
+      setClicked(false);
+      ref.current.className = prevClassName;
+    }
+  };
+
   return (
-    <div className="note-container">
-      {notes.map((value, index) => {
-        if (index !== 0)
-          return <NoteOuterContiner key={value._id} note={value} />;
-        else
-          return (
-            <NoteExpandedConatiner
-              key={value._id}
-              note={value}
-              updateNote={updateNote}
-            />
-          );
-      })}
-    </div>
+    <StyledNoteOuterContainer ref={ref} onClick={clickHandler}>
+      <NoteInnerContainer>
+        <ContentCotainer {...note} />
+        <Controls />
+      </NoteInnerContainer>
+    </StyledNoteOuterContainer>
   );
 };
 
-const NoteExpandedConatiner = ({ note, updateNote }) => {
+const ContentCotainer = ({ title, content, images, _id }) => {
+  return (
+    <NoteContentContainer>
+      <NoteContentImageContainer>
+        <NoteImageContainer images={images} />
+      </NoteContentImageContainer>
+      <NoteContentInfo>
+        <div>
+          {title === "" ? (
+            <div style={{ padding: "0 0 12px 0" }}></div>
+          ) : (
+            <TitleDiv>{parse(title)}</TitleDiv>
+          )}
+        </div>
+        <div>
+          {content === "" ? (
+            <div style={{ padding: "0 0 12px 0" }}></div>
+          ) : (
+            <ContentDiv>{parse(content)}</ContentDiv>
+          )}
+        </div>
+        <FooterDiv></FooterDiv>
+      </NoteContentInfo>
+    </NoteContentContainer>
+  );
+};
+
+const Controls = () => {
+  return (
+    <NoteControlsMainContainer>
+      <NoteControlsSubContainer>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        ></div>
+      </NoteControlsSubContainer>
+    </NoteControlsMainContainer>
+  );
+};
+
+const NoteExpandedConatiner = ({ note, updateNote, hideModal }) => {
   const ref = useRef(null);
   const contentInputDiv = useEditableDiv("content", note.content);
   const titleInputDiv = useEditableDiv("title", note.title);
   const before = note;
 
   const handleUpdate = () => {
-    console.log(note._id);
-    console.log(note.title);
-    console.log(note.content);
-
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("input fields cant be empty"); //I dont want to implement input errors now
       return;
@@ -66,6 +111,8 @@ const NoteExpandedConatiner = ({ note, updateNote }) => {
       return;
     }
 
+    hideModal("none");
+
     updateNote(
       {
         title: titleInputDiv.value,
@@ -77,7 +124,14 @@ const NoteExpandedConatiner = ({ note, updateNote }) => {
   };
 
   return (
-    <StyledNoteOuterContainer ref={ref}>
+    <StyledNoteOuterContainerExpanded
+      style={{
+        maxHeight: "400px",
+        overflow: "scroll",
+      }}
+      $show
+      ref={ref}
+    >
       <NoteInnerContainer>
         <ContentCotainerExp
           contentInputDiv={contentInputDiv}
@@ -86,7 +140,7 @@ const NoteExpandedConatiner = ({ note, updateNote }) => {
         />
         <ControlsExpanded handleUpdate={handleUpdate} />
       </NoteInnerContainer>
-    </StyledNoteOuterContainer>
+    </StyledNoteOuterContainerExpanded>
   );
 };
 
@@ -118,9 +172,9 @@ const UpdateButton = ({ handleUpdate }) => {
   };
 
   return (
-    <StyledCloseButton onClick={clickHandler} style={{ margin: 0 }}>
+    <StyledButton onClick={clickHandler} style={{ margin: 0 }}>
       Update
-    </StyledCloseButton>
+    </StyledButton>
   );
 };
 
@@ -137,7 +191,7 @@ const CloseButton = () => {
     borderRadius: "4px",
   };
 
-  return <StyledCloseButton>Close</StyledCloseButton>;
+  return <StyledButton>Close</StyledButton>;
 };
 
 const ContentCotainerExp = ({
@@ -206,75 +260,4 @@ const ContentCotainerExp = ({
   );
 };
 
-const NoteOuterContiner = ({ note }) => {
-  console.log(note);
-  const ref = useRef(null);
-  const [clicked, setClicked] = useState(false);
-  const [prevClassName, setPrev] = useState(null);
-  const clickHandler = () => {
-    if (!clicked) {
-      setClicked(true);
-      setPrev(ref.current.className);
-      ref.current.className = ref.current.className + " note-pop-up";
-      console.log(ref.current.className);
-    } else {
-      setClicked(false);
-      ref.current.className = prevClassName;
-      console.log(ref.current.className);
-    }
-  };
-
-  return (
-    <StyledNoteOuterContainer ref={ref} onClick={clickHandler}>
-      <NoteInnerContainer>
-        <ContentCotainer {...note} />
-        <Controls />
-      </NoteInnerContainer>
-    </StyledNoteOuterContainer>
-  );
-};
-
-const ContentCotainer = ({ title, content, images, _id }) => {
-  return (
-    <NoteContentContainer>
-      <NoteContentImageContainer>
-        <NoteImageContainer images={images} />
-      </NoteContentImageContainer>
-      <NoteContentInfo>
-        <div>
-          {title === "" ? (
-            <div style={{ padding: "0 0 12px 0" }}></div>
-          ) : (
-            <TitleDiv>{parse(title)}</TitleDiv>
-          )}
-        </div>
-        <div>
-          {content === "" ? (
-            <div style={{ padding: "0 0 12px 0" }}></div>
-          ) : (
-            <ContentDiv>{parse(content)}</ContentDiv>
-          )}
-        </div>
-        <FooterDiv></FooterDiv>
-      </NoteContentInfo>
-    </NoteContentContainer>
-  );
-};
-
-const Controls = () => {
-  return (
-    <NoteControlsMainContainer>
-      <NoteControlsSubContainer>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        ></div>
-      </NoteControlsSubContainer>
-    </NoteControlsMainContainer>
-  );
-};
-
-export default NotesContainer;
+export default NoteOuterContiner;

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import FormContainer from "./FormContainer";
-import NotesContainer from "./NotesContainer";
+import NotesContainer from "./NoteComponents/NotesContainer";
 import useGetNotes from "./Hooks/useGetNotes";
 import usePostData from "./Hooks/usePostData";
+import { Modal } from "./StyledComponents/Modal";
 
 const Container = () => {
   const [lastUpdate, setLastUpdate] = useState(null);
