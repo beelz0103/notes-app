@@ -2,17 +2,10 @@ import usePreloadImages from "../Hooks/usePreloadImages";
 import { v4 as uuidv4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const NoteImageContainer = ({ images, updatable = false, fromPopup }) => {
-  return <div></div>;
-};
-
-const NoteImageContainer1 = ({ images, updatable = false, fromPopup }) => {
-  console.log(fromPopup);
   const [newImages, setNewImages] = useState([]);
-
-  console.log(images);
 
   useEffect(() => {
     const preloadImages = async () => {
@@ -30,7 +23,7 @@ const NoteImageContainer1 = ({ images, updatable = false, fromPopup }) => {
         });
 
         const loadedSrcList = await Promise.all(srcListPromiseArray);
-        console.log(loadedSrcList);
+
         setNewImages(loadedSrcList);
       }
     };

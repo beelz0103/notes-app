@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import parse from "html-react-parser";
 import useEditableDiv from "../Hooks/useEditableDiv";
 import { StyledButton } from "../StyledComponents/StyledComponents";
@@ -14,8 +14,6 @@ import { ControlsContainerStyled } from "../StyledComponents/StyledPopupComponen
 import { StyledFooter } from "../StyledComponents/StyledPopupComponents";
 
 const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
-  console.log("Note Popup Rendered", popupNote.content);
-
   const contentInputDiv = useEditableDiv("content", popupNote.content);
   const titleInputDiv = useEditableDiv("title", popupNote.title);
 
