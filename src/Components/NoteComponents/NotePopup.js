@@ -13,6 +13,8 @@ import { ControlsContainerStyled } from "../StyledComponents/StyledPopupComponen
 
 import { StyledFooter } from "../StyledComponents/StyledPopupComponents";
 
+import UpdateFormImageContainer from "../FormComponents/UpdateFormImageContainer";
+
 const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
   const contentInputDiv = useEditableDiv("content", popupNote.content);
   const titleInputDiv = useEditableDiv("title", popupNote.title);
@@ -151,7 +153,7 @@ const ContentContainer = ({
       onScroll={scrollHandler}
       style={{ overflowY: "scroll", maxHeight: "400px" }}
     >
-      <NoteImageContainer
+      <UpdateFormImageContainer
         images={images}
         updatable={true}
         fromPopup="from popup"

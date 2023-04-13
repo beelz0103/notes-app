@@ -6,6 +6,7 @@ import DivInput from "./FormComponents/DivInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import FormImageContainer from "./FormComponents/FormImageContainer";
 
 const element = <FontAwesomeIcon icon={faEnvelope} />;
 
@@ -33,6 +34,10 @@ const FormContainer = ({ addNote }) => {
 
   return (
     <div className="form form-container">
+      <FormImageContainer
+        files={fileInput.files}
+        removeSingleFile={fileInput.removeSingleFile}
+      />
       <DivInput props={titleInputDiv.props} />
       <DivInput props={contentInputDiv.props} />
       <FileInput
