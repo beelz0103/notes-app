@@ -1,37 +1,45 @@
-import { useState, useEffect, memo, useCallback } from "react";
-
-const useEditableDivUpdate = (initialValue) => {
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  console.log("initial value parameter: ", initialValue);
-  console.log("value state: ", value);
-
-  return { value };
-};
+import { useState, useEffect, memo, useCallback, useRef } from "react";
 
 const TestMemo = () => {
-  const [value, setValue] = useState(Date.now());
+  const ref = useRef(null);
 
-  const updateValue = () => {
-    setValue(Date.now());
+  const handleClick = () => {
+    console.log(Date.now());
+    console.log(ref.current.click());
   };
 
   return (
     <div>
-      <button onClick={updateValue}>Update</button>
-      <TestMemoChild value={value} />
+      <Form handleClick={handleClick} reference={ref} />
+      <UpdateButton handleClick={handleClick} />
     </div>
   );
 };
 
-const TestMemoChild = ({ value }) => {
-  const memoDiv = useEditableDivUpdate(value);
+const UpdateButton = ({ handleClick }) => {
+  return <button onClick={handleClick}>Update</button>;
+};
 
-  return <div>{memoDiv.value}</div>;
+const Form = ({ handleClick, reference }) => {
+  const [a, setA] = useState(Date.now());
+
+  const updateHandler = () => {
+    console.log("updated");
+    setA(Date.now());
+  };
+
+  return (
+    <div>
+      {a}
+      <button
+        ref={reference}
+        onClick={updateHandler}
+        style={{ display: "none" }}
+      >
+        Handle
+      </button>
+    </div>
+  );
 };
 
 export default TestMemo;

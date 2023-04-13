@@ -1,100 +1,50 @@
-import { useState } from "react";
-import parse from "html-react-parser";
-import useEditableDiv from "../Hooks/useEditableDiv";
+import { useRef, useState } from "react";
+
 import { StyledButton } from "../StyledComponents/StyledComponents";
 import {
   PopupContainerStyled,
   PopupInnerContainer,
 } from "../StyledComponents/StyledPopupComponents";
-import NoteImageContainer from "../FormComponents/NoteImageContainer";
+
 import { Modal } from "../StyledComponents/Modal";
 
 import { ControlsContainerStyled } from "../StyledComponents/StyledPopupComponents";
 
-import {
-  StyledFooter,
-  StyledContentDiv,
-  StyledTitleDiv,
-} from "../StyledComponents/StyledPopupComponents";
-
-import UpdateFormImageContainer from "../FormComponents/UpdateFormImageContainer";
-
 import UpdateFormContainer from "../UpdateFormContainer";
 
 const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
-  const contentInputDiv = useEditableDiv("content", popupNote.content);
-  const titleInputDiv = useEditableDiv("title", popupNote.title);
-
-  const handleUpdate = () => {
-    if (titleInputDiv.empty || contentInputDiv.empty) {
-      console.log("WARNING: Input fields cant be empty"); //haven't impletmented validation
-    }
-
-    hideModal();
-
-    if (
-      !(
-        titleInputDiv.value === popupNote.title &&
-        contentInputDiv.value === popupNote.content
-      )
-    ) {
-      updateNote(
-        {
-          title: titleInputDiv.value,
-          content: contentInputDiv.value,
-          images: popupNote.images,
-        },
-        popupNote._id
-      );
-    }
-  };
-
   return (
     <>
       <Modal style={{ display: display }} onClick={hideModal}></Modal>
-      <Popup
-        note={popupNote}
-        props={{
-          display,
-          hideModal,
-          note: popupNote,
-          handleUpdate,
-          contentInputDiv,
-          titleInputDiv,
-        }}
-      />
+      <Popup note={popupNote} hideModal={hideModal} updateNote={updateNote} />
     </>
   );
 };
 
-const Popup = ({ note, props }) => {
+const Popup = ({ note, hideModal, updateNote }) => {
   return Object.keys(note).length === 0 ? null : (
-    <PopupContainer key={note._id} {...props} />
+    <PopupContainer note={note} hideModal={hideModal} updateNote={updateNote} />
   );
 };
 
-const PopupContainer = ({
-  note,
-  handleUpdate,
-  hideModal,
-  contentInputDiv,
-  titleInputDiv,
-}) => {
+const PopupContainer = ({ note, hideModal, updateNote }) => {
   const [showShadow, setShowShadow] = useState(false);
+  const updateBtnRef = useRef(null);
 
   return (
     <PopupContainerStyled className="popup-container">
       <PopupInnerContainer>
         <ContentContainer
-          contentInputDiv={contentInputDiv}
-          titleInputDiv={titleInputDiv}
           setShowShadow={setShowShadow}
-          {...note}
+          note={note}
+          hideModal={hideModal}
+          updateBtnRef={updateBtnRef}
+          updateNote={updateNote}
         />
         <ControlWrapper
-          handleUpdate={handleUpdate}
           hideModal={hideModal}
           showShadow={showShadow}
+          updateBtnRef={updateBtnRef}
         />
       </PopupInnerContainer>
     </PopupContainerStyled>
@@ -102,12 +52,11 @@ const PopupContainer = ({
 };
 
 const ContentContainer = ({
-  title,
-  content,
-  images,
-  contentInputDiv,
-  titleInputDiv,
   setShowShadow,
+  updateBtnRef,
+  hideModal,
+  note,
+  updateNote,
 }) => {
   const scrollHandler = (e) => {
     if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
@@ -124,36 +73,33 @@ const ContentContainer = ({
       style={{ overflowY: "scroll", maxHeight: "400px" }}
     >
       <div>
-        <UpdateFormContainer />
-        <UpdateFormImageContainer
-          images={images}
-          updatable={true}
-          fromPopup="from popup"
+        <UpdateFormContainer
+          updateBtnRef={updateBtnRef}
+          hideModal={hideModal}
+          note={note}
+          updateNote={updateNote}
         />
-        <div>
-          <StyledTitleDiv>
-            <div {...titleInputDiv.props}>{parse(title)}</div>
-          </StyledTitleDiv>
-        </div>
-        <div>
-          <StyledContentDiv>
-            <div {...contentInputDiv.props}>{parse(content)}</div>
-          </StyledContentDiv>
-        </div>
-        <StyledFooter>
-          <div style={{ margin: "6px 6px 0 0" }}>Edited 00:00</div>
-        </StyledFooter>
       </div>
     </div>
   );
 };
 
-const ControlWrapper = ({ handleUpdate, hideModal, showShadow }) => {
+const ControlWrapper = ({
+  handleUpdate,
+  handleUpdateNew,
+  hideModal,
+  showShadow,
+  updateBtnRef,
+}) => {
   return (
     <ControlsContainerStyled className="controls" showShadow={showShadow}>
       <Widgets />
       <div style={{ display: "flex" }}>
-        <UpdateButton handleUpdate={handleUpdate} />
+        <UpdateButton
+          handleUpdate={handleUpdate}
+          handleUpdateNew={handleUpdateNew}
+          updateBtnRef={updateBtnRef}
+        />
         <CloseButton hideModal={hideModal} />
       </div>
     </ControlsContainerStyled>
@@ -168,9 +114,9 @@ const Widgets = () => {
   );
 };
 
-const UpdateButton = ({ handleUpdate }) => {
+const UpdateButton = ({ updateBtnRef }) => {
   return (
-    <StyledButton onClick={handleUpdate} style={{ margin: 0 }}>
+    <StyledButton onClick={updateBtnRef.current.click()} style={{ margin: 0 }}>
       Update
     </StyledButton>
   );

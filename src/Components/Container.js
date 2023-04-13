@@ -18,7 +18,6 @@ const Container = () => {
 
   const updateNote = async (note, _id) => {
     await postData(`http://localhost:3001/note/${_id}/update`, note);
-
     setLastUpdate(Date.now());
   };
 
