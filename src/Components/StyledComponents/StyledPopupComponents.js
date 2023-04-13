@@ -61,15 +61,37 @@ const ControlsContainerStyled = styled.div`
     props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
 `;
 
-const StyledFooter = styled.div`
+const StyledDiv = styled.div`
+  width: 100%;
+  outline: none;
+  min-height: 100%;
+  box-sizing: border-box;
+  letter-spacing: 0.00625em;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+`;
+
+const StyledFooter = styled(StyledDiv)`
   padding: 5px 10px;
   display: flex;
   justify-content: flex-end;
   letter-spacing: 0.025em;
   font-size: 0.75rem;
   line-height: 1rem;
-  font-weight: 400;
+
   color: rgba(0, 0, 0, 0.8);
+`;
+
+const StyledContentDiv = styled(StyledDiv)`
+  padding: 12px 16px 12px 16px;
+  letter-spacing: 0.00625em;
+  font-size: 1rem;
+  line-height: 1.5rem;
+`;
+
+const StyledTitleDiv = styled(StyledDiv)`
+  padding: 16px 15px 12px 15px;
 `;
 
 const StyledButton = styled.div.attrs()`
@@ -100,4 +122,6 @@ export {
   StyledButton,
   PopupContainerStyled,
   StyledFooter,
+  StyledContentDiv,
+  StyledTitleDiv,
 };

@@ -11,15 +11,14 @@ const Container = () => {
   const { postData, isLoading, error } = usePostData();
 
   const addNote = async (note) => {
+    console.log(note);
     await postData("http://localhost:3001/note/create", note);
     setLastUpdate(Date.now());
   };
 
   const updateNote = async (note, _id) => {
-    console.log(note);
-    console.log(_id);
     await postData(`http://localhost:3001/note/${_id}/update`, note);
-    console.log("update note");
+
     setLastUpdate(Date.now());
   };
 
