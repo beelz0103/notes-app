@@ -30,8 +30,6 @@ const NoteContentContainer = styled.div`
   min-height: 60px;
 `;
 
-const NoteContentImageContainer = styled.div``;
-
 const NoteContentInfo = styled.div``;
 
 const TitleDiv = styled.div`
@@ -96,7 +94,6 @@ export {
   PopupInnerContainer,
   NoteContentContainer,
   ControlsContainerStyled,
-  NoteContentImageContainer,
   NoteContentInfo,
   TitleDiv,
   ContentDiv,

@@ -1,11 +1,7 @@
 import { useRef, useState } from "react";
 import parse from "html-react-parser";
 import useEditableDiv from "../Hooks/useEditableDiv";
-import {
-  NoteControlsMainContainer,
-  NoteContentImageContainer,
-  StyledButton,
-} from "../StyledComponents/StyledComponents";
+import { StyledButton } from "../StyledComponents/StyledComponents";
 import {
   PopupContainerStyled,
   PopupInnerContainer,
@@ -18,31 +14,33 @@ import { ControlsContainerStyled } from "../StyledComponents/StyledPopupComponen
 import { StyledFooter } from "../StyledComponents/StyledPopupComponents";
 
 const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
+  console.log("Note Popup Rendered", popupNote.content);
+
   const contentInputDiv = useEditableDiv("content", popupNote.content);
   const titleInputDiv = useEditableDiv("title", popupNote.title);
 
   const handleUpdate = () => {
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("WARNING: Input fields cant be empty"); //haven't impletmented validation
-      return;
     }
 
     hideModal();
 
     if (
-      titleInputDiv.value === popupNote.title &&
-      contentInputDiv.value === popupNote.content
-    )
-      return;
-
-    updateNote(
-      {
-        title: titleInputDiv.value,
-        content: contentInputDiv.value,
-        images: popupNote.images,
-      },
-      popupNote._id
-    );
+      !(
+        titleInputDiv.value === popupNote.title &&
+        contentInputDiv.value === popupNote.content
+      )
+    ) {
+      updateNote(
+        {
+          title: titleInputDiv.value,
+          content: contentInputDiv.value,
+          images: popupNote.images,
+        },
+        popupNote._id
+      );
+    }
   };
 
   return (
@@ -155,9 +153,11 @@ const ContentContainer = ({
       onScroll={scrollHandler}
       style={{ overflowY: "scroll", maxHeight: "400px" }}
     >
-      <NoteContentImageContainer>
-        <NoteImageContainer images={images} />
-      </NoteContentImageContainer>
+      <NoteImageContainer
+        images={images}
+        updatable={true}
+        fromPopup="from popup"
+      />
       <div style={allStyles}>
         <div>
           <div style={titleStyles}>

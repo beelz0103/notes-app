@@ -4,7 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 
-const NoteImageContainer = ({ images }) => {
+const NoteImageContainer = ({ images, updatable = false, fromPopup }) => {
+  return <div></div>;
+};
+
+const NoteImageContainer1 = ({ images, updatable = false, fromPopup }) => {
+  console.log(fromPopup);
   const [newImages, setNewImages] = useState([]);
 
   console.log(images);

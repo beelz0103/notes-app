@@ -1,9 +1,36 @@
 import { useState, useEffect, useRef } from "react";
 
-const useEditableDiv = (divClass, initialValue = "") => {
+const useEditableDivUpdate = (initialValue) => {
   const [value, setValue] = useState(initialValue);
-  const [empty, setEmpty] = useState(initialValue === "" ? true : false);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  console.log("initial value parameter: ", initialValue);
+  console.log("value state: ", value);
+
+  return { value };
+};
+
+export { useEditableDivUpdate };
+
+const useEditableDiv = (divClass, updateValues = null) => {
+  const [value, setValue] = useState("");
+  const [empty, setEmpty] = useState(true);
   const ref = useRef(null);
+
+  console.log(empty);
+
+  useEffect(() => {
+    if (updateValues) {
+      setValue(updateValues);
+      setEmpty(false);
+    } else {
+      setValue("");
+      setEmpty(true);
+    }
+  }, [updateValues]);
 
   const fieldEmpty = () => {
     if (ref.current.textContent.trim() === "") {
