@@ -30,6 +30,7 @@ const Popup = ({ note, hideModal, updateNote }) => {
 const PopupContainer = ({ note, hideModal, updateNote }) => {
   const [showShadow, setShowShadow] = useState(false);
   const updateBtnRef = useRef(null);
+  const uploadBtnRef = useRef(null);
 
   return (
     <PopupContainerStyled className="popup-container">
@@ -40,11 +41,13 @@ const PopupContainer = ({ note, hideModal, updateNote }) => {
           hideModal={hideModal}
           updateBtnRef={updateBtnRef}
           updateNote={updateNote}
+          uploadBtnRef={uploadBtnRef}
         />
         <ControlWrapper
           hideModal={hideModal}
           showShadow={showShadow}
           updateBtnRef={updateBtnRef}
+          uploadBtnRef={uploadBtnRef}
         />
       </PopupInnerContainer>
     </PopupContainerStyled>
@@ -57,6 +60,7 @@ const ContentContainer = ({
   hideModal,
   note,
   updateNote,
+  uploadBtnRef,
 }) => {
   const scrollHandler = (e) => {
     if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
@@ -78,6 +82,7 @@ const ContentContainer = ({
           hideModal={hideModal}
           note={note}
           updateNote={updateNote}
+          uploadBtnRef={uploadBtnRef}
         />
       </div>
     </div>
@@ -90,10 +95,11 @@ const ControlWrapper = ({
   hideModal,
   showShadow,
   updateBtnRef,
+  uploadBtnRef,
 }) => {
   return (
     <ControlsContainerStyled className="controls" showShadow={showShadow}>
-      <Widgets />
+      <Widgets uploadBtnRef={uploadBtnRef} />
       <div style={{ display: "flex" }}>
         <UpdateButton
           handleUpdate={handleUpdate}
@@ -106,17 +112,24 @@ const ControlWrapper = ({
   );
 };
 
-const Widgets = () => {
+const Widgets = ({ uploadBtnRef }) => {
   return (
     <div className="controllls widgets">
-      <div className="image-uploader"></div>
+      <div
+        className="image-uploader"
+        onClick={() => uploadBtnRef.current.click()}
+      ></div>
     </div>
   );
 };
 
 const UpdateButton = ({ updateBtnRef }) => {
+  const handleClick = () => {
+    updateBtnRef.current.click();
+  };
+
   return (
-    <StyledButton onClick={updateBtnRef.current.click()} style={{ margin: 0 }}>
+    <StyledButton onClick={handleClick} style={{ margin: 0 }}>
       Update
     </StyledButton>
   );

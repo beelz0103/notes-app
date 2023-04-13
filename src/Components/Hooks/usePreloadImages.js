@@ -14,7 +14,6 @@ const usePreloadImages = (files = null, images = null) => {
   }
 
   useEffect(() => {
-    console.log("this ran");
     const preloadImages = async () => {
       const sources = files.map((fileObj) => {
         const { file, id } = fileObj;

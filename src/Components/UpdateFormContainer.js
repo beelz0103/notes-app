@@ -10,13 +10,21 @@ import {
 } from "./StyledComponents/StyledPopupComponents";
 import parse from "html-react-parser";
 import UpdateFormImageContainer from "./FormComponents/UpdateFormImageContainer";
+import useFileInputUpdate from "./Hooks/useFileInputUpdate";
 
-const UpdateFormContainer = ({ updateNote, note, updateBtnRef, hideModal }) => {
-  const fileInput = useFileInput();
+const UpdateFormContainer = ({
+  updateNote,
+  note,
+  updateBtnRef,
+  hideModal,
+  uploadBtnRef,
+}) => {
+  const { fileInput } = useFileInputUpdate(note.images);
   const contentInputDiv = useEditableDiv("content", note.content);
   const titleInputDiv = useEditableDiv("title", note.title);
 
   const handleUpdate = () => {
+    return;
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("WARNING: Input fields cant be empty"); //haven't impletmented validation
     }
@@ -57,6 +65,12 @@ const UpdateFormContainer = ({ updateNote, note, updateBtnRef, hideModal }) => {
           <div {...contentInputDiv.props}>{parse(note.content)}</div>
         </StyledContentDiv>
       </div>
+      <FileInput
+        files={fileInput.files}
+        inputProps={fileInput.props}
+        removeSingleFile={fileInput.removeSingleFile}
+        uploadBtnRef={uploadBtnRef}
+      />
       <UpdateButton updateBtnRef={updateBtnRef} handleUpdate={handleUpdate} />
     </>
   );

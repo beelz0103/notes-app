@@ -8,8 +8,6 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import FormImageContainer from "./FormComponents/FormImageContainer";
 
-const element = <FontAwesomeIcon icon={faEnvelope} />;
-
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
   const contentInputDiv = useEditableDiv("content");
