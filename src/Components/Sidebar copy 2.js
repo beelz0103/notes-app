@@ -1,111 +1,41 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = ({ sidebarRef }) => {
   const [mediaWidth, setMediaWidth] = useState("620px");
+  const [position, setPosition] = useState("static");
   const [width, setWidth] = useState("280px");
-  const [minWidth, setMinWidth] = useState("280px");
-  const [mouseOverFired, setMouseOverFired] = useState(false);
-  const mainBar = useRef(null);
-
-  const handleMouseOver = () => {
-    if (width === "80px") {
-      setMouseOverFired(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (mouseOverFired) {
-      setMouseOverFired(false);
-    }
-  };
+  const [open, setOpen] = useState(true);
 
   const handleClick = () => {
-    const sidebarWidth = mainBar.current.getBoundingClientRect().width;
-
-    const windowEventFunction = () => {
-      if (window.innerWidth > 620) {
-        setMinWidth("280px");
-        const sidebarWidth = mainBar.current.getBoundingClientRect().width;
-        if (sidebarWidth === 280) {
-          setMediaWidth("620px");
-        }
-
-        window.removeEventListener("resize", windowEventFunction);
-      }
-    };
-
-    if (window.innerWidth <= 620) {
-      window.addEventListener("resize", windowEventFunction);
-
-      if (sidebarWidth === 280) {
-        setWidth("80px");
-        setMinWidth("80px");
-        setMediaWidth("620px");
-      } else {
-        setWidth("280px");
-        setMinWidth("80px");
-        setMediaWidth("0px");
-      }
+    // if (window.innerWidth <= 620) {
+    //   if (open) {
+    //     console.log("280px");
+    //     setWidth("280px");
+    //     setMediaWidth("0px");
+    //     return;
+    //   }
+    // }
+    if (open) {
+      setOpen(false);
+      //setMediaWidth(window.innerWidth + "px");
+      setWidth("80px");
     } else {
-      if (sidebarWidth === 280) {
-        setWidth("80px");
-        setMinWidth("80px");
-        setMediaWidth(window.innerWidth + "px");
-      } else {
-        setWidth("280px");
-        setMinWidth("280px");
-        setMediaWidth("620px");
-      }
+      setOpen(true);
+      //setMediaWidth("620px");
+      setWidth("280px");
     }
   };
 
   return (
-    <div>
-      <button
-        style={{ position: "fixed", zIndex: 20000, left: "300px" }}
-        onClick={handleClick}
-      >
-        Openas
-      </button>
-      <StyledWrapped
-        ref={sidebarRef}
-        className="sidebar-container"
-        onMouseOver={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        mouseOverFired={mouseOverFired}
-      >
-        <StyledPlaceholder
-          mediaWidth={mediaWidth}
-          minWidth={minWidth}
-        ></StyledPlaceholder>
-        <StyledSidebar ref={mainBar} mediaWidth={mediaWidth} width={width}>
-          <NotesIcon mediaWidth={mediaWidth} width={width} />
-        </StyledSidebar>
-      </StyledWrapped>
+    <div ref={sidebarRef} className="sidebar-container">
+      <StyledSidebar mediaWidth={mediaWidth} width={width} position={position}>
+        <NotesIcon mediaWidth={mediaWidth} width={width} />
+        <button onClick={handleClick}>Open</button>
+      </StyledSidebar>
     </div>
   );
 };
-
-const StyledWrapped = styled.div`
-  &:hover {
-    width: 380px;
-    position: fixed;
-    z-index: 100000;
-  }
-`;
-
-const StyledPlaceholder = styled.div`
-  background: transparent;
-  position: relative;
-  min-width: ${(props) => props.minWidth};
-  z-index: 984;
-
-  @media only screen and (max-width: ${(props) => props.mediaWidth}) {
-    min-width: 80px;
-  }
-`;
 
 const StyledItem = styled.div`
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto&display=swap");
@@ -134,7 +64,7 @@ const StyledItem = styled.div`
     props.width === "280px" ? "0 25px 25px 0" : "50%"};
   margin-left: ${(props) => props.width !== "280px" && "12px"};
   padding: ${(props) => (props.width === "280px" ? "0 0 0 12px" : "0 0 0 0")};
-  width: ${(props) => (props.width === "280px" ? "100%" : "48px")};
+  width: ${(props) => (props.width === "280px" ? "100%" : "48px;")};
 
   @media only screen and (max-width: ${(props) => props.mediaWidth}) {
     border-radius: 50%;
@@ -155,7 +85,7 @@ const StyledSidebar = styled.div`
   min-height: auto;
   overflow: hidden;
   padding-top: 8px;
-  position: fixed;
+  position: ${(props) => props.position};
   top: 64px;
   transition-duration: 150ms;
   transition-property: width, box-shadow, border-radius;
