@@ -250,7 +250,8 @@ body {
   opacity: 0.53;
 }
 
-.controllls {
+.controllls,
+.controls {
   display: flex;
   color: #202124;
   opacity: 0.71;
@@ -258,6 +259,10 @@ body {
 
 .controllls > div:nth-child(1) {
   background-image: url(./Components/image.svg);
+}
+
+.controllls > div:nth-child(2) {
+  background-image: url(./Components/threedot.svg);
 }
 
 .controllls > div {

@@ -4,6 +4,8 @@ import useFileInput from "../Hooks/useFileInput";
 import useEditableDiv from "../Hooks/useEditableDiv";
 import FileInput from "../FormComponents/FileInput";
 import DivInput from "../FormComponents/DivInput";
+import styled from "styled-components";
+import { StyledButton } from "../StyledComponents/StyledPopupComponents";
 
 import {
   StyledNoteOuterContainer,
@@ -16,7 +18,6 @@ import {
   TitleDiv,
   ContentDiv,
   FooterDiv,
-  StyledButton,
   StyledNoteOuterContainerExpanded,
 } from "../StyledComponents/StyledComponents";
 import NoteImageContainer from "../FormComponents/NoteImageContainer";
@@ -75,12 +76,12 @@ const ContentCotainer = ({ title, content, images, _id }) => {
 };
 
 const Controls = () => {
+  return <ControlWrapper />;
   return (
     <NoteControlsMainContainer>
       <NoteControlsSubContainer>
         <div
           style={{
-            display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -88,6 +89,50 @@ const Controls = () => {
       </NoteControlsSubContainer>
     </NoteControlsMainContainer>
   );
+};
+
+const ControlsContainerStyled = styled.div`
+  margin: 4px 0;
+  display: flex;
+  justify-content: space-between;
+
+  box-shadow: ${(props) =>
+    props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
+`;
+
+const ControlWrapper = ({}) => {
+  return (
+    <ControlsContainerStyled>
+      <Widgets />
+      <div style={{ display: "flex" }}>
+        <UpdateButton />
+        <CloseButton />
+      </div>
+    </ControlsContainerStyled>
+  );
+};
+
+const Widgets = ({}) => {
+  return (
+    <div className="controllls widgets">
+      <div className="image-uploader"></div>
+      <div className="image-uploader"></div>
+    </div>
+  );
+};
+
+const UpdateButton = ({}) => {
+  const handleClick = () => {};
+
+  return (
+    <StyledButton onClick={handleClick} style={{ margin: 0 }}>
+      Update
+    </StyledButton>
+  );
+};
+
+const CloseButton = ({}) => {
+  return <StyledButton>Close</StyledButton>;
 };
 
 export default NoteOuterContiner;
