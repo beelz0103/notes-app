@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Header = ({ sidebarRef }) => {
   const handleClick = () => {
-    console.log(sidebarRef.current);
+    sidebarRef.current.click();
   };
 
   return (

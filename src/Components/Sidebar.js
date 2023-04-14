@@ -1,35 +1,47 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = ({ sidebarRef }) => {
   const [mediaWidth, setMediaWidth] = useState("620px");
   const [width, setWidth] = useState("280px");
   const [minWidth, setMinWidth] = useState("280px");
   const [mouseOverFired, setMouseOverFired] = useState(false);
-  const mainBar = useRef(null);
+  const [hoverData, setHoverData] = useState(null);
+  const mainSideBar = useRef(null);
 
   const handleMouseOver = () => {
-    if (width === "80px") {
+    const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
+    if (sidebarWidth === 80) {
+      console.log("mouse enterd");
       setMouseOverFired(true);
+      setHoverData([width, minWidth, mediaWidth]);
+      setWidth("280px");
+      setMinWidth("80px");
+      setMediaWidth("0px");
     }
   };
 
   const handleMouseLeave = () => {
     if (mouseOverFired) {
       setMouseOverFired(false);
+      setWidth(hoverData[0]);
+      setMinWidth(hoverData[1]);
+      setMediaWidth(hoverData[2]);
+      setHoverData(null);
+      console.log("mouse left");
     }
   };
 
   const handleClick = () => {
-    const sidebarWidth = mainBar.current.getBoundingClientRect().width;
+    const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
 
     const windowEventFunction = () => {
       if (window.innerWidth > 620) {
-        setMinWidth("280px");
-        const sidebarWidth = mainBar.current.getBoundingClientRect().width;
+        const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
         if (sidebarWidth === 280) {
+          console.log(280);
           setMediaWidth("620px");
+          setMinWidth("280px");
         }
 
         window.removeEventListener("resize", windowEventFunction);
@@ -38,7 +50,6 @@ const Sidebar = ({ sidebarRef }) => {
 
     if (window.innerWidth <= 620) {
       window.addEventListener("resize", windowEventFunction);
-
       if (sidebarWidth === 280) {
         setWidth("80px");
         setMinWidth("80px");
@@ -63,24 +74,23 @@ const Sidebar = ({ sidebarRef }) => {
 
   return (
     <div>
-      <button
-        style={{ position: "fixed", zIndex: 20000, left: "300px" }}
-        onClick={handleClick}
-      >
-        Openas
-      </button>
       <StyledWrapped
-        ref={sidebarRef}
         className="sidebar-container"
-        onMouseOver={handleMouseOver}
+        onMouseEnter={handleMouseOver}
         onMouseLeave={handleMouseLeave}
-        mouseOverFired={mouseOverFired}
       >
+        <button
+          ref={sidebarRef}
+          style={{ display: "none" }}
+          onClick={handleClick}
+        >
+          Toggle Sidebar
+        </button>
         <StyledPlaceholder
           mediaWidth={mediaWidth}
           minWidth={minWidth}
         ></StyledPlaceholder>
-        <StyledSidebar ref={mainBar} mediaWidth={mediaWidth} width={width}>
+        <StyledSidebar ref={mainSideBar} mediaWidth={mediaWidth} width={width}>
           <NotesIcon mediaWidth={mediaWidth} width={width} />
         </StyledSidebar>
       </StyledWrapped>
@@ -89,11 +99,7 @@ const Sidebar = ({ sidebarRef }) => {
 };
 
 const StyledWrapped = styled.div`
-  &:hover {
-    width: 380px;
-    position: fixed;
-    z-index: 100000;
-  }
+  z-index: 986;
 `;
 
 const StyledPlaceholder = styled.div`
@@ -193,7 +199,6 @@ const NotesIcon = ({ mediaWidth, width }) => {
         <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path>
       </svg>
       <span
-        class="PvRhvb-ibnC6b-V67aGc"
         style={{
           overflow: "hidden",
           textOverflow: "ellipsis",
