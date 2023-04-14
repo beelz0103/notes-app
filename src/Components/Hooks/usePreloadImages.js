@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const usePreloadImages = (files = null, images = null) => {
+const usePreloadImages = (files = null) => {
   const [srcList, setSrcList] = useState([]);
 
   function chunkArray(arr, n) {
@@ -17,7 +17,6 @@ const usePreloadImages = (files = null, images = null) => {
     const preloadImages = async () => {
       const sources = files.map((fileObj) => {
         const { file, id } = fileObj;
-        console.log(fileObj);
         return { src: URL.createObjectURL(file), id };
       });
 

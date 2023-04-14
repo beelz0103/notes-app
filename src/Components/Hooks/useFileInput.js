@@ -17,6 +17,7 @@ const useFileInput = (imagesArray) => {
 
   const handleChange = (event) => {
     const fileList = Array.from(event.target.files).map((file) => {
+      console.log(file.name);
       return {
         id: "id_" + uuidv4(),
         file,

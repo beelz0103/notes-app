@@ -33,7 +33,7 @@ const NotesContainer = ({ notes, updateNote }) => {
 
 const NoteContainer = memo(function NoteContainer({ notes, showModal }) {
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column-reverse" }}>
       {notes.map((note) => {
         return <Note key={note._id} note={note} showModal={showModal} />;
       })}

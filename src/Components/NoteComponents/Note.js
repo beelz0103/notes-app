@@ -26,7 +26,6 @@ const NoteOuterContiner = ({ note, showModal, normalDisplay }) => {
   const [clicked, setClicked] = useState(false);
   const [prevClassName, setPrev] = useState(null);
   const clickHandler = () => {
-    console.log("clicked", note._id);
     showModal(note);
     // if (!clicked) {
     //   setClicked(true);

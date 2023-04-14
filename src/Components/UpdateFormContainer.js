@@ -24,7 +24,6 @@ const UpdateFormContainer = ({
   const titleInputDiv = useEditableDiv("title", note.title);
 
   const handleUpdate = () => {
-    return;
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("WARNING: Input fields cant be empty"); //haven't impletmented validation
     }
@@ -32,28 +31,28 @@ const UpdateFormContainer = ({
     hideModal();
 
     if (
-      !(
-        titleInputDiv.value === note.title &&
-        contentInputDiv.value === note.content
-      )
+      true
+      // !(
+      //   titleInputDiv.value === note.title &&
+      //   contentInputDiv.value === note.content
+      // )
     ) {
       updateNote(
         {
           title: titleInputDiv.value,
           content: contentInputDiv.value,
-          images: note.images,
+          images: fileInput.files,
         },
         note._id
       );
     }
   };
 
-  return (
+  return fileInput.files === 0 ? null : (
     <>
-      <UpdateFormImageContainer
-        images={note.images}
-        updatable={true}
-        fromPopup="from popup"
+      <FormImageContainer
+        files={fileInput.files}
+        removeSingleFile={fileInput.removeSingleFile}
       />
       <div>
         <StyledTitleDiv>
@@ -68,7 +67,6 @@ const UpdateFormContainer = ({
       <FileInput
         files={fileInput.files}
         inputProps={fileInput.props}
-        removeSingleFile={fileInput.removeSingleFile}
         uploadBtnRef={uploadBtnRef}
       />
       <UpdateButton updateBtnRef={updateBtnRef} handleUpdate={handleUpdate} />

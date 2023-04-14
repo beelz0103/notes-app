@@ -6,17 +6,10 @@ const useFileInputUpdate = (imagesArray) => {
   const fileInput = useFileInput();
 
   useEffect(() => {
-    console.log("this ran");
     const imageToFile = async (imageObj) => {
-      const ext = imageObj.url.split(".");
-      const loadImage = new Promise((resolve) => {
-        const image = new Image();
-        image.src = "http://localhost:3001/" + imageObj.url;
-        image.onload = () => resolve(image);
-      });
-      const loadedImg = await loadImage;
-      const request = new Request(loadedImg);
-      const response = await fetch(request);
+      const ext = imageObj.url.split(".").pop();
+      const imageUrl = "http://localhost:3001/" + imageObj.url;
+      const response = await fetch(imageUrl);
       const blob = await response.blob();
       const file = new File([blob], `id_${imageObj._id}`, {
         type: `image/${ext}`,
@@ -36,7 +29,6 @@ const useFileInputUpdate = (imagesArray) => {
     };
 
     createFileList(imagesArray).then((fileList) => {
-      console.log(fileList);
       fileInput.setFiles(fileList);
     });
   }, []);

@@ -21,9 +21,7 @@ const NoteImageContainer = ({ images, updatable = false, fromPopup }) => {
             };
           });
         });
-
         const loadedSrcList = await Promise.all(srcListPromiseArray);
-
         setNewImages(loadedSrcList);
       }
     };
