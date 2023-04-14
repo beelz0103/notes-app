@@ -3,11 +3,7 @@ import styled from "styled-components";
 
 import threedot from "./threedot.svg";
 
-const TestMemo = () => {
-  return <ThreeDot />;
-};
-
-const ThreeDot = () => {
+const NoteOptions = () => {
   const iconRef = useRef(null);
   const containerRef = useRef(null);
   const [show, setShow] = useState(false);
@@ -137,4 +133,4 @@ const ControlButton = styled.div`
   }
 `;
 
-export default TestMemo;
+export default NoteOptions;
