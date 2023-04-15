@@ -3,18 +3,18 @@ import styled from "styled-components";
 import checkboxfalse from "../checkboxfalse.svg";
 import checkboxtrue from "../checkboxtrue.svg";
 import plus from "../plus.svg";
+import useGetNotes from "../Hooks/useGetNotes";
+import usePostData from "../Hooks/usePostData";
+import useGetLabels from "../Hooks/useGetLabels";
 
 function Label({}) {
   const inputRef = useRef(null);
-
-  const [labelList, setLabelList] = useState([
-    { name: "label1", checked: true, id: 1 },
-    { name: "label2", checked: false, id: 2 },
-    { name: "label4", checked: false, id: 3 },
-    { name: "label4", checked: true, id: 4 },
-  ]);
-
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const notes = useGetNotes(lastUpdate);
+  const [labelUpdate, setLabelUpdate] = useState(null);
+  const { labelList, setLabelList } = useGetLabels(labelUpdate, notes[1]);
   const [searchLabelList, setSearchLabelList] = useState(null);
+
   const addLabel = (e) => {
     console.log(e.target);
     console.log(inputRef.current.value);
@@ -33,6 +33,7 @@ function Label({}) {
       setSearchLabelList(updatedSearchList);
     }
     setLabelList(updatedLabelList);
+    setLabelUpdate(Date.now());
   };
 
   const searchLabel = (searchText) => {
