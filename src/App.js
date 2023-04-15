@@ -9,7 +9,7 @@ import TestMemoCopy from "./TestMemo copy 2";
 
 function App() {
   //return <TestMemoCopy />;
-  //return <TestMemo />;
+  return <TestMemo />;
   const sidebarRef = useRef(null);
 
   return (

@@ -57,7 +57,6 @@ const ThreeDot = () => {
         width: "300px",
         boxShadow:
           "0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149)",
-        margin: "100px 0 0 100px",
         position: "relative",
       }}
     >
@@ -74,8 +73,12 @@ const ThreeDot = () => {
 };
 
 const OptionDropdown = ({ show, cords }) => {
+  const handleClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <StyledOptionDropDown show={show} cords={cords}>
+    <StyledOptionDropDown show={show} cords={cords} onClick={handleClick}>
       <StyledOptionsDiv>
         <StyledOptionsContentDiv>Delete note</StyledOptionsContentDiv>
       </StyledOptionsDiv>
