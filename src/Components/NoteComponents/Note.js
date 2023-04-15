@@ -24,18 +24,8 @@ import NoteImageContainer from "../FormComponents/NoteImageContainer";
 
 const NoteOuterContiner = ({ note, showModal, normalDisplay }) => {
   const ref = useRef(null);
-  const [clicked, setClicked] = useState(false);
-  const [prevClassName, setPrev] = useState(null);
   const clickHandler = () => {
     showModal(note);
-    // if (!clicked) {
-    //   setClicked(true);
-    //   setPrev(ref.current.className);
-    //   ref.current.className = ref.current.className; //+ " note-pop-up";
-    // } else {
-    //   setClicked(false);
-    //   ref.current.className = prevClassName;
-    // }
   };
 
   return (
@@ -77,18 +67,6 @@ const ContentCotainer = ({ title, content, images, _id }) => {
 
 const Controls = () => {
   return <ControlWrapper />;
-  return (
-    <NoteControlsMainContainer>
-      <NoteControlsSubContainer>
-        <div
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        ></div>
-      </NoteControlsSubContainer>
-    </NoteControlsMainContainer>
-  );
 };
 
 const ControlsContainerStyled = styled.div`

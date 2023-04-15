@@ -3,17 +3,15 @@ import styled from "styled-components";
 
 import threedot from "./threedot.svg";
 
-const NoteOptions = () => {
-  const iconRef = useRef(null);
-  const containerRef = useRef(null);
+const NoteOptions = ({ containerRef, offSet, iconRef }) => {
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
 
   const handleClick = () => {
     const iconCords = iconRef.current.getBoundingClientRect();
     const containerCords = containerRef.current.getBoundingClientRect();
-    const iconX = iconCords.x - containerCords.x;
-    const iconY = iconCords.y - containerCords.y;
+    const iconX = iconCords.x - containerCords.x + offSet;
+    const iconY = iconCords.y - containerCords.y + offSet;
     const windowHeight = window.innerHeight;
 
     if (windowHeight - iconCords.bottom >= 102) {
@@ -29,25 +27,13 @@ const NoteOptions = () => {
   };
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        height: "300px",
-        width: "300px",
-        boxShadow:
-          "0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149)",
-        margin: "1400px 0 0 100px",
-        position: "relative",
-      }}
-    >
-      <div>
-        <ControlButton
-          ref={iconRef}
-          onClick={handleClick}
-          img={threedot}
-        ></ControlButton>
-        <OptionDropdown show={show} cords={cords} />
-      </div>
+    <div className="note-options">
+      <ControlButton
+        ref={iconRef}
+        onClick={handleClick}
+        img={threedot}
+      ></ControlButton>
+      <OptionDropdown show={show} cords={cords} />
     </div>
   );
 };
