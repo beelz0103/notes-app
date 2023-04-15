@@ -1,34 +1,141 @@
-import { useState, memo, useCallback } from "react";
+import { useState, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
+import checkboxfalse from "../checkboxfalse.svg";
+import checkboxtrue from "../checkboxtrue.svg";
+import plus from "../plus.svg";
 
-function Label() {
+function Label({}) {
+  const inputRef = useRef(null);
+
+  const [labelList, setLabelList] = useState([
+    { name: "label1", checked: true, id: 1 },
+    { name: "label2", checked: false, id: 2 },
+    { name: "label4", checked: false, id: 3 },
+    { name: "label4", checked: true, id: 4 },
+  ]);
+
+  const [searchLabelList, setSearchLabelList] = useState(null);
+  const addLabel = (e) => {
+    console.log(e.target);
+    console.log(inputRef.current.value);
+  };
+
+  const toggleCheck = (find_id) => {
+    const updatedLabelList = labelList.map((label) => {
+      if (label.id === find_id) return { ...label, checked: !label.checked };
+      return label;
+    });
+    if (searchLabelList) {
+      const updatedSearchList = searchLabelList.map((label) => {
+        if (label.id === find_id) return { ...label, checked: !label.checked };
+        return label;
+      });
+      setSearchLabelList(updatedSearchList);
+    }
+    setLabelList(updatedLabelList);
+  };
+
+  const searchLabel = (searchText) => {
+    const filteredLabels = labelList.filter(({ name }) =>
+      name.includes(searchText)
+    );
+
+    if (searchText === "") setSearchLabelList(null);
+    else setSearchLabelList(filteredLabels);
+  };
+
   return (
     <StyledLabelContainer>
       <StyledWrapperTitle>Label note</StyledWrapperTitle>
-      <LabelSearch />
-      <LabelDisplay />
-      {/* <NewLabelButton /> */}
+      <LabelSearch searchLabel={searchLabel} inputRef={inputRef} />
+      <LabelDisplay
+        labelList={searchLabelList ? searchLabelList : labelList}
+        toggleCheck={toggleCheck}
+      />
+      {searchLabelList && searchLabelList.length === 0 ? (
+        <NewLabelButton
+          labelList={labelList}
+          addLabel={addLabel}
+          inputRef={inputRef}
+        />
+      ) : null}
     </StyledLabelContainer>
   );
 }
 
-const LabelDisplay = () => {
+const LabelDisplay = ({ labelList, toggleCheck }) => {
   return (
     <StyledLabelDisplay>
-      <MenuItemCheckbox />
-      <MenuItemCheckbox /> <MenuItemCheckbox /> <MenuItemCheckbox />
-      <MenuItemCheckbox /> <MenuItemCheckbox /> <MenuItemCheckbox />
-      <MenuItemCheckbox /> <MenuItemCheckbox />
+      {labelList.map((label) => {
+        return (
+          <MenuItemCheckbox
+            key={label.id}
+            label={label}
+            toggleCheck={toggleCheck}
+          />
+        );
+      })}
     </StyledLabelDisplay>
   );
 };
 
-const MenuItemCheckbox = () => {
+const MenuItemCheckbox = ({ label, toggleCheck }) => {
+  const handleClick = () => {
+    toggleCheck(label.id);
+  };
+
   return (
-    <StyledMenuItemCheckbox>
-      <StyledCheckBox></StyledCheckBox>
-      <StyledLabelName>label</StyledLabelName>
+    <StyledMenuItemCheckbox onClick={handleClick} selected={label.checked}>
+      <StyledCheckBox
+        checkbox={label.checked ? checkboxtrue : checkboxfalse}
+      ></StyledCheckBox>
+      <StyledLabelName>{label.name}</StyledLabelName>
     </StyledMenuItemCheckbox>
+  );
+};
+
+const LabelSearch = ({ searchLabel, inputRef }) => {
+  const [value, setValue] = useState("");
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    searchLabel(e.target.value);
+    //lol interesting console.log(e.target === inputRef.current) returns true
+  };
+
+  return (
+    <StyledSearchContainer>
+      <StyledSearchIcon></StyledSearchIcon>
+      <StyledearchInput
+        value={value}
+        onChange={handleChange}
+        placeholder="Enter label name"
+        ref={inputRef}
+      ></StyledearchInput>
+    </StyledSearchContainer>
+  );
+};
+
+const NewLabelButton = ({ addLabel, inputRef, labelList }) => {
+  const buttonDiv = (
+    <div style={{ cursor: "pointer" }} onClick={addLabel}>
+      <StyledPlusIcon></StyledPlusIcon>
+      <StyledAddLabelContent>
+        Create ‘<StyledSpan>{inputRef.current.value}</StyledSpan>’
+      </StyledAddLabelContent>
+    </div>
+  );
+
+  const warningDiv = (
+    <StyledLimitWarning>
+      Label limit reached. Delete an existing label to add a new one.
+    </StyledLimitWarning>
+  );
+
+  return (
+    <StyledNewLabelButton>
+      {labelList.length <= 100 ? buttonDiv : warningDiv}
+    </StyledNewLabelButton>
   );
 };
 
@@ -38,10 +145,12 @@ const StyledMenuItemCheckbox = styled.div`
   outline: none;
   padding: 5px 10px 3px;
   position: relative;
+  background-color: ${(props) =>
+    props.selected ? "rgba(95, 94, 104, 0.122)" : "white"};
 
   &:hover {
-    background-color: rgba(95, 94, 104, 0.039);
-    /* 0.122  when selected and 0.157 when hovered on select */
+    background-color: ${(props) =>
+      props.selected ? "rgba(95, 94, 104, 0.157)" : "rgba(95, 94, 104, 0.039)"};
   }
 `;
 
@@ -60,9 +169,10 @@ const StyledCheckBox = styled.div`
   opacity: 0.54;
   width: 18px;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgNXYxNEg1VjVoMTRtMC0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnoiLz4KPC9zdmc+Cg==);
-  /* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgNXYxNEg1VjVoMTRtMC0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnoiLz4KPC9zdmc+Cg==); */
-  /* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj48cGF0aCBkPSJNMTkgM0g1Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMTZINVY1aDE0djE0eiIvPgogIDxwYXRoIGQ9Ik0xOCA5bC0xLjQtMS40LTYuNiA2LjYtMi42LTIuNkw2IDEzbDQgNHoiLz4KPC9zdmc+Cg==); */
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgNXYxNEg1VjVoMTRtMC0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnoiLz4KPC9zdmc+Cg==);
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj48cGF0aCBkPSJNMTkgM0g1Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMTZINVY1aDE0djE0eiIvPgogIDxwYXRoIGQ9Ik0xOCA5bC0xLjQtMS40LTYuNiA2LjYtMi42LTIuNkw2IDEzbDQgNHoiLz4KPC9zdmc+Cg==);
   -webkit-background-size: 18px 18px;
+  background-image: url(${(props) => props.checkbox});
   background-size: 18px 18px; ;;
 `;
 
@@ -73,31 +183,6 @@ const StyledLabelDisplay = styled.div`
   position: relative;
   width: 100%;
 `;
-
-const LabelSearch = () => {
-  return (
-    <StyledSearchContainer>
-      <StyledSearchIcon></StyledSearchIcon>
-      <StyledearchInput placeholder="Enter label name"></StyledearchInput>
-    </StyledSearchContainer>
-  );
-};
-
-const NewLabelButton = () => {
-  return (
-    <StyledNewLabelButton>
-      <div style={{ cursor: "pointer" }}>
-        <StyledPlusIcon></StyledPlusIcon>
-        <StyledAddLabelContent>
-          Create ‘<StyledSpan>asasa</StyledSpan>’
-        </StyledAddLabelContent>
-      </div>
-      <StyledLimitWarning>
-        Label limit reached. Delete an existing label to add a new one.
-      </StyledLimitWarning>
-    </StyledNewLabelButton>
-  );
-};
 
 const StyledPlusIcon = styled.div`
   background: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjE4cHgiIHdpZHRoPSIxOHB4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0iIzAwMDAwMCI+CiA8cGF0aCBkPSJtMzggMjZoLTEydjEyaC00di0xMmgtMTJ2LTRoMTJ2LTEyaDR2MTJoMTJ2NHoiLz4KIDxwYXRoIGQ9Im0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4K)
