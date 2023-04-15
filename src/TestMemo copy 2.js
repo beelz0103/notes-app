@@ -1,26 +1,27 @@
 import { useState, useEffect, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 
-const NoteOptions = ({
-  containerRef,
-  iconRef,
-  optionButtonRef,
-  isNote = true,
-}) => {
+import threedot from "./threedot.svg";
+
+const TestMemoCopy = () => {
+  return <ThreeDot />;
+};
+
+const ThreeDot = () => {
+  const iconRef = useRef(null);
+  const containerRef = useRef(null);
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
 
+  const showOptions = () => {
+    setShow(false);
+    window.removeEventListener("resize", showOptions);
+  };
+
+  window.addEventListener("resize", showOptions);
+
   const handleClick = (e) => {
-    console.log(e);
     e.stopPropagation();
-
-    const showOptions = () => {
-      setShow(false);
-      window.removeEventListener("resize", showOptions);
-    };
-
-    window.addEventListener("resize", showOptions);
-
     const hideOptions = (e) => {
       console.log(e);
 
@@ -49,33 +50,32 @@ const NoteOptions = ({
   };
 
   return (
-    <>
-      <button
-        ref={optionButtonRef}
-        onClick={handleClick}
-        style={{ display: "none" }}
-      ></button>
-      {isNote ? (
-        <NoteOptionDropdown show={show} cords={cords} />
-      ) : (
-        <FormOptionDropdown show={show} cords={cords} />
-      )}
-    </>
+    <div
+      ref={containerRef}
+      style={{
+        height: "300px",
+        width: "300px",
+        boxShadow:
+          "0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149)",
+        margin: "100px 0 0 100px",
+        position: "relative",
+      }}
+    >
+      <div>
+        <ControlButton
+          ref={iconRef}
+          onClick={handleClick}
+          img={threedot}
+        ></ControlButton>
+        <OptionDropdown show={show} cords={cords} />
+      </div>
+    </div>
   );
 };
 
-const NoteOptionDropdown = ({ show, cords }) => {
-  const handleClick = (e) => {
-    e.stopPropagation();
-  };
-
+const OptionDropdown = ({ show, cords }) => {
   return (
-    <StyledOptionDropDown
-      show={show}
-      cords={cords}
-      height={"102px"}
-      onClick={handleClick}
-    >
+    <StyledOptionDropDown show={show} cords={cords}>
       <StyledOptionsDiv>
         <StyledOptionsContentDiv>Delete note</StyledOptionsContentDiv>
       </StyledOptionsDiv>
@@ -84,25 +84,6 @@ const NoteOptionDropdown = ({ show, cords }) => {
       </StyledOptionsDiv>
       <StyledOptionsDiv>
         <StyledOptionsContentDiv>Made a copy</StyledOptionsContentDiv>
-      </StyledOptionsDiv>
-    </StyledOptionDropDown>
-  );
-};
-
-const FormOptionDropdown = ({ show, cords }) => {
-  const handleClick = (e) => {
-    e.stopPropagation();
-  };
-
-  return (
-    <StyledOptionDropDown
-      show={show}
-      cords={cords}
-      height={"42px"}
-      onClick={handleClick}
-    >
-      <StyledOptionsDiv>
-        <StyledOptionsContentDiv>Add label</StyledOptionsContentDiv>
       </StyledOptionsDiv>
     </StyledOptionDropDown>
   );
@@ -134,10 +115,10 @@ const StyledOptionsContentDiv = styled.div`
 const StyledOptionDropDown = styled.div`
   padding: 6px 0;
   width: 164px;
-  height: ${(props) => props.height} // 30px for each option item
+  height: 102px; //30px for each option item
   box-sizing: border-box;
 
-  background-color: white;
+  background-color: #fff;
   border-width: 0;
   box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
     0 2px 6px 2px rgba(60, 64, 67, 0.149);
@@ -148,4 +129,29 @@ const StyledOptionDropDown = styled.div`
   left: ${(props) => props.cords.left};
 `;
 
-export default NoteOptions;
+const ControlButton = styled.div`
+  background-image: url(${(props) => props.img});
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  font-size: 18px;
+  color: "#757575";
+  opacity: 0.53;
+
+  &:hover {
+    border-radius: 50%;
+    background-color: gray;
+    opacity: 0.87;
+    background-color: rgba(95, 99, 104, 0.157);
+  }
+`;
+
+export default TestMemoCopy;

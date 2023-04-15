@@ -19,8 +19,10 @@ import {
   FooterDiv,
   NoteContentInfo,
 } from "../Components/StyledComponents/StyledComponents";
+import threedot from "./threedot.svg";
 
 import NoteOptions from "./NoteComponents/NoteOptions";
+import uploadIcon from "./image.svg";
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
@@ -47,40 +49,55 @@ const FormContainer = ({ addNote }) => {
   };
 
   return (
-    <StyledFormContainer ref={formContainerRef}>
-      <FormImageContainer
-        files={fileInput.files}
-        removeSingleFile={fileInput.removeSingleFile}
-      />
-      {/* renmae note content info to something meaningul later */}
-      <NoteContentInfo>
-        <div>
+    <FormWrapper>
+      <StyledFormContainer ref={formContainerRef}>
+        <FormImageContainer
+          files={fileInput.files}
+          removeSingleFile={fileInput.removeSingleFile}
+        />
+        {/* renmae note content info to something meaningul later */}
+        <NoteContentInfo>
           <div>
-            <TitleDiv {...titleInputDiv.props}></TitleDiv>
+            <div>
+              <TitleDiv
+                {...titleInputDiv.props}
+                style={{ padding: "10px 15px" }}
+              ></TitleDiv>
+            </div>
+            <div>
+              <ContentDiv
+                {...contentInputDiv.props}
+                style={{ padding: "12px 16px" }}
+              ></ContentDiv>
+            </div>
           </div>
-          <div>
-            <ContentDiv {...contentInputDiv.props}></ContentDiv>
-          </div>
-        </div>
-        <FooterDiv></FooterDiv>
-      </NoteContentInfo>
-      <FileInput inputProps={fileInput.props} uploadBtnRef={uploadBtnRef} />
-      <Controls
-        formContainerRef={formContainerRef}
-        handleSubmit={handleSubmit}
-        uploadBtnRef={uploadBtnRef}
-      />
-    </StyledFormContainer>
+          <FooterDiv></FooterDiv>
+        </NoteContentInfo>
+        <FileInput inputProps={fileInput.props} uploadBtnRef={uploadBtnRef} />
+        <Controls
+          formContainerRef={formContainerRef}
+          handleSubmit={handleSubmit}
+          uploadBtnRef={uploadBtnRef}
+        />
+      </StyledFormContainer>
+    </FormWrapper>
   );
 };
 
-const StyledFormContainer = styled.div`
+const FormWrapper = styled.div`
   box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
     0 2px 6px 2px rgba(60, 64, 67, 0.149);
-  border: solid transparent;
   border-radius: 6px;
   box-sizing: border-box;
   margin: 16px;
+`;
+
+const StyledFormContainer = styled.div`
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-sizing: border-box;
+  position: relative;
 `;
 
 const Controls = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
@@ -109,42 +126,94 @@ const ControlWrapper = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
         uploadBtnRef={uploadBtnRef}
         formContainerRef={formContainerRef}
       />
-      <div style={{ display: "flex" }}>
-        <AddButton handleSubmit={handleSubmit} />
-      </div>
+      <AddButton handleSubmit={handleSubmit} />
     </ControlsContainerStyled>
-  );
-};
-
-const Widgets = ({ uploadBtnRef, formContainerRef }) => {
-  const iconRef = useRef(null);
-
-  return (
-    <div className="controllls widgets">
-      <div
-        className="image-uploader"
-        onClick={() => {
-          uploadBtnRef.current.click();
-        }}
-      ></div>
-      {/* offSet is from margin */}
-      <div ref={iconRef}>
-        <NoteOptions
-          iconRef={iconRef}
-          containerRef={formContainerRef}
-          offSet={16}
-        />
-      </div>
-    </div>
   );
 };
 
 const AddButton = ({ handleSubmit }) => {
   return (
-    <StyledButton onClick={handleSubmit} style={{ margin: 0 }}>
+    <StyledButton onClick={handleSubmit} style={{ marginRight: "16px" }}>
       Add
     </StyledButton>
   );
 };
+
+const Widgets = ({ uploadBtnRef, formContainerRef }) => {
+  return (
+    <StyledWidgetWrapper>
+      <ImageUploaderIconContainer uploadBtnRef={uploadBtnRef} />
+      <NoteOptionsIconContainer containerRef={formContainerRef} />
+    </StyledWidgetWrapper>
+  );
+};
+
+const ImageUploaderIconContainer = ({ uploadBtnRef }) => {
+  const handleClick = () => {
+    uploadBtnRef.current.click();
+  };
+
+  return (
+    <StyledControlsIcons
+      img={uploadIcon}
+      className="image-uploader"
+      onClick={handleClick}
+    ></StyledControlsIcons>
+  );
+};
+
+const NoteOptionsIconContainer = ({ containerRef }) => {
+  const iconRef = useRef(null);
+  const optionButtonRef = useRef(null);
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    optionButtonRef.current.click();
+  };
+
+  return (
+    <>
+      <StyledControlsIcons
+        ref={iconRef}
+        img={threedot}
+        onClick={handleClick}
+      ></StyledControlsIcons>
+      <NoteOptions
+        containerRef={containerRef}
+        iconRef={iconRef}
+        optionButtonRef={optionButtonRef}
+        isNote={false}
+      />
+    </>
+  );
+};
+
+const StyledWidgetWrapper = styled.div`
+  display: flex;
+`;
+
+const StyledControlsIcons = styled.div`
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
+
+  color: #202124;
+  opacity: 0.71;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-image: url(${(props) => props.img});
+
+  &:hover {
+    border-radius: 50%;
+    background-color: gray;
+    opacity: 0.87;
+    background-color: rgba(95, 99, 104, 0.157);
+  }
+`;
 
 export default FormContainer;

@@ -10,15 +10,17 @@ const Sidebar = ({ sidebarRef }) => {
   const mainSideBar = useRef(null);
 
   const handleMouseOver = () => {
-    const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
-    if (sidebarWidth === 80) {
-      console.log("mouse enterd");
-      setMouseOverFired(true);
-      setHoverData([width, minWidth, mediaWidth]);
-      setWidth("280px");
-      setMinWidth("80px");
-      setMediaWidth("0px");
-    }
+    setTimeout(() => {
+      const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
+      if (sidebarWidth === 80) {
+        console.log("mouse enterd");
+        setMouseOverFired(true);
+        setHoverData([width, minWidth, mediaWidth]);
+        setWidth("280px");
+        setMinWidth("80px");
+        setMediaWidth("0px");
+      }
+    }, 200);
   };
 
   const handleMouseLeave = () => {
@@ -99,14 +101,14 @@ const Sidebar = ({ sidebarRef }) => {
 };
 
 const StyledWrapped = styled.div`
-  z-index: 986;
+  z-index: 3;
 `;
 
 const StyledPlaceholder = styled.div`
   background: transparent;
   position: relative;
   min-width: ${(props) => props.minWidth};
-  z-index: 984;
+  z-index: 1;
 
   @media only screen and (max-width: ${(props) => props.mediaWidth}) {
     min-width: 80px;
@@ -175,7 +177,7 @@ const StyledSidebar = styled.div`
   -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
-  z-index: 985;
+  z-index: 2;
 
   @media only screen and (max-width: ${(props) => props.mediaWidth}) {
     width: 80px;

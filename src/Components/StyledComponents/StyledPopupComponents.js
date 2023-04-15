@@ -4,7 +4,7 @@ const PopupContainerStyled = styled.div.attrs()`
   margin: 16px;
   width: 600px;
   position: fixed;
-  z-index: 1;
+  z-index: 4;
   top: 100px;
   background-color: white;
   left: 140px;
