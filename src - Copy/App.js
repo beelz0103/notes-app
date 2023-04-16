@@ -10,7 +10,7 @@ import TestMemo from "./TestMemo.js";
 
 function App() {
   //return <TestMemoCopy />;
-  // return <TestMemo />;
+  return <TestMemo />;
   const sidebarRef = useRef(null);
 
   return (

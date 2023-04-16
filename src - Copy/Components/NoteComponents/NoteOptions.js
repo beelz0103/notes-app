@@ -1,5 +1,15 @@
-import { useState, useContext } from "react";
+import {
+  useState,
+  useEffect,
+  memo,
+  useCallback,
+  useRef,
+  createContext,
+  useContext,
+} from "react";
 import styled from "styled-components";
+import { ControlContext } from "../FormContainer";
+import { ContainerContext } from "../Container";
 import { LabelForForm } from "./Label";
 
 const NoteOptions = ({
@@ -10,6 +20,9 @@ const NoteOptions = ({
 }) => {
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
+
+  const test = useContext(ControlContext);
+  console.log(test);
 
   const handleClick = (e) => {
     console.log(e);
@@ -51,7 +64,6 @@ const NoteOptions = ({
 
   return (
     <>
-      <LabelForForm />
       <button
         ref={optionButtonRef}
         onClick={handleClick}
@@ -67,11 +79,12 @@ const NoteOptions = ({
 };
 
 const NoteOptionDropdown = ({ show, cords }) => {
+  const { labels } = useContext(ContainerContext);
   const [showLabel, setShowLabel] = useState(false);
 
   const handleClick = (e) => {
     e.stopPropagation();
-
+    console.log(labels);
     setShowLabel(!showLabel);
   };
 
@@ -96,6 +109,7 @@ const NoteOptionDropdown = ({ show, cords }) => {
 };
 
 const FormOptionDropdown = ({ show, cords }) => {
+  const { labels } = useContext(ContainerContext);
   const [showLabel, setShowLabel] = useState(false);
 
   const handleClick = (e) => {
@@ -103,6 +117,8 @@ const FormOptionDropdown = ({ show, cords }) => {
   };
 
   const handleLabelClick = (e) => {
+    console.log(labels);
+    console.log(labels);
     setShowLabel(!showLabel);
   };
 
@@ -149,7 +165,7 @@ const StyledOptionsContentDiv = styled.div`
 const StyledOptionDropDown = styled.div`
   padding: 6px 0;
   width: 164px;
-  height: ${(props) => props.height}; // 30px for each option item
+  height: ${(props) => props.height} // 30px for each option item
   box-sizing: border-box;
 
   background-color: white;

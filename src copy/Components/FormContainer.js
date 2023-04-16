@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import useFileInput from "./Hooks/useFileInput";
 import useEditableDiv from "./Hooks/useEditableDiv";
 import FileInput from "./FormComponents/FileInput";
@@ -20,6 +20,7 @@ import {
   NoteContentInfo,
 } from "../Components/StyledComponents/StyledComponents";
 import threedot from "./threedot.svg";
+
 import NoteOptions from "./NoteComponents/NoteOptions";
 import uploadIcon from "./image.svg";
 
@@ -99,10 +100,6 @@ const StyledFormContainer = styled.div`
   position: relative;
 `;
 
-const ControlContext = createContext(null);
-
-export { ControlContext };
-
 const Controls = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
   return (
     <ControlWrapper
@@ -123,9 +120,6 @@ const ControlsContainerStyled = styled.div`
 `;
 
 const ControlWrapper = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
-  const test = useContext(ControlContext);
-  console.log(test);
-
   return (
     <ControlsContainerStyled>
       <Widgets

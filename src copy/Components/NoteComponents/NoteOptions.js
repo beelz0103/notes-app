@@ -1,6 +1,5 @@
-import { useState, useContext } from "react";
+import { useState, useEffect, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
-import { LabelForForm } from "./Label";
 
 const NoteOptions = ({
   containerRef,
@@ -51,7 +50,6 @@ const NoteOptions = ({
 
   return (
     <>
-      <LabelForForm />
       <button
         ref={optionButtonRef}
         onClick={handleClick}
@@ -67,12 +65,8 @@ const NoteOptions = ({
 };
 
 const NoteOptionDropdown = ({ show, cords }) => {
-  const [showLabel, setShowLabel] = useState(false);
-
   const handleClick = (e) => {
     e.stopPropagation();
-
-    setShowLabel(!showLabel);
   };
 
   return (
@@ -96,14 +90,8 @@ const NoteOptionDropdown = ({ show, cords }) => {
 };
 
 const FormOptionDropdown = ({ show, cords }) => {
-  const [showLabel, setShowLabel] = useState(false);
-
   const handleClick = (e) => {
     e.stopPropagation();
-  };
-
-  const handleLabelClick = (e) => {
-    setShowLabel(!showLabel);
   };
 
   return (
@@ -114,10 +102,7 @@ const FormOptionDropdown = ({ show, cords }) => {
       onClick={handleClick}
     >
       <StyledOptionsDiv>
-        <StyledOptionsContentDiv onClick={handleLabelClick}>
-          Add label
-        </StyledOptionsContentDiv>
-        {/* <LabelForForm showLabel={showLabel} /> */}
+        <StyledOptionsContentDiv>Add label</StyledOptionsContentDiv>
       </StyledOptionsDiv>
     </StyledOptionDropDown>
   );
@@ -149,7 +134,7 @@ const StyledOptionsContentDiv = styled.div`
 const StyledOptionDropDown = styled.div`
   padding: 6px 0;
   width: 164px;
-  height: ${(props) => props.height}; // 30px for each option item
+  height: ${(props) => props.height} // 30px for each option item
   box-sizing: border-box;
 
   background-color: white;

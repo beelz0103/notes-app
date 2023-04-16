@@ -1,11 +1,4 @@
-import {
-  useState,
-  memo,
-  useCallback,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import { useState, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 import checkboxfalse from "../checkboxfalse.svg";
 import checkboxtrue from "../checkboxtrue.svg";
@@ -19,11 +12,8 @@ import {
   useGetAllLabels,
   useGetLabelList,
 } from "../Hooks/useLabels";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
-import { ContainerContext } from "../Container";
-
-const Label22 = () => {
+const Label2 = ({ showLabel }) => {
   const [lastUpdate, setLastUpdate] = useState({});
   const notes = useGetNotes(lastUpdate.notes);
   const labels = useGetAllLabels(lastUpdate.labels);
@@ -34,7 +24,6 @@ const Label22 = () => {
       "http://localhost:3001/label/create",
       label
     );
-
     setLastUpdate({ ...lastUpdate, labels: Date.now() });
     return newLabel;
   };
@@ -42,59 +31,26 @@ const Label22 = () => {
   return <Label note={notes[1]} labels={labels} addLabel={addLabel} />;
 };
 
-const useFormGetLabelList = (labels) => {
-  const [labelList, setLabelList] = useState([]);
-
-  useEffect(() => {
-    if (labelList.length !== 0) return;
-
-    const list = labels.map(({ name, _id }) => {
-      return { name, id: _id, checked: false };
-    });
-
-    setLabelList(list);
-  }, [labels]);
-
-  return { labelList, setLabelList };
-};
-
-function LabelForForm() {
+function LabelForForm({ labels, addLabel, showLabel }) {
   const inputRef = useRef(null);
-  const { labels, addLabel, showLabel } = useContext(ContainerContext);
-  const { labelList, setLabelList } = useFormGetLabelList(labels);
+
+  // const { updateNoteLabels, noteLabels } = useNoteLabels(note);
+  // const labelList = useGetLabelList(labels, noteLabels);
 
   const [searchLabelList, setSearchLabelList] = useState(null);
 
   const handleLabelSubmit = async (e) => {
     const name = inputRef.current.value;
     const newLabel = await addLabel(name);
-    console.log(newLabel);
-    console.log(labelList);
-    setLabelList(
-      labelList.concat({ name: newLabel.name, id: newLabel._id, checked: true })
-    );
+    //updateNoteLabels(note._id, newLabel._id, false);
     setSearchLabelList(null);
     inputRef.current.value = "";
   };
 
-  const toggleCheck = ({ id }) => {
-    const newLabelList = labelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
+  const labelList = [{ name: "abcded", id: 1 }];
 
-    setLabelList(newLabelList);
-
-    if (!searchLabelList) return;
-
-    const newSearchList = searchLabelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
-
-    setSearchLabelList(newSearchList);
-  };
-
-  const toggleCheck2 = ({ id, checked }) => {
-    //updateNoteLabels(note._id, id, checked);
+  const toggleCheck = ({ id, checked }) => {
+    //  updateNoteLabels(note._id, id, checked);
 
     if (!searchLabelList) return;
 
@@ -133,7 +89,7 @@ function LabelForForm() {
   );
 }
 
-function Label({ note, labels, addLabel }) {
+function Label({ note, labels, addLabel, showLabel }) {
   const inputRef = useRef(null);
 
   const { updateNoteLabels, noteLabels } = useNoteLabels(note);
@@ -148,8 +104,6 @@ function Label({ note, labels, addLabel }) {
     setSearchLabelList(null);
     inputRef.current.value = "";
   };
-
-  console.log(labelList);
 
   const toggleCheck = ({ id, checked }) => {
     updateNoteLabels(note._id, id, checked);
@@ -173,7 +127,7 @@ function Label({ note, labels, addLabel }) {
   };
 
   return (
-    <StyledLabelContainer>
+    <StyledLabelContainer showLabel={showLabel}>
       <StyledWrapperTitle>Label note</StyledWrapperTitle>
       <LabelSearch searchLabel={searchLabel} inputRef={inputRef} />
       <LabelDisplay
@@ -403,6 +357,7 @@ const StyledLabelContainer = styled.div`
   padding-top: 11px;
   font-family: "Roboto", arial, sans-serif;
   width: 225px;
+
   z-index: 5003;
   opacity: 1;
 `;
@@ -413,4 +368,4 @@ const StyledWrapperTitle = styled.div`
   padding: 0 12px;
 `;
 
-export { Label22, Label, LabelForForm };
+export { LabelForForm, Label, Label2 };

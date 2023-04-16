@@ -2,7 +2,7 @@ import { useState, useEffect, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 import threedot from "./threedot.svg";
 import TestMemoCopy from "./TestMemo copy 2";
-import { Label22 } from "./Components/NoteComponents/Label";
+import Label from "./Components/NoteComponents/Label";
 
 const TestMemo = () => {
   return (
@@ -15,7 +15,7 @@ const TestMemo = () => {
       }}
     >
       <TestMemoCopy></TestMemoCopy>
-      <Label22 />
+      <Label></Label>
     </div>
   );
 };

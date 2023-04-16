@@ -1,11 +1,4 @@
-import {
-  useState,
-  memo,
-  useCallback,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import { useState, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 import checkboxfalse from "../checkboxfalse.svg";
 import checkboxtrue from "../checkboxtrue.svg";
@@ -19,11 +12,8 @@ import {
   useGetAllLabels,
   useGetLabelList,
 } from "../Hooks/useLabels";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
-import { ContainerContext } from "../Container";
-
-const Label22 = () => {
+const Label = () => {
   const [lastUpdate, setLastUpdate] = useState({});
   const notes = useGetNotes(lastUpdate.notes);
   const labels = useGetAllLabels(lastUpdate.labels);
@@ -34,106 +24,14 @@ const Label22 = () => {
       "http://localhost:3001/label/create",
       label
     );
-
     setLastUpdate({ ...lastUpdate, labels: Date.now() });
     return newLabel;
   };
 
-  return <Label note={notes[1]} labels={labels} addLabel={addLabel} />;
+  return <Label2 note={notes[1]} labels={labels} addLabel={addLabel} />;
 };
 
-const useFormGetLabelList = (labels) => {
-  const [labelList, setLabelList] = useState([]);
-
-  useEffect(() => {
-    if (labelList.length !== 0) return;
-
-    const list = labels.map(({ name, _id }) => {
-      return { name, id: _id, checked: false };
-    });
-
-    setLabelList(list);
-  }, [labels]);
-
-  return { labelList, setLabelList };
-};
-
-function LabelForForm() {
-  const inputRef = useRef(null);
-  const { labels, addLabel, showLabel } = useContext(ContainerContext);
-  const { labelList, setLabelList } = useFormGetLabelList(labels);
-
-  const [searchLabelList, setSearchLabelList] = useState(null);
-
-  const handleLabelSubmit = async (e) => {
-    const name = inputRef.current.value;
-    const newLabel = await addLabel(name);
-    console.log(newLabel);
-    console.log(labelList);
-    setLabelList(
-      labelList.concat({ name: newLabel.name, id: newLabel._id, checked: true })
-    );
-    setSearchLabelList(null);
-    inputRef.current.value = "";
-  };
-
-  const toggleCheck = ({ id }) => {
-    const newLabelList = labelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
-
-    setLabelList(newLabelList);
-
-    if (!searchLabelList) return;
-
-    const newSearchList = searchLabelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
-
-    setSearchLabelList(newSearchList);
-  };
-
-  const toggleCheck2 = ({ id, checked }) => {
-    //updateNoteLabels(note._id, id, checked);
-
-    if (!searchLabelList) return;
-
-    const newSearchList = searchLabelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
-
-    setSearchLabelList(newSearchList);
-  };
-
-  const searchLabel = (searchText) => {
-    const filteredLabels = labelList.filter(({ name }) =>
-      name.toUpperCase().includes(searchText.toUpperCase())
-    );
-
-    if (searchText === "") setSearchLabelList(null);
-    else setSearchLabelList(filteredLabels);
-  };
-
-  return (
-    <StyledLabelContainer showLabel={showLabel}>
-      <StyledWrapperTitle>Label note</StyledWrapperTitle>
-      <LabelSearch searchLabel={searchLabel} inputRef={inputRef} />
-      <LabelDisplay
-        labelList={searchLabelList ? searchLabelList : labelList}
-        toggleCheck={toggleCheck}
-      />
-      {searchLabelList && searchLabelList.length === 0 ? (
-        <NewLabelButton
-          labelList={labelList}
-          handleLabelSubmit={handleLabelSubmit}
-          inputRef={inputRef}
-        />
-      ) : null}
-    </StyledLabelContainer>
-  );
-}
-
-function Label({ note, labels, addLabel }) {
+function Label2({ note, labels, addLabel }) {
   const inputRef = useRef(null);
 
   const { updateNoteLabels, noteLabels } = useNoteLabels(note);
@@ -413,4 +311,4 @@ const StyledWrapperTitle = styled.div`
   padding: 0 12px;
 `;
 
-export { Label22, Label, LabelForForm };
+export default Label;

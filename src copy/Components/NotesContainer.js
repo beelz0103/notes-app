@@ -2,7 +2,6 @@ import styled from "styled-components";
 import Container from "./Container";
 import Sidebar from "./Sidebar";
 import { useRef } from "react";
-import { useGetAllLabels } from "./Hooks/useLabels";
 
 const NotesContainer = ({ sidebarRef }) => {
   return (
