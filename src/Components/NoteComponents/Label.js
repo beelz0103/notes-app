@@ -5,40 +5,65 @@ import checkboxtrue from "../checkboxtrue.svg";
 import plus from "../plus.svg";
 import useGetNotes from "../Hooks/useGetNotes";
 import usePostData from "../Hooks/usePostData";
-import useGetLabels from "../Hooks/useGetLabels";
+import {
+  useGetLabels,
+  usePostLabel,
+  useNoteLabels,
+  useGetAllLabels,
+  useGetLabelList,
+} from "../Hooks/useLabels";
 
-function Label({}) {
-  const inputRef = useRef(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const notes = useGetNotes(lastUpdate);
-  const [labelUpdate, setLabelUpdate] = useState(null);
-  const { labelList, setLabelList } = useGetLabels(labelUpdate, notes[1]);
-  const [searchLabelList, setSearchLabelList] = useState(null);
+const Label = () => {
+  const [lastUpdate, setLastUpdate] = useState({});
+  const notes = useGetNotes(lastUpdate.notes);
+  const labels = useGetAllLabels(lastUpdate.labels);
+  const { postLabel } = usePostLabel();
 
-  const addLabel = (e) => {
-    console.log(e.target);
-    console.log(inputRef.current.value);
+  const addLabel = async (label) => {
+    const newLabel = await postLabel(
+      "http://localhost:3001/label/create",
+      label
+    );
+    setLastUpdate({ ...lastUpdate, labels: Date.now() });
+    return newLabel;
   };
 
-  const toggleCheck = (find_id) => {
-    const updatedLabelList = labelList.map((label) => {
-      if (label.id === find_id) return { ...label, checked: !label.checked };
-      return label;
-    });
-    if (searchLabelList) {
-      const updatedSearchList = searchLabelList.map((label) => {
-        if (label.id === find_id) return { ...label, checked: !label.checked };
-        return label;
-      });
-      setSearchLabelList(updatedSearchList);
-    }
-    setLabelList(updatedLabelList);
-    setLabelUpdate(Date.now());
+  return <Label2 note={notes[1]} labels={labels} addLabel={addLabel} />;
+};
+
+function Label2({ note, labels, addLabel }) {
+  const inputRef = useRef(null);
+
+  const { updateNoteLabels, noteLabels } = useNoteLabels(note);
+  const labelList = useGetLabelList(labels, noteLabels);
+
+  const [searchLabelList, setSearchLabelList] = useState(null);
+
+  const handleLabelSubmit = async (e) => {
+    const name = inputRef.current.value;
+    const newLabel = await addLabel(name);
+    updateNoteLabels(note._id, newLabel._id, false);
+    setSearchLabelList(null);
+    inputRef.current.value = "";
+  };
+
+  console.log(labelList);
+
+  const toggleCheck = ({ id, checked }) => {
+    updateNoteLabels(note._id, id, checked);
+
+    if (!searchLabelList) return;
+
+    const newSearchList = searchLabelList.map((label) =>
+      label.id === id ? { ...label, checked: !label.checked } : label
+    );
+
+    setSearchLabelList(newSearchList);
   };
 
   const searchLabel = (searchText) => {
     const filteredLabels = labelList.filter(({ name }) =>
-      name.includes(searchText)
+      name.toUpperCase().includes(searchText.toUpperCase())
     );
 
     if (searchText === "") setSearchLabelList(null);
@@ -56,7 +81,7 @@ function Label({}) {
       {searchLabelList && searchLabelList.length === 0 ? (
         <NewLabelButton
           labelList={labelList}
-          addLabel={addLabel}
+          handleLabelSubmit={handleLabelSubmit}
           inputRef={inputRef}
         />
       ) : null}
@@ -82,7 +107,7 @@ const LabelDisplay = ({ labelList, toggleCheck }) => {
 
 const MenuItemCheckbox = ({ label, toggleCheck }) => {
   const handleClick = () => {
-    toggleCheck(label.id);
+    toggleCheck(label);
   };
 
   return (
@@ -96,10 +121,7 @@ const MenuItemCheckbox = ({ label, toggleCheck }) => {
 };
 
 const LabelSearch = ({ searchLabel, inputRef }) => {
-  const [value, setValue] = useState("");
-
   const handleChange = (e) => {
-    setValue(e.target.value);
     searchLabel(e.target.value);
     //lol interesting console.log(e.target === inputRef.current) returns true
   };
@@ -108,7 +130,6 @@ const LabelSearch = ({ searchLabel, inputRef }) => {
     <StyledSearchContainer>
       <StyledSearchIcon></StyledSearchIcon>
       <StyledearchInput
-        value={value}
         onChange={handleChange}
         placeholder="Enter label name"
         ref={inputRef}
@@ -117,9 +138,9 @@ const LabelSearch = ({ searchLabel, inputRef }) => {
   );
 };
 
-const NewLabelButton = ({ addLabel, inputRef, labelList }) => {
+const NewLabelButton = ({ handleLabelSubmit, inputRef, labelList }) => {
   const buttonDiv = (
-    <div style={{ cursor: "pointer" }} onClick={addLabel}>
+    <div style={{ cursor: "pointer" }} onClick={handleLabelSubmit}>
       <StyledPlusIcon></StyledPlusIcon>
       <StyledAddLabelContent>
         Create ‘<StyledSpan>{inputRef.current.value}</StyledSpan>’
