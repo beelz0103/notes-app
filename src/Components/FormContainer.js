@@ -19,9 +19,10 @@ import {
   FooterDiv,
   NoteContentInfo,
 } from "../Components/StyledComponents/StyledComponents";
-import threedot from "./threedot.svg";
+
 import NoteOptions from "./NoteComponents/NoteOptions";
-import uploadIcon from "./image.svg";
+import uploadIcon from "./Resources/image.svg";
+import threedot from "./Resources/threedot.svg";
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();

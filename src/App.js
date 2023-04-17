@@ -1,16 +1,11 @@
 import "./App.css";
-import Container from "./Components/Container";
-
 import Header from "./Components/Header";
-import Sidebar from "./Components/Sidebar";
 import NotesContainer from "./Components/NotesContainer";
 import { useRef } from "react";
-import TestMemoCopy from "./TestMemo copy 2";
-import TestMemo from "./TestMemo.js";
+import Test from "./Test";
 
 function App() {
-  //return <TestMemoCopy />;
-  // return <TestMemo />;
+  //return <Test />;
   const sidebarRef = useRef(null);
 
   return (

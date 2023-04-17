@@ -1,66 +1,22 @@
-import {
-  useState,
-  memo,
-  useCallback,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import { useState, useRef, useContext } from "react";
 import styled from "styled-components";
-import checkboxfalse from "../checkboxfalse.svg";
-import checkboxtrue from "../checkboxtrue.svg";
-import plus from "../plus.svg";
-import useGetNotes from "../Hooks/useGetNotes";
-import usePostData from "../Hooks/usePostData";
-import {
-  useGetLabels,
-  usePostLabel,
-  useNoteLabels,
-  useGetAllLabels,
-  useGetLabelList,
-} from "../Hooks/useLabels";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
+import {
+  useNoteLabels,
+  useGetLabelList,
+  useFormGetLabelList,
+} from "../Hooks/useLabels";
 import { ContainerContext } from "../Container";
 
-const Label22 = () => {
-  const [lastUpdate, setLastUpdate] = useState({});
-  const notes = useGetNotes(lastUpdate.notes);
-  const labels = useGetAllLabels(lastUpdate.labels);
-  const { postLabel } = usePostLabel();
+import checkboxfalse from "../Resources/checkboxfalse.svg";
+import checkboxtrue from "../Resources/checkboxtrue.svg";
+import plus from "../Resources/plus.svg";
 
-  const addLabel = async (label) => {
-    const newLabel = await postLabel(
-      "http://localhost:3001/label/create",
-      label
-    );
+function LabelForForm({ cords, showLabel, labelRef }) {
+  console.log("Label has been shown?,", showLabel);
 
-    setLastUpdate({ ...lastUpdate, labels: Date.now() });
-    return newLabel;
-  };
-
-  return <Label note={notes[1]} labels={labels} addLabel={addLabel} />;
-};
-
-const useFormGetLabelList = (labels) => {
-  const [labelList, setLabelList] = useState([]);
-
-  useEffect(() => {
-    if (labelList.length !== 0) return;
-
-    const list = labels.map(({ name, _id }) => {
-      return { name, id: _id, checked: false };
-    });
-
-    setLabelList(list);
-  }, [labels]);
-
-  return { labelList, setLabelList };
-};
-
-function LabelForForm() {
   const inputRef = useRef(null);
-  const { labels, addLabel, showLabel } = useContext(ContainerContext);
+  const { addLabel, labels } = useContext(ContainerContext);
   const { labelList, setLabelList } = useFormGetLabelList(labels);
 
   const [searchLabelList, setSearchLabelList] = useState(null);
@@ -93,18 +49,6 @@ function LabelForForm() {
     setSearchLabelList(newSearchList);
   };
 
-  const toggleCheck2 = ({ id, checked }) => {
-    //updateNoteLabels(note._id, id, checked);
-
-    if (!searchLabelList) return;
-
-    const newSearchList = searchLabelList.map((label) =>
-      label.id === id ? { ...label, checked: !label.checked } : label
-    );
-
-    setSearchLabelList(newSearchList);
-  };
-
   const searchLabel = (searchText) => {
     const filteredLabels = labelList.filter(({ name }) =>
       name.toUpperCase().includes(searchText.toUpperCase())
@@ -115,10 +59,10 @@ function LabelForForm() {
   };
 
   return (
-    <StyledLabelContainer showLabel={showLabel}>
-      <StyledWrapperTitle>Label note</StyledWrapperTitle>
-      <LabelSearch searchLabel={searchLabel} inputRef={inputRef} />
-      <LabelDisplay
+    <LabelWrapper ref={labelRef} showLabel={showLabel} cords={cords}>
+      <LabelHeader>Label note</LabelHeader>
+      <Search searchLabel={searchLabel} inputRef={inputRef} />
+      <Display
         labelList={searchLabelList ? searchLabelList : labelList}
         toggleCheck={toggleCheck}
       />
@@ -129,7 +73,7 @@ function LabelForForm() {
           inputRef={inputRef}
         />
       ) : null}
-    </StyledLabelContainer>
+    </LabelWrapper>
   );
 }
 
@@ -148,8 +92,6 @@ function Label({ note, labels, addLabel }) {
     setSearchLabelList(null);
     inputRef.current.value = "";
   };
-
-  console.log(labelList);
 
   const toggleCheck = ({ id, checked }) => {
     updateNoteLabels(note._id, id, checked);
@@ -173,10 +115,10 @@ function Label({ note, labels, addLabel }) {
   };
 
   return (
-    <StyledLabelContainer>
-      <StyledWrapperTitle>Label note</StyledWrapperTitle>
-      <LabelSearch searchLabel={searchLabel} inputRef={inputRef} />
-      <LabelDisplay
+    <LabelWrapper>
+      <LabelHeader>Label note</LabelHeader>
+      <Search searchLabel={searchLabel} inputRef={inputRef} />
+      <Display
         labelList={searchLabelList ? searchLabelList : labelList}
         toggleCheck={toggleCheck}
       />
@@ -187,11 +129,11 @@ function Label({ note, labels, addLabel }) {
           inputRef={inputRef}
         />
       ) : null}
-    </StyledLabelContainer>
+    </LabelWrapper>
   );
 }
 
-const LabelDisplay = ({ labelList, toggleCheck }) => {
+const Display = ({ labelList, toggleCheck }) => {
   return (
     <StyledLabelDisplay>
       {labelList.map((label) => {
@@ -222,7 +164,7 @@ const MenuItemCheckbox = ({ label, toggleCheck }) => {
   );
 };
 
-const LabelSearch = ({ searchLabel, inputRef }) => {
+const Search = ({ searchLabel, inputRef }) => {
   const handleChange = (e) => {
     searchLabel(e.target.value);
     //lol interesting console.log(e.target === inputRef.current) returns true
@@ -243,7 +185,7 @@ const LabelSearch = ({ searchLabel, inputRef }) => {
 const NewLabelButton = ({ handleLabelSubmit, inputRef, labelList }) => {
   const buttonDiv = (
     <div style={{ cursor: "pointer" }} onClick={handleLabelSubmit}>
-      <StyledPlusIcon></StyledPlusIcon>
+      <StyledPlusIcon plus={plus}></StyledPlusIcon>
       <StyledAddLabelContent>
         Create ‘<StyledSpan>{inputRef.current.value}</StyledSpan>’
       </StyledAddLabelContent>
@@ -292,12 +234,8 @@ const StyledCheckBox = styled.div`
   height: 18px;
   opacity: 0.54;
   width: 18px;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgNXYxNEg1VjVoMTRtMC0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnoiLz4KPC9zdmc+Cg==);
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgNXYxNEg1VjVoMTRtMC0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnoiLz4KPC9zdmc+Cg==);
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj48cGF0aCBkPSJNMTkgM0g1Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMTZINVY1aDE0djE0eiIvPgogIDxwYXRoIGQ9Ik0xOCA5bC0xLjQtMS40LTYuNiA2LjYtMi42LTIuNkw2IDEzbDQgNHoiLz4KPC9zdmc+Cg==);
-  -webkit-background-size: 18px 18px;
   background-image: url(${(props) => props.checkbox});
-  background-size: 18px 18px; ;;
+  background-size: 18px 18px;
 `;
 
 const StyledLabelDisplay = styled.div`
@@ -309,9 +247,8 @@ const StyledLabelDisplay = styled.div`
 `;
 
 const StyledPlusIcon = styled.div`
-  background: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjE4cHgiIHdpZHRoPSIxOHB4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0iIzAwMDAwMCI+CiA8cGF0aCBkPSJtMzggMjZoLTEydjEyaC00di0xMmgtMTJ2LTRoMTJ2LTEyaDR2MTJoMTJ2NHoiLz4KIDxwYXRoIGQ9Im0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4K)
-    no-repeat center;
   display: inline-block;
+  background: url(${(props) => props.plus}) no-repeat center;
   height: 18px;
   opacity: 0.54;
   width: 18px;
@@ -390,11 +327,10 @@ const StyledSearchIcon = styled.div`
   width: 18px;
 `;
 
-const StyledLabelContainer = styled.div`
+const LabelWrapper = styled.div`
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto&display=swap");
 
   background-color: #fff;
-  -webkit-border-radius: 2px;
   border-radius: 2px;
   box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
     0 2px 6px 2px rgba(60, 64, 67, 0.149);
@@ -405,12 +341,18 @@ const StyledLabelContainer = styled.div`
   width: 225px;
   z-index: 5003;
   opacity: 1;
+
+  display: ${(props) => (props.showLabel ? "block" : "none")};
+
+  position: absolute;
+  top: ${(props) => props.cords.top};
+  left: ${(props) => props.cords.left};
 `;
 
-const StyledWrapperTitle = styled.div`
+const LabelHeader = styled.div`
   cursor: default;
   font-size: 14px;
   padding: 0 12px;
 `;
 
-export { Label22, Label, LabelForForm };
+export { Label, LabelForForm };

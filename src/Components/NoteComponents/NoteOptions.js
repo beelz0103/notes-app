@@ -1,6 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, createContext, useRef } from "react";
 import styled from "styled-components";
 import { LabelForForm } from "./Label";
+import { Label } from "./Label";
+
+const OptionsContext = createContext(null);
 
 const NoteOptions = ({
   containerRef,
@@ -10,10 +13,11 @@ const NoteOptions = ({
 }) => {
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
+  const [showLabel, setShowLabel] = useState(false);
 
   const handleClick = (e) => {
-    console.log(e);
     e.stopPropagation();
+    if (showLabel) setShowLabel(!showLabel);
 
     const showOptions = () => {
       setShow(false);
@@ -37,31 +41,43 @@ const NoteOptions = ({
     const iconY = iconCords.y - containerCords.y;
     const windowHeight = window.innerHeight;
 
-    if (windowHeight - iconCords.bottom >= 102) {
+    const difference = isNote ? 102 : 42;
+
+    if (windowHeight - iconCords.bottom >= difference) {
       const top = `${iconY + iconCords.height}px`;
       const left = `${iconX}px`;
       setCords({ top, left });
     } else {
-      const top = `${iconY - 102}px`;
+      const top = `${iconY - difference}px`;
       const left = `${iconX}px`;
       setCords({ top, left });
     }
+
     setShow(!show);
   };
 
   return (
     <>
-      <LabelForForm />
-      <button
-        ref={optionButtonRef}
-        onClick={handleClick}
-        style={{ display: "none" }}
-      ></button>
-      {isNote ? (
-        <NoteOptionDropdown show={show} cords={cords} />
-      ) : (
-        <FormOptionDropdown show={show} cords={cords} />
-      )}
+      <OptionsContext.Provider value={{ show, cords, setShow }}>
+        <button
+          ref={optionButtonRef}
+          onClick={handleClick}
+          style={{ display: "none" }}
+        ></button>
+        {isNote ? (
+          <NoteOptionDropdown show={show} cords={cords} />
+        ) : (
+          <FormOptionDropdown
+            show={show}
+            cords={cords}
+            setShow={setShow}
+            iconRef={iconRef}
+            containerRef={containerRef}
+            showLabel={showLabel}
+            setShowLabel={setShowLabel}
+          />
+        )}
+      </OptionsContext.Provider>
     </>
   );
 };
@@ -95,31 +111,91 @@ const NoteOptionDropdown = ({ show, cords }) => {
   );
 };
 
-const FormOptionDropdown = ({ show, cords }) => {
-  const [showLabel, setShowLabel] = useState(false);
+const FormOptionDropdown = ({
+  show,
+  cords,
+  setShow,
+  iconRef,
+  containerRef,
+  setShowLabel,
+  showLabel,
+}) => {
+  const [labelCords, setLabelCords] = useState(cords);
+  const labelRef = useRef(null);
 
+  //prevents dialog from closing on click
   const handleClick = (e) => {
     e.stopPropagation();
   };
 
   const handleLabelClick = (e) => {
+    e.stopPropagation();
+
+    const showOptions = (e) => {
+      e.stopPropagation();
+      setShowLabel(false);
+
+      window.removeEventListener("resize", showOptions);
+    };
+
+    window.addEventListener("resize", showOptions);
+
+    const hideOptions = (e) => {
+      e.stopPropagation();
+      console.log(e);
+      setShowLabel(false);
+
+      document.removeEventListener("click", hideOptions);
+    };
+
+    document.addEventListener("click", hideOptions);
+
+    labelRef.current.style.display = "block"; //to get the size
+    const labelCords = labelRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    labelRef.current.style.display = ""; // to return control back to the styled component
+
+    const iconCords = iconRef.current.getBoundingClientRect();
+    const containerCords = containerRef.current.getBoundingClientRect();
+    const iconX = iconCords.x - containerCords.x;
+    const iconY = iconCords.y - containerCords.y;
+
+    if (windowHeight - iconCords.bottom >= labelCords.height) {
+      const top = `${iconY + iconCords.height}px`;
+      const left = `${iconX}px`;
+      console.log({ top, left });
+      setLabelCords({ top, left });
+    } else {
+      const top = `${iconY - labelCords.height}px`;
+      const left = `${iconX}px`;
+      console.log({ top, left });
+      setLabelCords({ top, left });
+    }
+
+    setShow(!show);
     setShowLabel(!showLabel);
   };
 
   return (
-    <StyledOptionDropDown
-      show={show}
-      cords={cords}
-      height={"42px"}
-      onClick={handleClick}
-    >
-      <StyledOptionsDiv>
-        <StyledOptionsContentDiv onClick={handleLabelClick}>
-          Add label
-        </StyledOptionsContentDiv>
-        {/* <LabelForForm showLabel={showLabel} /> */}
-      </StyledOptionsDiv>
-    </StyledOptionDropDown>
+    <>
+      <LabelForForm
+        labelRef={labelRef}
+        cords={labelCords}
+        showLabel={showLabel}
+      />
+      <StyledOptionDropDown
+        show={show}
+        cords={cords}
+        height={"42px"}
+        onClick={handleClick}
+      >
+        <StyledOptionsDiv>
+          <StyledOptionsContentDiv onClick={handleLabelClick}>
+            Add label
+          </StyledOptionsContentDiv>
+        </StyledOptionsDiv>
+      </StyledOptionDropDown>
+    </>
   );
 };
 

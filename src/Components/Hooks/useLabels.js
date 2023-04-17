@@ -21,6 +21,22 @@ const useGetAllLabels = (lastUpdate) => {
   return allLabels;
 };
 
+const useFormGetLabelList = (labels) => {
+  const [labelList, setLabelList] = useState([]);
+
+  useEffect(() => {
+    if (labelList.length !== 0) return;
+
+    const list = labels.map(({ name, _id }) => {
+      return { name, id: _id, checked: false };
+    });
+
+    setLabelList(list);
+  }, [labels]);
+
+  return { labelList, setLabelList };
+};
+
 const useGetLabelList = (labels, noteLabels) => {
   const [labelList, setLabelList] = useState([]);
 
@@ -110,4 +126,4 @@ const useNoteLabels = (note = {}) => {
 
 export { usePostLabel, useNoteLabels };
 export { useGetAllLabels };
-export { useGetLabelList };
+export { useGetLabelList, useFormGetLabelList };

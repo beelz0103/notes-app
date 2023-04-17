@@ -257,14 +257,6 @@ body {
   opacity: 0.71;
 }
 
-.controllls > div:nth-child(1) {
-  background-image: url(./Components/image.svg);
-}
-
-.controllls > div:nth-child(2) {
-  background-image: url(./Components/threedot.svg);
-}
-
 .controllls > div {
   width: 32px;
   height: 32px;

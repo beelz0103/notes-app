@@ -1,9 +1,9 @@
 import { useState, useEffect, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 
-import threedot from "./threedot.svg";
+import threedot from "./Components/Resources/threedot.svg";
 
-const TestMemoCopy = () => {
+const TestChild = () => {
   return <ThreeDot />;
 };
 
@@ -157,4 +157,4 @@ const ControlButton = styled.div`
   }
 `;
 
-export default TestMemoCopy;
+export default TestChild;
