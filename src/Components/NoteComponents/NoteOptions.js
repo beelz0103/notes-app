@@ -2,6 +2,7 @@ import { useState, useContext, createContext, useRef } from "react";
 import styled from "styled-components";
 import { LabelForForm } from "./Label";
 import { Label } from "./Label";
+import { FormContext } from "../FormContainer";
 
 const OptionsContext = createContext(null);
 
@@ -27,8 +28,6 @@ const NoteOptions = ({
     window.addEventListener("resize", showOptions);
 
     const hideOptions = (e) => {
-      console.log(e);
-
       setShow(false);
       document.removeEventListener("click", hideOptions);
     };
@@ -87,7 +86,6 @@ const NoteOptionDropdown = ({ show, cords }) => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-
     setShowLabel(!showLabel);
   };
 
@@ -122,7 +120,7 @@ const FormOptionDropdown = ({
 }) => {
   const [labelCords, setLabelCords] = useState(cords);
   const labelRef = useRef(null);
-
+  const { labelList } = useContext(FormContext);
   //prevents dialog from closing on click
   const handleClick = (e) => {
     e.stopPropagation();
@@ -142,7 +140,7 @@ const FormOptionDropdown = ({
 
     const hideOptions = (e) => {
       e.stopPropagation();
-      console.log(e);
+
       setShowLabel(false);
 
       document.removeEventListener("click", hideOptions);
@@ -163,12 +161,12 @@ const FormOptionDropdown = ({
     if (windowHeight - iconCords.bottom >= labelCords.height) {
       const top = `${iconY + iconCords.height}px`;
       const left = `${iconX}px`;
-      console.log({ top, left });
+
       setLabelCords({ top, left });
     } else {
       const top = `${iconY - labelCords.height}px`;
       const left = `${iconX}px`;
-      console.log({ top, left });
+
       setLabelCords({ top, left });
     }
 
@@ -191,7 +189,9 @@ const FormOptionDropdown = ({
       >
         <StyledOptionsDiv>
           <StyledOptionsContentDiv onClick={handleLabelClick}>
-            Add label
+            {labelList.some(({ checked }) => checked)
+              ? "Change labels"
+              : "Add Label"}
           </StyledOptionsContentDiv>
         </StyledOptionsDiv>
       </StyledOptionDropDown>

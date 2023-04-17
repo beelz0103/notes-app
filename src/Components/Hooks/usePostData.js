@@ -7,7 +7,7 @@ const usePostData = () => {
   const postData = async (url, data) => {
     setIsLoading(true);
     console.log("posting image data", data);
-    const { title, content, images } = data;
+    const { title, content, images, labels } = data;
 
     try {
       const formData = new FormData();
@@ -16,6 +16,7 @@ const usePostData = () => {
       }
       formData.append("title", title);
       formData.append("content", content);
+      formData.append("labels", JSON.stringify(labels));
 
       const response = await fetch(url, {
         method: "POST",
@@ -24,6 +25,7 @@ const usePostData = () => {
 
       const data = await response.json();
       setIsLoading(false);
+      console.log(data);
       return data;
     } catch (error) {
       setIsLoading(false);

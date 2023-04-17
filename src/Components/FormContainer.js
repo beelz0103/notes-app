@@ -16,13 +16,28 @@ import {
 import {
   TitleDiv,
   ContentDiv,
-  FooterDiv,
   NoteContentInfo,
 } from "../Components/StyledComponents/StyledComponents";
+
+import {
+  StyledFooterWrapper,
+  StyledLabelWrapper,
+  LastUpdated,
+  StyledLabel,
+  LabelDeleteButton,
+  StyledLabelButton,
+} from "./StyledComponents/StyledPopupComponents";
 
 import NoteOptions from "./NoteComponents/NoteOptions";
 import uploadIcon from "./Resources/image.svg";
 import threedot from "./Resources/threedot.svg";
+
+import { useFormGetLabelList } from "./Hooks/useLabels";
+import { ContainerContext } from "./Container";
+
+const FormContext = createContext(null);
+
+export { FormContext };
 
 const FormContainer = ({ addNote }) => {
   const fileInput = useFileInput();
@@ -31,8 +46,18 @@ const FormContainer = ({ addNote }) => {
   const uploadBtnRef = useRef(null);
   const formContainerRef = useRef(null);
 
+  const { addLabel, labels } = useContext(ContainerContext);
+  const { labelList, setLabelList } = useFormGetLabelList(labels);
+
   const handleSubmit = () => {
     if (titleInputDiv.empty || contentInputDiv.empty) {
+      console.log(
+        labels.filter((label) => {
+          return labelList.find(({ id }) => id === label._id.toString())
+            .checked;
+        })
+      );
+
       console.log("input fields cant be empty"); //I dont want to implement input errors now
       return;
     }
@@ -40,6 +65,9 @@ const FormContainer = ({ addNote }) => {
     addNote({
       title: titleInputDiv.value,
       content: contentInputDiv.value,
+      labels: labels.filter((label) => {
+        return labelList.find(({ id }) => id === label._id.toString()).checked;
+      }),
       images: fileInput.files,
     });
 
@@ -49,38 +77,67 @@ const FormContainer = ({ addNote }) => {
   };
 
   return (
-    <FormWrapper>
-      <StyledFormContainer ref={formContainerRef}>
-        <FormImageContainer
-          files={fileInput.files}
-          removeSingleFile={fileInput.removeSingleFile}
-        />
-        {/* renmae note content info to something meaningul later */}
-        <NoteContentInfo>
-          <div>
+    <FormContext.Provider value={{ labelList, setLabelList }}>
+      <FormWrapper>
+        <StyledFormContainer ref={formContainerRef}>
+          <FormImageContainer
+            files={fileInput.files}
+            removeSingleFile={fileInput.removeSingleFile}
+          />
+          {/* renmae note content info to something meaningul later */}
+          <NoteContentInfo>
             <div>
-              <TitleDiv
-                {...titleInputDiv.props}
-                style={{ padding: "10px 15px" }}
-              ></TitleDiv>
+              <div>
+                <TitleDiv
+                  {...titleInputDiv.props}
+                  style={{ padding: "10px 15px" }}
+                ></TitleDiv>
+              </div>
+              <div>
+                <ContentDiv
+                  {...contentInputDiv.props}
+                  style={{ padding: "12px 16px" }}
+                ></ContentDiv>
+              </div>
             </div>
-            <div>
-              <ContentDiv
-                {...contentInputDiv.props}
-                style={{ padding: "12px 16px" }}
-              ></ContentDiv>
-            </div>
-          </div>
-          <FooterDiv></FooterDiv>
-        </NoteContentInfo>
-        <FileInput inputProps={fileInput.props} uploadBtnRef={uploadBtnRef} />
-        <Controls
-          formContainerRef={formContainerRef}
-          handleSubmit={handleSubmit}
-          uploadBtnRef={uploadBtnRef}
-        />
-      </StyledFormContainer>
-    </FormWrapper>
+            <Footer />
+          </NoteContentInfo>
+          <FileInput inputProps={fileInput.props} uploadBtnRef={uploadBtnRef} />
+          <Controls
+            formContainerRef={formContainerRef}
+            handleSubmit={handleSubmit}
+            uploadBtnRef={uploadBtnRef}
+          />
+        </StyledFormContainer>
+      </FormWrapper>
+    </FormContext.Provider>
+  );
+};
+
+const Footer = () => {
+  const { labelList } = useContext(FormContext);
+
+  return (
+    <StyledFooterWrapper>
+      {labelList.some((label) => label.checked === true)
+        ? labelList
+            .filter((label) => {
+              return label.checked;
+            })
+            .map((label) => <LabelDisplay key={label.id} label={label} />)
+        : null}
+    </StyledFooterWrapper>
+  );
+};
+
+const LabelDisplay = ({ label }) => {
+  return (
+    <StyledLabelWrapper>
+      <StyledLabelButton>
+        <StyledLabel>{label.name}</StyledLabel>
+      </StyledLabelButton>
+      <LabelDeleteButton></LabelDeleteButton>
+    </StyledLabelWrapper>
   );
 };
 

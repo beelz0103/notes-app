@@ -72,16 +72,134 @@ const StyledDiv = styled.div`
   font-weight: 400;
 `;
 
-const StyledFooter = styled(StyledDiv)`
-  padding: 5px 10px;
+const StyledFooterWrapper = styled(StyledDiv)`
+  -webkit-align-items: center;
+  align-items: center;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
-  justify-content: flex-end;
-  letter-spacing: 0.025em;
-  font-size: 0.75rem;
-  line-height: 1rem;
-
-  color: rgba(0, 0, 0, 0.8);
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding: 5px 10px;
 `;
+
+//hover needs to be implemented on this
+const StyledLabelWrapper = styled.div`
+  max-width: 100%;
+  margin: 6px 6px 0 0;
+  background-color: rgba(0, 0, 0, 0.08);
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  -webkit-box-shadow: inset 0 0 0 1px transparent;
+  box-shadow: inset 0 0 0 1px transparent;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  letter-spacing: 0.01785714em;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  position: relative;
+`;
+
+//this on click goes to the label page but I wont implement it ueueueueuue
+const StyledLabelButton = styled.div`
+  cursor: pointer;
+  display: inline-block;
+  outline: none !important;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  height: 18px;
+  -webkit-justify-content: center;
+  justify-content: center;
+  min-width: 35px;
+  padding: 3px 5px;
+
+  /* &:hover {
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+    width: -webkit-calc(100% - 15px);
+    width: calc(100% - 15px);
+  } */
+`;
+
+const LabelDeleteButton = styled.div`
+  background-image: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjE4cHgiIHdpZHRoPSIxOHB4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0iIzAwMDAwMCI+CiA8cGF0aCBkPSJtMCAwaDE4djE4aC0xOHpoMTh2MThoLTE4eiIgZmlsbD0ibm9uZSIvPgogPHBhdGggZD0ibTE0LjUzIDQuNTNsLTEuMDYtMS4wNi00LjQ3IDQuNDctNC40Ny00LjQ3LTEuMDYgMS4wNiA0LjQ3IDQuNDctNC40NyA0LjQ3IDEuMDYgMS4wNiA0LjQ3LTQuNDcgNC40NyA0LjQ3IDEuMDYtMS4wNi00LjQ3LTQuNDd6Ii8+Cjwvc3ZnPgo=);
+  -webkit-background-size: 14px 14px;
+  background-size: 14px 14px;
+  display: none;
+  height: 18px;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+
+  transform: translateY(-50%);
+  width: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  background-size: 18px 18px;
+
+  border-radius: 50%;
+  border: 1px solid transparent;
+
+  opacity: 0.54;
+
+  //ofcourse this wont work, need js but not implementing hahah
+  /* &:hover {
+    display: block;
+  } */
+`;
+
+const StyledLabel = styled.label`
+  border: 1px solid transparent;
+  text-align: center;
+  color: #3c4043;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  margin: 0 6px;
+  padding: 1px;
+
+  /* &:hover {
+    text-align: left;
+    width: -webkit-calc(100% - 12px);
+    width: calc(100% - 12px);
+  } */
+`;
+
+const LastUpdated = styled.div`
+  margin: 6px 6px 0 0;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: default;
+  display: none;
+  letter-spacing: 0.025em;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  margin-left: auto;
+  max-width: 100%;
+  display: block;
+`;
+
+export {
+  StyledFooterWrapper,
+  StyledLabelWrapper,
+  LastUpdated,
+  StyledLabel,
+  LabelDeleteButton,
+  StyledLabelButton,
+};
 
 const StyledContentDiv = styled(StyledDiv)`
   padding: 12px 16px 12px 16px;
@@ -121,7 +239,6 @@ export {
   ContentDiv,
   StyledButton,
   PopupContainerStyled,
-  StyledFooter,
   StyledContentDiv,
   StyledTitleDiv,
 };

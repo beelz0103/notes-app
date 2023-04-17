@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import styled from "styled-components";
 
 import {
@@ -11,21 +11,19 @@ import { ContainerContext } from "../Container";
 import checkboxfalse from "../Resources/checkboxfalse.svg";
 import checkboxtrue from "../Resources/checkboxtrue.svg";
 import plus from "../Resources/plus.svg";
+import { FormContext } from "../FormContainer";
 
 function LabelForForm({ cords, showLabel, labelRef }) {
-  console.log("Label has been shown?,", showLabel);
-
   const inputRef = useRef(null);
-  const { addLabel, labels } = useContext(ContainerContext);
-  const { labelList, setLabelList } = useFormGetLabelList(labels);
+  const { addLabel } = useContext(ContainerContext);
+  const { labelList, setLabelList } = useContext(FormContext);
 
   const [searchLabelList, setSearchLabelList] = useState(null);
 
   const handleLabelSubmit = async (e) => {
     const name = inputRef.current.value;
     const newLabel = await addLabel(name);
-    console.log(newLabel);
-    console.log(labelList);
+
     setLabelList(
       labelList.concat({ name: newLabel.name, id: newLabel._id, checked: true })
     );
@@ -59,7 +57,15 @@ function LabelForForm({ cords, showLabel, labelRef }) {
   };
 
   return (
-    <LabelWrapper ref={labelRef} showLabel={showLabel} cords={cords}>
+    <LabelWrapper
+      ref={labelRef}
+      showLabel={showLabel}
+      cords={cords}
+      onClick={(e) => {
+        console.log("clicked");
+        e.stopPropagation();
+      }}
+    >
       <LabelHeader>Label note</LabelHeader>
       <Search searchLabel={searchLabel} inputRef={inputRef} />
       <Display

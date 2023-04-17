@@ -5,11 +5,7 @@ import TestChild from "./TestChild";
 import { LabelForForm } from "./Components/NoteComponents/Label";
 
 const Test = () => {
-  return (
-    <div>
-      <TestChild></TestChild>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Test;
