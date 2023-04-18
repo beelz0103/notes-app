@@ -73,14 +73,11 @@ const StyledDiv = styled.div`
 `;
 
 const StyledFooterWrapper = styled(StyledDiv)`
-  -webkit-align-items: center;
   align-items: center;
   display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   padding: 5px 10px;
+  display: ${(props) => (props.showFooter ? "flex" : "none")};
 `;
 
 //hover needs to be implemented on this

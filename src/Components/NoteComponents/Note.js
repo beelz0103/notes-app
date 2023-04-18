@@ -1,40 +1,86 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import parse from "html-react-parser";
-import useFileInput from "../Hooks/useFileInput";
-import useEditableDiv from "../Hooks/useEditableDiv";
-import FileInput from "../FormComponents/FileInput";
-import DivInput from "../FormComponents/DivInput";
+
 import styled from "styled-components";
 import { StyledButton } from "../StyledComponents/StyledPopupComponents";
+
+import {
+  TitleDiv,
+  ContentDiv,
+  NoteContentInfo,
+} from "../StyledComponents/StyledComponents";
+
+import {
+  StyledFooterWrapper,
+  StyledLabelWrapper,
+  LastUpdated,
+  StyledLabel,
+  LabelDeleteButton,
+  StyledLabelButton,
+} from "../StyledComponents/StyledPopupComponents";
+
+import NoteOptions from "./NoteOptions";
+
+import threedot from "../Resources/threedot.svg";
 
 import {
   StyledNoteOuterContainer,
   NoteInnerContainer,
   NoteContentContainer,
-  NoteControlsSubContainer,
-  NoteControlsMainContainer,
   NoteContentImageContainer,
-  NoteContentInfo,
-  TitleDiv,
-  ContentDiv,
-  FooterDiv,
-  StyledNoteOuterContainerExpanded,
 } from "../StyledComponents/StyledComponents";
 import NoteImageContainer from "../FormComponents/NoteImageContainer";
+import { useGetLabelList, useNoteLabels } from "../Hooks/useLabels";
+import { ContainerContext } from "../Container";
 
-const NoteOuterContiner = ({ note, showModal, normalDisplay }) => {
-  const ref = useRef(null);
-  const clickHandler = () => {
+const NoteContext = createContext(null);
+
+const NoteOuterContiner = ({ note, showModal }) => {
+  const { labels } = useContext(ContainerContext);
+  const [visibility, setVisibility] = useState(false);
+  const [optionsClicked, setOptionsClicked] = useState(false);
+
+  const noteContainerRef = useRef(null);
+
+  const { updateNoteLabels, noteLabels } = useNoteLabels(note);
+
+  const labelList = useGetLabelList(labels, noteLabels);
+
+  const handleClick = (e) => {
     showModal(note);
   };
 
+  const handleMouseEnter = () => {
+    setVisibility(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!optionsClicked) setVisibility(false);
+  };
+
   return (
-    <StyledNoteOuterContainer ref={ref} onClick={clickHandler}>
-      <NoteInnerContainer>
-        <ContentCotainer {...note} />
-        <Controls />
-      </NoteInnerContainer>
-    </StyledNoteOuterContainer>
+    <NoteContext.Provider
+      value={{
+        note,
+        noteContainerRef,
+        updateNoteLabels,
+        labelList,
+        visibility,
+        setOptionsClicked,
+        noteLabels,
+      }}
+    >
+      <StyledNoteOuterContainer
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <NoteInnerContainer ref={noteContainerRef}>
+          <ContentCotainer {...note} />
+          <Controls />
+        </NoteInnerContainer>
+      </StyledNoteOuterContainer>
+    </NoteContext.Provider>
   );
 };
 
@@ -59,9 +105,44 @@ const ContentCotainer = ({ title, content, images, _id }) => {
             <ContentDiv>{parse(content)}</ContentDiv>
           )}
         </div>
-        <FooterDiv></FooterDiv>
+        <Footer />
       </NoteContentInfo>
     </NoteContentContainer>
+  );
+};
+
+const Footer = () => {
+  const { note, labelList, noteLabels } = useContext(NoteContext);
+
+  const [showFooter, setShowFooter] = useState(false);
+
+  useState(() => {
+    console.log("this ran");
+    if (noteLabels !== 0) setShowFooter(true);
+    else setShowFooter(false);
+  }, [noteLabels]);
+
+  return (
+    <StyledFooterWrapper showFooter={showFooter}>
+      {labelList.some((label) => label.checked === true)
+        ? labelList
+            .filter((label) => {
+              return label.checked;
+            })
+            .map((label) => <LabelDisplay key={label.id} label={label} />)
+        : null}
+    </StyledFooterWrapper>
+  );
+};
+
+const LabelDisplay = ({ label }) => {
+  return (
+    <StyledLabelWrapper>
+      <StyledLabelButton>
+        <StyledLabel>{label.name}</StyledLabel>
+      </StyledLabelButton>
+      <LabelDeleteButton></LabelDeleteButton>
+    </StyledLabelWrapper>
   );
 };
 
@@ -69,7 +150,58 @@ const Controls = () => {
   return <ControlWrapper />;
 };
 
+const ControlWrapper = () => {
+  const { visibility } = useContext(NoteContext);
+
+  return (
+    <ControlsContainerStyled show={visibility}>
+      <Widgets />
+    </ControlsContainerStyled>
+  );
+};
+
+const Widgets = ({ formContainerRef }) => {
+  return (
+    <StyledWidgetWrapper>
+      <NoteOptionsIconContainer containerRef={formContainerRef} />
+    </StyledWidgetWrapper>
+  );
+};
+
+const NoteOptionsIconContainer = ({}) => {
+  const { noteContainerRef, visibility } = useContext(NoteContext);
+
+  const iconRef = useRef(null);
+  const optionButtonRef = useRef(null);
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    optionButtonRef.current.click();
+  };
+
+  return (
+    <>
+      <StyledControlsIcons
+        show={visibility}
+        ref={iconRef}
+        img={threedot}
+        onClick={handleClick}
+      ></StyledControlsIcons>
+      <NoteOptions
+        containerRef={noteContainerRef}
+        iconRef={iconRef}
+        optionButtonRef={optionButtonRef}
+      />
+    </>
+  );
+};
+
 const ControlsContainerStyled = styled.div`
+  opacity: ${(props) => (props.show ? 100 : 0)};
+  transition-duration: 0.218s;
+  transition-property: opacity;
+  transition-timing-function: ease-in;
+
   margin: 4px 0;
   display: flex;
   justify-content: space-between;
@@ -78,39 +210,37 @@ const ControlsContainerStyled = styled.div`
     props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
 `;
 
-const ControlWrapper = ({}) => {
-  return (
-    <ControlsContainerStyled>
-      <Widgets />
-      <div style={{ display: "flex" }}>
-        <UpdateButton />
-        <CloseButton />
-      </div>
-    </ControlsContainerStyled>
-  );
-};
+const StyledWidgetWrapper = styled.div`
+  display: flex;
+`;
 
-const Widgets = ({}) => {
-  return (
-    <div className="controllls widgets">
-      <div className="image-uploader"></div>
-      <div className="image-uploader"></div>
-    </div>
-  );
-};
+const StyledControlsIcons = styled.div`
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
 
-const UpdateButton = ({}) => {
-  const handleClick = () => {};
+  color: #202124;
 
-  return (
-    <StyledButton onClick={handleClick} style={{ margin: 0 }}>
-      Update
-    </StyledButton>
-  );
-};
+  opacity: ${(props) => (props.show ? 0.71 : 0)};
+  transition-duration: 0.218s;
+  transition-property: opacity;
+  transition-timing-function: ease-in;
 
-const CloseButton = ({}) => {
-  return <StyledButton>Close</StyledButton>;
-};
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-image: url(${(props) => props.img});
+
+  &:hover {
+    border-radius: 50%;
+    background-color: gray;
+    opacity: 0.87;
+    background-color: rgba(95, 99, 104, 0.157);
+  }
+`;
 
 export default NoteOuterContiner;
+export { NoteContext };

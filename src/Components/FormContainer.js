@@ -181,9 +181,6 @@ const ControlsContainerStyled = styled.div`
 `;
 
 const ControlWrapper = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
-  const test = useContext(ControlContext);
-  console.log(test);
-
   return (
     <ControlsContainerStyled>
       <Widgets

@@ -12,6 +12,7 @@ import checkboxfalse from "../Resources/checkboxfalse.svg";
 import checkboxtrue from "../Resources/checkboxtrue.svg";
 import plus from "../Resources/plus.svg";
 import { FormContext } from "../FormContainer";
+import { NoteContext } from "./Note";
 
 function LabelForForm({ cords, showLabel, labelRef }) {
   const inputRef = useRef(null);
@@ -83,13 +84,18 @@ function LabelForForm({ cords, showLabel, labelRef }) {
   );
 }
 
-function Label({ note, labels, addLabel }) {
+function LabelForNote({ showLabel, labelRef, cords }) {
   const inputRef = useRef(null);
 
-  const { updateNoteLabels, noteLabels } = useNoteLabels(note);
-  const labelList = useGetLabelList(labels, noteLabels);
+  const { addLabel } = useContext(ContainerContext);
+  const { note, updateNoteLabels, labelList } = useContext(NoteContext);
 
   const [searchLabelList, setSearchLabelList] = useState(null);
+
+  useEffect(() => {
+    setSearchLabelList(null);
+    inputRef.current.value = "";
+  }, [showLabel]);
 
   const handleLabelSubmit = async (e) => {
     const name = inputRef.current.value;
@@ -121,7 +127,15 @@ function Label({ note, labels, addLabel }) {
   };
 
   return (
-    <LabelWrapper>
+    <LabelWrapper
+      cords={cords}
+      ref={labelRef}
+      showLabel={showLabel}
+      onClick={(e) => {
+        console.log("clicked");
+        e.stopPropagation();
+      }}
+    >
       <LabelHeader>Label note</LabelHeader>
       <Search searchLabel={searchLabel} inputRef={inputRef} />
       <Display
@@ -361,4 +375,4 @@ const LabelHeader = styled.div`
   padding: 0 12px;
 `;
 
-export { Label, LabelForForm };
+export { LabelForNote, LabelForForm };

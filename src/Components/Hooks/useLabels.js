@@ -40,12 +40,8 @@ const useFormGetLabelList = (labels) => {
 const useGetLabelList = (labels, noteLabels) => {
   const [labelList, setLabelList] = useState([]);
 
-  //console.log("labels and notes", labels, noteLabels);
-
   useEffect(() => {
     if (!labels || !noteLabels) return;
-
-    console.log(labels, noteLabels);
 
     const noteLabelsIds = noteLabels.map(({ _id }) => _id);
 
@@ -117,6 +113,7 @@ const useNoteLabels = (note = {}) => {
     const data = await response.json();
     console.log("Note updated successfully!");
     setNoteLabels(data.labels);
+    console.log(data.labels);
 
     return data;
   };
@@ -124,6 +121,10 @@ const useNoteLabels = (note = {}) => {
   return { updateNoteLabels, noteLabels };
 };
 
-export { usePostLabel, useNoteLabels };
-export { useGetAllLabels };
-export { useGetLabelList, useFormGetLabelList };
+export {
+  usePostLabel,
+  useNoteLabels,
+  useGetAllLabels,
+  useGetLabelList,
+  useFormGetLabelList,
+};

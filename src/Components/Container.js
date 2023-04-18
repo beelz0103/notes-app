@@ -12,14 +12,14 @@ export { ContainerContext };
 
 const Container = () => {
   const [lastUpdate, setLastUpdate] = useState({});
-  const notes = useGetNotes(lastUpdate.notes);
-  const labels = useGetAllLabels(lastUpdate.labels);
+  const notes = useGetNotes(lastUpdate);
+  const labels = useGetAllLabels(lastUpdate);
   const { postData, isLoading, error } = usePostData();
   const { postLabel } = usePostLabel();
 
   const addNote = async (note) => {
     await postData("http://localhost:3001/note/create", note);
-    setLastUpdate({ ...lastUpdate, notes: Date.now() });
+    setLastUpdate(Date.now());
   };
 
   const addLabel = async (label) => {
@@ -27,7 +27,7 @@ const Container = () => {
       "http://localhost:3001/label/create",
       label
     );
-    setLastUpdate({ ...lastUpdate, labels: Date.now() });
+    setLastUpdate(Date.now());
     return newLabel;
   };
 

@@ -3,10 +3,18 @@ import styled from "styled-components";
 const StyledNoteOuterContainer = styled.div.attrs()`
   margin: 16px;
 
+  border-radius: 8px;
+
+  transition-duration: 0.218s;
+
+  transition-property: border, opacity, box-shadow, transform;
+
+  transition-timing-function: ease-in;
+
   &:hover {
     box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
       0 2px 6px 2px rgba(60, 64, 67, 0.149);
-    border-radius: 6px;
+    border-radius: 8px;
   }
 `;
 
@@ -35,6 +43,8 @@ const NoteInnerContainer = styled.div`
   border-color: #e0e0e0;
   border-radius: 5px;
   box-sizing: border-box;
+
+  position: relative;
 `;
 
 const NoteContentContainer = styled.div`

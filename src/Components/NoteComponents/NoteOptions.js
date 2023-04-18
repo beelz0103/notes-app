@@ -1,8 +1,8 @@
 import { useState, useContext, createContext, useRef } from "react";
 import styled from "styled-components";
-import { LabelForForm } from "./Label";
-import { Label } from "./Label";
+import { LabelForForm, LabelForNote } from "./Label";
 import { FormContext } from "../FormContainer";
+import { NoteContext } from "./Note";
 
 const OptionsContext = createContext(null);
 
@@ -16,12 +16,15 @@ const NoteOptions = ({
   const [cords, setCords] = useState({});
   const [showLabel, setShowLabel] = useState(false);
 
+  const noteContext = useContext(NoteContext);
+
   const handleClick = (e) => {
-    e.stopPropagation();
     if (showLabel) setShowLabel(!showLabel);
+    if (noteContext !== null) noteContext.setOptionsClicked(true);
 
     const showOptions = () => {
       setShow(false);
+      if (noteContext !== null) noteContext.setOptionsClicked(false);
       window.removeEventListener("resize", showOptions);
     };
 
@@ -29,12 +32,14 @@ const NoteOptions = ({
 
     const hideOptions = (e) => {
       setShow(false);
+      if (noteContext !== null) noteContext.setOptionsClicked(false);
       document.removeEventListener("click", hideOptions);
     };
 
     document.addEventListener("click", hideOptions);
 
     const iconCords = iconRef.current.getBoundingClientRect();
+
     const containerCords = containerRef.current.getBoundingClientRect();
     const iconX = iconCords.x - containerCords.x;
     const iconY = iconCords.y - containerCords.y;
@@ -45,26 +50,40 @@ const NoteOptions = ({
     if (windowHeight - iconCords.bottom >= difference) {
       const top = `${iconY + iconCords.height}px`;
       const left = `${iconX}px`;
+
       setCords({ top, left });
     } else {
       const top = `${iconY - difference}px`;
       const left = `${iconX}px`;
+
       setCords({ top, left });
     }
 
     setShow(!show);
+
+    e.stopPropagation();
   };
 
   return (
     <>
-      <OptionsContext.Provider value={{ show, cords, setShow }}>
+      <OptionsContext.Provider
+        value={{
+          show,
+          cords,
+          setShow,
+          showLabel,
+          setShowLabel,
+          iconRef,
+          containerRef,
+        }}
+      >
         <button
           ref={optionButtonRef}
           onClick={handleClick}
           style={{ display: "none" }}
         ></button>
         {isNote ? (
-          <NoteOptionDropdown show={show} cords={cords} />
+          <NoteOptionDropdown />
         ) : (
           <FormOptionDropdown
             show={show}
@@ -81,31 +100,96 @@ const NoteOptions = ({
   );
 };
 
-const NoteOptionDropdown = ({ show, cords }) => {
-  const [showLabel, setShowLabel] = useState(false);
+const NoteOptionDropdown = () => {
+  const {
+    show,
+    cords,
+    setShow,
+    showLabel,
+    setShowLabel,
+    iconRef,
+    containerRef,
+  } = useContext(OptionsContext);
+  const { labelList } = useContext(NoteContext);
+  const [labelCords, setLabelCords] = useState(cords);
+
+  const labelRef = useRef(null);
 
   const handleClick = (e) => {
     e.stopPropagation();
+  };
+
+  const handleLabelClick = (e) => {
+    const showOptions = (e) => {
+      e.stopPropagation();
+      setShowLabel(false);
+      window.removeEventListener("resize", showOptions);
+    };
+
+    window.addEventListener("resize", showOptions);
+
+    const hideOptions = (e) => {
+      e.stopPropagation();
+      setShowLabel(false);
+      document.removeEventListener("click", hideOptions);
+    };
+
+    document.addEventListener("click", hideOptions);
+
+    labelRef.current.style.display = "block"; //to get the size
+    const labelCords = labelRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    labelRef.current.style.display = ""; // to return control back to the styled component
+
+    const iconCords = iconRef.current.getBoundingClientRect();
+    const containerCords = containerRef.current.getBoundingClientRect();
+    const iconX = iconCords.x - containerCords.x;
+    const iconY = iconCords.y - containerCords.y;
+
+    if (windowHeight - iconCords.bottom >= labelCords.height) {
+      const top = `${iconY + iconCords.height}px`;
+      const left = `${iconX}px`;
+
+      setLabelCords({ top, left });
+    } else {
+      const top = `${iconY - labelCords.height}px`;
+      const left = `${iconX}px`;
+
+      setLabelCords({ top, left });
+    }
+
+    setShow(!show);
     setShowLabel(!showLabel);
   };
 
   return (
-    <StyledOptionDropDown
-      show={show}
-      cords={cords}
-      height={"102px"}
-      onClick={handleClick}
-    >
-      <StyledOptionsDiv>
-        <StyledOptionsContentDiv>Delete note</StyledOptionsContentDiv>
-      </StyledOptionsDiv>
-      <StyledOptionsDiv>
-        <StyledOptionsContentDiv>Add label</StyledOptionsContentDiv>
-      </StyledOptionsDiv>
-      <StyledOptionsDiv>
-        <StyledOptionsContentDiv>Made a copy</StyledOptionsContentDiv>
-      </StyledOptionsDiv>
-    </StyledOptionDropDown>
+    <>
+      <LabelForNote
+        labelRef={labelRef}
+        cords={labelCords}
+        showLabel={showLabel}
+      ></LabelForNote>
+      <StyledOptionDropDown
+        show={show}
+        cords={cords}
+        height={"102px"}
+        onClick={handleClick}
+      >
+        <StyledOptionsDiv>
+          <StyledOptionsContentDiv>Delete note</StyledOptionsContentDiv>
+        </StyledOptionsDiv>
+        <StyledOptionsDiv>
+          <StyledOptionsContentDiv onClick={handleLabelClick}>
+            {labelList.some(({ checked }) => checked)
+              ? "Change labels"
+              : "Add Label"}
+          </StyledOptionsContentDiv>
+        </StyledOptionsDiv>
+        <StyledOptionsDiv>
+          <StyledOptionsContentDiv>Made a copy</StyledOptionsContentDiv>
+        </StyledOptionsDiv>
+      </StyledOptionDropDown>
+    </>
   );
 };
 
@@ -237,6 +321,8 @@ const StyledOptionDropDown = styled.div`
   display: ${(props) => (props.show ? "block" : "none")};
   top: ${(props) => props.cords.top};
   left: ${(props) => props.cords.left};
+
+  z-index: 6;
 `;
 
 export default NoteOptions;

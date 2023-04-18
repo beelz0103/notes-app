@@ -7,13 +7,11 @@ const NotesContainer = ({ notes, updateNote }) => {
   const [popupNote, setPopupNote] = useState({});
 
   const showModal = useCallback((note) => {
-    console.log("modal showed");
     setDisplay("flex");
     setPopupNote(note);
   }, []);
 
   const hideModal = useCallback(() => {
-    console.log("modal hidden");
     setDisplay("none");
     setPopupNote({});
   }, []);
