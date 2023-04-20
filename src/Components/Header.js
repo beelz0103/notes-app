@@ -55,7 +55,7 @@ const StyledHeader = styled.div`
   box-sizing: border-box;
   color: #5f6368;
   background-color: white;
-  z-index: 5000;
+  z-index: 3;
 `;
 
 export default Header;

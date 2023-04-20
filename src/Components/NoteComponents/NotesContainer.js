@@ -1,31 +1,41 @@
-import { useState, memo, useCallback } from "react";
+import { useState, memo, useCallback, useContext, createContext } from "react";
 import NotePopup from "./NotePopup";
 import Note from "./Note";
+import useAnimateDisplay from "../Hooks/useAnimateDisplay";
+
+const NoteContainerContext = createContext(0);
+
+export { NoteContainerContext };
 
 const NotesContainer = ({ notes, updateNote }) => {
   const [display, setDisplay] = useState("none");
   const [popupNote, setPopupNote] = useState({});
+  const [showPopup, setShowPopup] = useState(false);
 
   const showModal = useCallback((note) => {
     setDisplay("flex");
+    setShowPopup(true);
     setPopupNote(note);
   }, []);
 
   const hideModal = useCallback(() => {
     setDisplay("none");
+    setShowPopup(false);
     setPopupNote({});
   }, []);
 
   return (
-    <div className="note-container">
-      <NotePopup
-        display={display}
-        popupNote={popupNote}
-        hideModal={hideModal}
-        updateNote={updateNote}
-      />
-      <NoteContainer notes={notes} showModal={showModal} />
-    </div>
+    <NoteContainerContext.Provider value={{ showPopup }}>
+      <div className="note-container">
+        <NotePopup
+          display={display}
+          popupNote={popupNote}
+          hideModal={hideModal}
+          updateNote={updateNote}
+        />
+        <NoteContainer notes={notes} showModal={showModal} />
+      </div>
+    </NoteContainerContext.Provider>
   );
 };
 

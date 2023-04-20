@@ -117,7 +117,6 @@ const Footer = () => {
   const [showFooter, setShowFooter] = useState(false);
 
   useState(() => {
-    console.log("this ran");
     if (noteLabels !== 0) setShowFooter(true);
     else setShowFooter(false);
   }, [noteLabels]);
@@ -160,15 +159,15 @@ const ControlWrapper = () => {
   );
 };
 
-const Widgets = ({ formContainerRef }) => {
+const Widgets = () => {
   return (
     <StyledWidgetWrapper>
-      <NoteOptionsIconContainer containerRef={formContainerRef} />
+      <NoteOptionsIconContainer />
     </StyledWidgetWrapper>
   );
 };
 
-const NoteOptionsIconContainer = ({}) => {
+const NoteOptionsIconContainer = () => {
   const { noteContainerRef, visibility } = useContext(NoteContext);
 
   const iconRef = useRef(null);
@@ -197,7 +196,7 @@ const NoteOptionsIconContainer = ({}) => {
 };
 
 const ControlsContainerStyled = styled.div`
-  opacity: ${(props) => (props.show ? 100 : 0)};
+  opacity: ${(props) => (props.show ? 1 : 0)};
   transition-duration: 0.218s;
   transition-property: opacity;
   transition-timing-function: ease-in;

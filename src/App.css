@@ -276,3 +276,18 @@ body {
   opacity: 0.87;
   background-color: rgba(95, 99, 104, 0.157);
 }
+
+.hidden {
+  opacity: 0;
+  display: none;
+  transition: opacity 1s ease-out;
+}
+
+.show {
+  opacity: 1;
+  display: block;
+  transition: opacity 1s ease-in;
+}
+.box {
+  transition: opacity 1s ease-in-out;
+}

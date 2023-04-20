@@ -28,10 +28,8 @@ const useEditableDiv = (divClass, updateValues = null) => {
   const handleOnInput = () => {
     if (fieldEmpty(ref.current.textContent)) {
       setValue("");
-      console.log("");
     } else {
       setValue(ref.current.innerHTML);
-      console.log(ref.current.innerHTML);
     }
   };
 

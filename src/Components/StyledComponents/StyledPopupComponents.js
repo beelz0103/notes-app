@@ -1,13 +1,40 @@
 import styled from "styled-components";
 
-const PopupContainerStyled = styled.div.attrs()`
-  margin: 16px;
-  width: 600px;
+const PopupContainer = styled.div`
+  /* set these dynamically
+  left: 128.5px;
+  top: 30px; */
+  /* display: none; this is used when hidden*/
+
+  /* opacity: 1; this is used for animation*/
+
+  transition: top 0.13s;
+
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  /* opacity: 0; this is used for animation*/
+  padding: 16px;
   position: fixed;
-  z-index: 4;
-  top: 100px;
+  z-index: 10;
+
+  background: #fff;
+  background-clip: padding-box;
+
+  outline: 0;
+
+  top: 30px;
+
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const PopupContainerStyled = styled.div.attrs()`
+  flex: 1;
+  width: ${(props) => props.widthProp};
+
   background-color: white;
-  left: 140px;
+
   box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
     0 2px 6px 2px rgba(60, 64, 67, 0.149);
   border-radius: 6px;
@@ -24,6 +51,7 @@ const PopupInnerContainer = styled.div`
   border-color: #e0e0e0;
   border-radius: 5px;
   box-sizing: border-box;
+  height: 100%;
 `;
 
 const NoteContentContainer = styled.div`
@@ -178,7 +206,7 @@ const LastUpdated = styled.div`
   margin: 6px 6px 0 0;
   color: rgba(0, 0, 0, 0.8);
   cursor: default;
-  display: none;
+
   letter-spacing: 0.025em;
   font-family: Roboto, Arial, sans-serif;
   font-size: 0.75rem;
