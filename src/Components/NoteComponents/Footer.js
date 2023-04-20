@@ -9,12 +9,17 @@ import {
   StyledLabelButton,
 } from "../StyledComponents/StyledPopupComponents";
 
-const Footer = ({ note, labelList, noteLabels }) => {
+const Footer = ({ note, labelList, noteLabels = [], type }) => {
   const [showFooter, setShowFooter] = useState(false);
 
   useState(() => {
-    if (noteLabels !== 0) setShowFooter(true);
-    else setShowFooter(false);
+    console.log(noteLabels);
+    console.log(type);
+    if (noteLabels.length !== 0 || type === "form") {
+      console.log(type);
+      console.log(noteLabels !== 0 || type === "form");
+      setShowFooter(true);
+    } else setShowFooter(false);
   }, [noteLabels]);
 
   return (
@@ -26,7 +31,9 @@ const Footer = ({ note, labelList, noteLabels }) => {
             })
             .map((label) => <LabelDisplay key={label.id} label={label} />)
         : null}
-      <LastUpdated>Edited yesterday, 17:57</LastUpdated>
+      {type !== "notepopup" ? null : (
+        <LastUpdated>Edited yesterday, 17:57</LastUpdated>
+      )}
     </StyledFooterWrapper>
   );
 };

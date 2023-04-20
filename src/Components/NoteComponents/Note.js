@@ -116,10 +116,13 @@ const Footer = () => {
 
   const [showFooter, setShowFooter] = useState(false);
 
+  console.log(labelList.some((label) => label.checked));
+
   useState(() => {
-    if (noteLabels !== 0) setShowFooter(true);
-    else setShowFooter(false);
-  }, [noteLabels]);
+    console.log(note.labels.length);
+    if (note.labels.length === 0) setShowFooter(false);
+    else setShowFooter(true);
+  }, [note]);
 
   return (
     <StyledFooterWrapper showFooter={showFooter}>

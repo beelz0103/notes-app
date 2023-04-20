@@ -4,14 +4,24 @@ import { NoteContext } from "./Note";
 import threedot from "../Resources/threedot.svg";
 import image from "../Resources/image.svg";
 import NoteOptions from "./NoteOptions";
+import { StyledButton } from "../StyledComponents/StyledPopupComponents";
+import { PopupContext } from "./NotePopup";
 
 const ControlsContext = createContext(null);
 
 export { ControlsContext };
 
-const Controls = ({ containerRef, type }) => {
+const Controls = ({
+  containerRef,
+  type,
+  uploadBtnRef,
+  updateBtnRef,
+  handleSubmit,
+}) => {
   return (
-    <ControlsContext.Provider value={{ containerRef, type }}>
+    <ControlsContext.Provider
+      value={{ containerRef, type, uploadBtnRef, handleSubmit }}
+    >
       <ControlWrapper />
     </ControlsContext.Provider>
   );
@@ -21,7 +31,21 @@ const ControlWrapper = () => {
   return (
     <ControlsContainerStyled show={true}>
       <Widgets />
+      <Buttons />
     </ControlsContainerStyled>
+  );
+};
+
+const Buttons = () => {
+  const { containerRef, type } = useContext(ControlsContext);
+
+  return type === "notepopup" ? (
+    <div style={{ display: "flex" }}>
+      <UpdateButton />
+      <CloseButton />
+    </div>
+  ) : (
+    <AddButton />
   );
 };
 
@@ -35,11 +59,13 @@ const Widgets = () => {
 };
 
 const NoteUploadContainer = () => {
-  const { containerRef, type } = useContext(ControlsContext);
-  const handleUpload = () => {};
-  return type !== "notepopup" ? null : (
+  const { uploadBtnRef, type } = useContext(ControlsContext);
+  const handleClick = () => {
+    uploadBtnRef.current.click();
+  };
+  return type === "note" ? null : (
     <StyledControlsIcons
-      onClick={handleUpload}
+      onClick={handleClick}
       show={true}
       img={image}
     ></StyledControlsIcons>
@@ -54,7 +80,7 @@ const NoteOptionsIconContainer = () => {
     e.stopPropagation();
     optionButtonRef.current.click();
   };
-  const { containerRef } = useContext(ControlsContext);
+  const { containerRef, type } = useContext(ControlsContext);
 
   return (
     <>
@@ -64,12 +90,46 @@ const NoteOptionsIconContainer = () => {
         img={threedot}
         onClick={handleClick}
       ></StyledControlsIcons>
-      {/* <NoteOptions
+      <NoteOptions
         containerRef={containerRef}
         iconRef={iconRef}
         optionButtonRef={optionButtonRef}
-      /> */}
+        isNote={type === "note"}
+      />
     </>
+  );
+};
+
+const UpdateButton = () => {
+  const { updateBtnRef } = useContext(PopupContext);
+  const handleClick = () => {
+    updateBtnRef.current.click();
+  };
+
+  return (
+    <StyledButton onClick={handleClick} style={{ margin: 0 }}>
+      Update
+    </StyledButton>
+  );
+};
+
+const CloseButton = () => {
+  const { hideModal } = useContext(PopupContext);
+
+  const handleClick = () => {
+    hideModal();
+  };
+
+  return <StyledButton onClick={handleClick}>Close</StyledButton>;
+};
+
+const AddButton = () => {
+  const { handleSubmit } = useContext(ControlsContext);
+
+  return (
+    <StyledButton onClick={handleSubmit} style={{ marginRight: "16px" }}>
+      Add
+    </StyledButton>
   );
 };
 

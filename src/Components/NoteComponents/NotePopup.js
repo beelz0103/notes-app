@@ -15,6 +15,7 @@ import Footer from "./Footer";
 import { ContainerContext } from "../Container";
 import { useNoteLabels, useGetLabelList } from "../Hooks/useLabels";
 import UpdateFormContainer from "../UpdateFormContainer";
+import { StyledButton } from "../StyledComponents/StyledPopupComponents";
 
 const PopupContext = createContext(null);
 
@@ -25,6 +26,8 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
   const { labels } = useContext(ContainerContext);
   const { updateNoteLabels, noteLabels } = useNoteLabels(popupNote);
   const labelList = useGetLabelList(labels, noteLabels);
+  const updateBtnRef = useRef(null);
+  const uploadBtnRef = useRef(null);
 
   return (
     <>
@@ -42,7 +45,8 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
           noteLabels,
           note: popupNote,
           hideModal,
-          updateNote,
+          updateBtnRef,
+          uploadBtnRef,
         }}
       >
         <Popup />
@@ -52,14 +56,13 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
 };
 
 const Popup = () => {
-  const { popupRef, labelList, noteLabels, note, hideModal, updateNote } =
-    useContext(PopupContext);
+  const { popupRef, labelList, noteLabels, note } = useContext(PopupContext);
   return Object.keys(note).length === 0 ? null : (
     <PopupContainer ref={popupRef}>
       <PopupSubContainer>
         <ContentOuterContainer>
           <ContentContainer>
-            <UpdateFormContainer note={note} />
+            <UpdateFormContainer />
             <Footer labelList={labelList} noteLabels={noteLabels} />
           </ContentContainer>
           <Controls containerRef={popupRef} type="notepopup" />
@@ -68,4 +71,5 @@ const Popup = () => {
     </PopupContainer>
   );
 };
+
 export default NotePopup;

@@ -7,14 +7,15 @@ import {
 } from "./StyledComponents/StyledPopupComponents";
 import parse from "html-react-parser";
 import useFileInputUpdate from "./Hooks/useFileInputUpdate";
+import { useContext, createContext } from "react";
+import { ContainerContext } from "./Container";
+import { PopupContext } from "./NoteComponents/NotePopup";
 
-const UpdateFormContainer = ({
-  updateNote,
-  note,
-  updateBtnRef,
-  hideModal,
-  uploadBtnRef,
-}) => {
+const UpdateFormContainer = () => {
+  const { updateNote } = useContext(ContainerContext);
+  const { note, updateBtnRef, hideModal, uploadBtnRef } =
+    useContext(PopupContext);
+
   const { fileInput } = useFileInputUpdate(note.images);
   const contentInputDiv = useEditableDiv("content", note.content);
   const titleInputDiv = useEditableDiv("title", note.title);
@@ -22,26 +23,19 @@ const UpdateFormContainer = ({
   const handleUpdate = () => {
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("WARNING: Input fields cant be empty"); //haven't impletmented validation
+      return;
     }
 
     hideModal();
 
-    if (
-      true
-      // !(
-      //   titleInputDiv.value === note.title &&
-      //   contentInputDiv.value === note.content
-      // )
-    ) {
-      updateNote(
-        {
-          title: titleInputDiv.value,
-          content: contentInputDiv.value,
-          images: fileInput.files,
-        },
-        note._id
-      );
-    }
+    updateNote(
+      {
+        title: titleInputDiv.value,
+        content: contentInputDiv.value,
+        images: fileInput.files,
+      },
+      note._id
+    );
   };
 
   return fileInput.files === 0 ? null : (

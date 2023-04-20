@@ -35,7 +35,6 @@ import threedot from "./Resources/threedot.svg";
 
 import { useFormGetLabelList } from "./Hooks/useLabels";
 import { ContainerContext } from "./Container";
-import Footer from "./NoteComponents/Footer";
 
 const FormContext = createContext(null);
 
@@ -48,7 +47,7 @@ const FormContainer = ({ addNote }) => {
   const uploadBtnRef = useRef(null);
   const formContainerRef = useRef(null);
 
-  const { labels } = useContext(ContainerContext);
+  const { addLabel, labels } = useContext(ContainerContext);
   const { labelList, setLabelList } = useFormGetLabelList(labels);
 
   const handleSubmit = () => {
@@ -79,7 +78,7 @@ const FormContainer = ({ addNote }) => {
             files={fileInput.files}
             removeSingleFile={fileInput.removeSingleFile}
           />
-          {/* rename note content info to something meaningul later */}
+          {/* renmae note content info to something meaningul later */}
           <NoteContentInfo>
             <div>
               <div>
@@ -95,7 +94,7 @@ const FormContainer = ({ addNote }) => {
                 ></ContentDiv>
               </div>
             </div>
-            <Footer labelList={labelList} />
+            <Footer />
           </NoteContentInfo>
           <FileInput inputProps={fileInput.props} uploadBtnRef={uploadBtnRef} />
           <Controls
@@ -104,14 +103,27 @@ const FormContainer = ({ addNote }) => {
             handleSubmit={handleSubmit}
             containerRef={formContainerRef}
           />
+          <ControlsOld
+            formContainerRef={formContainerRef}
+            handleSubmit={handleSubmit}
+            uploadBtnRef={uploadBtnRef}
+          />
         </StyledFormContainer>
       </FormWrapper>
     </FormContext.Provider>
   );
 };
 
-const Footer1 = () => {
+const Footer = () => {
   const { labelList } = useContext(FormContext);
+
+  console.log(
+    labelList
+      .filter((label) => {
+        return label.checked;
+      })
+      .map((label) => <LabelDisplay key={label.id} label={label} />)
+  );
 
   return (
     <StyledFooterWrapper showFooter={true}>
@@ -151,6 +163,126 @@ const StyledFormContainer = styled.div`
   border-radius: 6px;
   box-sizing: border-box;
   position: relative;
+`;
+
+const ControlContext = createContext(null);
+
+export { ControlContext };
+
+const ControlsOld = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
+  return (
+    <ControlWrapper
+      formContainerRef={formContainerRef}
+      handleSubmit={handleSubmit}
+      uploadBtnRef={uploadBtnRef}
+    />
+  );
+};
+
+const ControlsContainerStyled = styled.div`
+  margin: 4px 0;
+  display: flex;
+  justify-content: space-between;
+
+  box-shadow: ${(props) =>
+    props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
+`;
+
+const ControlWrapper = ({ handleSubmit, uploadBtnRef, formContainerRef }) => {
+  return (
+    <ControlsContainerStyled>
+      <Widgets
+        uploadBtnRef={uploadBtnRef}
+        formContainerRef={formContainerRef}
+      />
+      <AddButton handleSubmit={handleSubmit} />
+    </ControlsContainerStyled>
+  );
+};
+
+const AddButton = ({ handleSubmit }) => {
+  return (
+    <StyledButton onClick={handleSubmit} style={{ marginRight: "16px" }}>
+      Add
+    </StyledButton>
+  );
+};
+
+const Widgets = ({ uploadBtnRef, formContainerRef }) => {
+  return (
+    <StyledWidgetWrapper>
+      <ImageUploaderIconContainer uploadBtnRef={uploadBtnRef} />
+      <NoteOptionsIconContainer containerRef={formContainerRef} />
+    </StyledWidgetWrapper>
+  );
+};
+
+const ImageUploaderIconContainer = ({ uploadBtnRef }) => {
+  const handleClick = () => {
+    uploadBtnRef.current.click();
+  };
+
+  return (
+    <StyledControlsIcons
+      img={uploadIcon}
+      className="image-uploader"
+      onClick={handleClick}
+    ></StyledControlsIcons>
+  );
+};
+
+const NoteOptionsIconContainer = ({ containerRef }) => {
+  const iconRef = useRef(null);
+  const optionButtonRef = useRef(null);
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    optionButtonRef.current.click();
+  };
+
+  return (
+    <>
+      <StyledControlsIcons
+        ref={iconRef}
+        img={threedot}
+        onClick={handleClick}
+      ></StyledControlsIcons>
+      <NoteOptions
+        containerRef={containerRef}
+        iconRef={iconRef}
+        optionButtonRef={optionButtonRef}
+        isNote={false}
+      />
+    </>
+  );
+};
+
+const StyledWidgetWrapper = styled.div`
+  display: flex;
+`;
+
+const StyledControlsIcons = styled.div`
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
+
+  color: #202124;
+  opacity: 0.71;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-image: url(${(props) => props.img});
+
+  &:hover {
+    border-radius: 50%;
+    background-color: gray;
+    opacity: 0.87;
+    background-color: rgba(95, 99, 104, 0.157);
+  }
 `;
 
 export default FormContainer;
