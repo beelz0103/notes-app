@@ -17,10 +17,22 @@ const Controls = ({
   uploadBtnRef,
   updateBtnRef,
   handleSubmit,
+  labelList,
+  setLabelList,
+  hideModal,
 }) => {
   return (
     <ControlsContext.Provider
-      value={{ containerRef, type, uploadBtnRef, handleSubmit }}
+      value={{
+        containerRef,
+        type,
+        uploadBtnRef,
+        handleSubmit,
+        labelList,
+        setLabelList,
+        updateBtnRef,
+        hideModal,
+      }}
     >
       <ControlWrapper />
     </ControlsContext.Provider>
@@ -80,7 +92,8 @@ const NoteOptionsIconContainer = () => {
     e.stopPropagation();
     optionButtonRef.current.click();
   };
-  const { containerRef, type } = useContext(ControlsContext);
+  const { containerRef, type, labelList, setLabelList } =
+    useContext(ControlsContext);
 
   return (
     <>
@@ -95,13 +108,15 @@ const NoteOptionsIconContainer = () => {
         iconRef={iconRef}
         optionButtonRef={optionButtonRef}
         isNote={type === "note"}
+        labelList={labelList}
+        setLabelList={setLabelList}
       />
     </>
   );
 };
 
 const UpdateButton = () => {
-  const { updateBtnRef } = useContext(PopupContext);
+  const { updateBtnRef } = useContext(ControlsContext);
   const handleClick = () => {
     updateBtnRef.current.click();
   };
@@ -114,7 +129,7 @@ const UpdateButton = () => {
 };
 
 const CloseButton = () => {
-  const { hideModal } = useContext(PopupContext);
+  const { hideModal } = useContext(ControlsContext);
 
   const handleClick = () => {
     hideModal();

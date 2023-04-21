@@ -16,6 +16,7 @@ import { ContainerContext } from "../Container";
 import { useNoteLabels, useGetLabelList } from "../Hooks/useLabels";
 import UpdateFormContainer from "../UpdateFormContainer";
 import { StyledButton } from "../StyledComponents/StyledPopupComponents";
+import { useUpdateFormGetLabelList } from "../Hooks/useLabels";
 
 const PopupContext = createContext(null);
 
@@ -25,7 +26,13 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
   const popupRef = useRef(null);
   const { labels } = useContext(ContainerContext);
   const { updateNoteLabels, noteLabels } = useNoteLabels(popupNote);
-  const labelList = useGetLabelList(labels, noteLabels);
+
+  const { labelList, setLabelList } = useUpdateFormGetLabelList(
+    labels,
+    noteLabels
+  );
+
+  labelList.forEach((label) => console.log(label.name, ":", label.checked));
   const updateBtnRef = useRef(null);
   const uploadBtnRef = useRef(null);
 
@@ -47,6 +54,7 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
           hideModal,
           updateBtnRef,
           uploadBtnRef,
+          setLabelList,
         }}
       >
         <Popup />
@@ -56,16 +64,33 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
 };
 
 const Popup = () => {
-  const { popupRef, labelList, noteLabels, note } = useContext(PopupContext);
+  const {
+    popupRef,
+    labelList,
+    noteLabels,
+    note,
+    hideModal,
+    updateBtnRef,
+    uploadBtnRef,
+    setLabelList,
+  } = useContext(PopupContext);
   return Object.keys(note).length === 0 ? null : (
-    <PopupContainer ref={popupRef}>
-      <PopupSubContainer>
+    <PopupContainer>
+      <PopupSubContainer ref={popupRef}>
         <ContentOuterContainer>
           <ContentContainer>
-            <UpdateFormContainer />
+            <UpdateFormContainer labelList={labelList} />
             <Footer labelList={labelList} noteLabels={noteLabels} />
           </ContentContainer>
-          <Controls containerRef={popupRef} type="notepopup" />
+          <Controls
+            containerRef={popupRef}
+            type="notepopup"
+            labelList={labelList}
+            setLabelList={setLabelList}
+            updateBtnRef={updateBtnRef}
+            uploadBtnRef={uploadBtnRef}
+            hideModal={hideModal}
+          />
         </ContentOuterContainer>
       </PopupSubContainer>
     </PopupContainer>

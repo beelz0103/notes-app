@@ -72,7 +72,7 @@ const ContentOuterContainer = styled.div`
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  position: relative;
+  /* position: relative; */
   -webkit-border-radius: 8px;
   border-radius: 8px;
   -webkit-transition-duration: 0.218s;

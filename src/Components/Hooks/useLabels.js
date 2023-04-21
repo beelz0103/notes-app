@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { ContainerContext } from "../Container";
 
 const useGetAllLabels = (lastUpdate) => {
   const [allLabels, setAllLabels] = useState([]);
@@ -33,6 +35,30 @@ const useFormGetLabelList = (labels) => {
 
     setLabelList(list);
   }, [labels]);
+
+  return { labelList, setLabelList };
+};
+
+const useUpdateFormGetLabelList = (labels, noteLabels) => {
+  const [labelList, setLabelList] = useState([]);
+
+  useEffect(() => {
+    if (labelList.length !== 0) return;
+
+    if (!labels || !noteLabels) return;
+
+    const noteLabelsIds = noteLabels.map(({ _id }) => _id);
+
+    const list = labels.map(({ _id, name }) => {
+      return {
+        name: name,
+        id: _id,
+        checked: noteLabelsIds.includes(_id.toString()),
+      };
+    });
+
+    setLabelList(list);
+  }, [labels, noteLabels]);
 
   return { labelList, setLabelList };
 };
@@ -90,6 +116,7 @@ const usePostLabel = () => {
 
 const useNoteLabels = (note = {}) => {
   const [noteLabels, setNoteLabels] = useState([]);
+  const { setLastUpdate } = useContext(ContainerContext);
 
   useEffect(() => {
     setNoteLabels(note.labels);
@@ -112,8 +139,8 @@ const useNoteLabels = (note = {}) => {
     );
     const data = await response.json();
     console.log("Note updated successfully!");
+    setLastUpdate(Date.now());
     setNoteLabels(data.labels);
-    console.log(data.labels);
 
     return data;
   };
@@ -127,4 +154,5 @@ export {
   useGetAllLabels,
   useGetLabelList,
   useFormGetLabelList,
+  useUpdateFormGetLabelList,
 };

@@ -1,26 +1,16 @@
 import { useState, useEffect, useRef, createContext, useContext } from "react";
-
+import styled from "styled-components";
 import {
-  StyledFooterWrapper,
   StyledLabelWrapper,
   LastUpdated,
   StyledLabel,
   LabelDeleteButton,
   StyledLabelButton,
+  StyledFooterWrapper,
 } from "../StyledComponents/StyledPopupComponents";
 
-const Footer = ({ note, labelList, noteLabels = [], type }) => {
-  const [showFooter, setShowFooter] = useState(false);
-
-  useState(() => {
-    console.log(noteLabels);
-    console.log(type);
-    if (noteLabels.length !== 0 || type === "form") {
-      console.log(type);
-      console.log(noteLabels !== 0 || type === "form");
-      setShowFooter(true);
-    } else setShowFooter(false);
-  }, [noteLabels]);
+const Footer = ({ labelList, type }) => {
+  const showFooter = labelList.some((label) => label.checked);
 
   return (
     <StyledFooterWrapper showFooter={showFooter}>

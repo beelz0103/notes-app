@@ -5,6 +5,7 @@ import useGetNotes from "./Hooks/useGetNotes";
 import usePostData from "./Hooks/usePostData";
 import { useGetAllLabels, usePostLabel } from "./Hooks/useLabels";
 import { useContext, createContext } from "react";
+import { createFormData } from "./JSModules/helperFunctions";
 
 const ContainerContext = createContext(null);
 
@@ -18,7 +19,8 @@ const Container = () => {
   const { postLabel } = usePostLabel();
 
   const addNote = async (note) => {
-    await postData("http://localhost:3001/note/create", note);
+    const formData = createFormData(note);
+    await postData("http://localhost:3001/note/create", formData);
     setLastUpdate(Date.now());
   };
 
@@ -32,14 +34,15 @@ const Container = () => {
   };
 
   const updateNote = async (note, _id) => {
-    await postData(`http://localhost:3001/note/${_id}/update`, note);
+    const formData = createFormData(note);
+    await postData(`http://localhost:3001/note/${_id}/update`, formData);
     setLastUpdate(Date.now());
   };
 
   return (
     <div className="container">
       <ContainerContext.Provider
-        value={{ addNote, updateNote, addLabel, labels }}
+        value={{ addNote, updateNote, addLabel, labels, setLastUpdate }}
       >
         <FormContainer addNote={addNote} labels={labels} addLabel={addLabel} />
         <NotesContainer

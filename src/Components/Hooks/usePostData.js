@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const usePostData = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const postData = async (url, data) => {
+  const postData = async (url, formData) => {
     setIsLoading(true);
-    console.log("posting image data", data);
-    const { title, content, images, labels } = data;
 
     try {
-      const formData = new FormData();
-      for (let i = 0; i < images.length; i++) {
-        formData.append("file", images[i].file);
-      }
-      formData.append("title", title);
-      formData.append("content", content);
-      formData.append("labels", JSON.stringify(labels));
-
       const response = await fetch(url, {
         method: "POST",
         body: formData,

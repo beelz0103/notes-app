@@ -103,6 +103,8 @@ const FormContainer = ({ addNote }) => {
             uploadBtnRef={uploadBtnRef}
             handleSubmit={handleSubmit}
             containerRef={formContainerRef}
+            labelList={labelList}
+            setLabelList={setLabelList}
           />
         </StyledFormContainer>
       </FormWrapper>

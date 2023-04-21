@@ -9,15 +9,7 @@ import {
   ContentDiv,
   NoteContentInfo,
 } from "../StyledComponents/StyledComponents";
-
-import {
-  StyledFooterWrapper,
-  StyledLabelWrapper,
-  LastUpdated,
-  StyledLabel,
-  LabelDeleteButton,
-  StyledLabelButton,
-} from "../StyledComponents/StyledPopupComponents";
+import Footer from "./Footer";
 
 import NoteOptions from "./NoteOptions";
 
@@ -85,6 +77,8 @@ const NoteOuterContiner = ({ note, showModal }) => {
 };
 
 const ContentCotainer = ({ title, content, images, _id }) => {
+  const { labelList } = useContext(NoteContext);
+
   return (
     <NoteContentContainer>
       <NoteContentImageContainer>
@@ -105,46 +99,9 @@ const ContentCotainer = ({ title, content, images, _id }) => {
             <ContentDiv>{parse(content)}</ContentDiv>
           )}
         </div>
-        <Footer />
+        <Footer labelList={labelList} />
       </NoteContentInfo>
     </NoteContentContainer>
-  );
-};
-
-const Footer = () => {
-  const { note, labelList, noteLabels } = useContext(NoteContext);
-
-  const [showFooter, setShowFooter] = useState(false);
-
-  console.log(labelList.some((label) => label.checked));
-
-  useState(() => {
-    console.log(note.labels.length);
-    if (note.labels.length === 0) setShowFooter(false);
-    else setShowFooter(true);
-  }, [note]);
-
-  return (
-    <StyledFooterWrapper showFooter={showFooter}>
-      {labelList.some((label) => label.checked === true)
-        ? labelList
-            .filter((label) => {
-              return label.checked;
-            })
-            .map((label) => <LabelDisplay key={label.id} label={label} />)
-        : null}
-    </StyledFooterWrapper>
-  );
-};
-
-const LabelDisplay = ({ label }) => {
-  return (
-    <StyledLabelWrapper>
-      <StyledLabelButton>
-        <StyledLabel>{label.name}</StyledLabel>
-      </StyledLabelButton>
-      <LabelDeleteButton></LabelDeleteButton>
-    </StyledLabelWrapper>
   );
 };
 

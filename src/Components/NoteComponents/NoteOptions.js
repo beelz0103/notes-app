@@ -11,7 +11,10 @@ const NoteOptions = ({
   iconRef,
   optionButtonRef,
   isNote = true,
+  labelList,
+  setLabelList,
 }) => {
+  console.log("note options dropdown rendered");
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
   const [showLabel, setShowLabel] = useState(false);
@@ -75,6 +78,8 @@ const NoteOptions = ({
           setShowLabel,
           iconRef,
           containerRef,
+          labelList,
+          setLabelList,
         }}
       >
         <button
@@ -82,19 +87,7 @@ const NoteOptions = ({
           onClick={handleClick}
           style={{ display: "none" }}
         ></button>
-        {isNote ? (
-          <NoteOptionDropdown />
-        ) : (
-          <FormOptionDropdown
-            show={show}
-            cords={cords}
-            setShow={setShow}
-            iconRef={iconRef}
-            containerRef={containerRef}
-            showLabel={showLabel}
-            setShowLabel={setShowLabel}
-          />
-        )}
+        {isNote ? <NoteOptionDropdown /> : <FormOptionDropdown />}
       </OptionsContext.Provider>
     </>
   );
@@ -193,18 +186,22 @@ const NoteOptionDropdown = () => {
   );
 };
 
-const FormOptionDropdown = ({
-  show,
-  cords,
-  setShow,
-  iconRef,
-  containerRef,
-  setShowLabel,
-  showLabel,
-}) => {
+const FormOptionDropdown = () => {
+  const {
+    show,
+    cords,
+    setShow,
+    iconRef,
+    containerRef,
+    setShowLabel,
+    showLabel,
+    labelList,
+    setLabelList,
+  } = useContext(OptionsContext);
+
   const [labelCords, setLabelCords] = useState(cords);
   const labelRef = useRef(null);
-  const { labelList } = useContext(FormContext);
+
   //prevents dialog from closing on click
   const handleClick = (e) => {
     e.stopPropagation();
@@ -264,6 +261,8 @@ const FormOptionDropdown = ({
         labelRef={labelRef}
         cords={labelCords}
         showLabel={showLabel}
+        labelList={labelList}
+        setLabelList={setLabelList}
       />
       <StyledOptionDropDown
         show={show}
@@ -322,7 +321,7 @@ const StyledOptionDropDown = styled.div`
   top: ${(props) => props.cords.top};
   left: ${(props) => props.cords.left};
 
-  z-index: 6;
+  z-index: 4500;
 `;
 
 export default NoteOptions;

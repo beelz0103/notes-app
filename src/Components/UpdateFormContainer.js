@@ -11,8 +11,8 @@ import { useContext, createContext } from "react";
 import { ContainerContext } from "./Container";
 import { PopupContext } from "./NoteComponents/NotePopup";
 
-const UpdateFormContainer = () => {
-  const { updateNote } = useContext(ContainerContext);
+const UpdateFormContainer = ({ labelList }) => {
+  const { updateNote, labels } = useContext(ContainerContext);
   const { note, updateBtnRef, hideModal, uploadBtnRef } =
     useContext(PopupContext);
 
@@ -33,6 +33,10 @@ const UpdateFormContainer = () => {
         title: titleInputDiv.value,
         content: contentInputDiv.value,
         images: fileInput.files,
+        labels: labels.filter((label) => {
+          return labelList.find(({ id }) => id === label._id.toString())
+            .checked;
+        }),
       },
       note._id
     );

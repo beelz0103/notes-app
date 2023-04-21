@@ -14,10 +14,9 @@ import plus from "../Resources/plus.svg";
 import { FormContext } from "../FormContainer";
 import { NoteContext } from "./Note";
 
-function LabelForForm({ cords, showLabel, labelRef }) {
+function LabelForForm({ cords, showLabel, labelRef, labelList, setLabelList }) {
   const inputRef = useRef(null);
   const { addLabel } = useContext(ContainerContext);
-  const { labelList, setLabelList } = useContext(FormContext);
 
   const [searchLabelList, setSearchLabelList] = useState(null);
 
