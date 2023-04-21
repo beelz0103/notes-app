@@ -22,6 +22,7 @@ const Controls = ({
   hideModal,
   handleDelete,
   show,
+  showShadow,
 }) => {
   return (
     <ControlsContext.Provider
@@ -36,6 +37,7 @@ const Controls = ({
         hideModal,
         show,
         handleDelete,
+        showShadow,
       }}
     >
       <ControlWrapper />
@@ -44,10 +46,10 @@ const Controls = ({
 };
 
 const ControlWrapper = () => {
-  const { show } = useContext(ControlsContext);
+  const { show, showShadow } = useContext(ControlsContext);
 
   return (
-    <ControlsContainerStyled show={show}>
+    <ControlsContainerStyled show={show} showShadow={showShadow}>
       <Widgets />
       <Buttons />
     </ControlsContainerStyled>

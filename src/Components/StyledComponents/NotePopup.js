@@ -2,6 +2,7 @@ import styled from "styled-components";
 const PopupContainer = styled.div`
   left: 50%;
   transform: translateX(-50%);
+  top: ${(props) => props.topProp};
 
   /* my styles end here */
 
@@ -34,7 +35,7 @@ const PopupContainer = styled.div`
 `;
 
 const PopupSubContainer = styled.div`
-  width: 600px;
+  width: ${(props) => props.widthProp};
 
   -webkit-transform: none;
   transform: none;
@@ -89,6 +90,7 @@ const ContentContainer = styled.div`
   max-height: 612.325px;   
   this is to be set dynamically
   */
+  max-height: ${(props) => props.maxHeight + "px"};
 
   -webkit-transition: opacity 0.218s ease-in;
   transition: opacity 0.218s ease-in;
@@ -100,6 +102,7 @@ const ContentContainer = styled.div`
 
   overflow: hidden;
   position: relative;
+
   /* -webkit-transition: max-height 0.218s ease-in;
   transition: max-height 0.218s ease-in; */
 `;

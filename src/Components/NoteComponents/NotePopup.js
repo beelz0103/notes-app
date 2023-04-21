@@ -17,6 +17,7 @@ import { useNoteLabels, useGetLabelList } from "../Hooks/useLabels";
 import UpdateFormContainer from "../UpdateFormContainer";
 import { StyledButton } from "../StyledComponents/StyledPopupComponents";
 import { useUpdateFormGetLabelList } from "../Hooks/useLabels";
+import { usePopupHeight, usePopupWidth } from "../Hooks/usePopupChange";
 
 const PopupContext = createContext(null);
 
@@ -31,6 +32,7 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
     labels,
     noteLabels
   );
+  const [showShadow, setShowShadow] = useState(false);
 
   const updateBtnRef = useRef(null);
   const uploadBtnRef = useRef(null);
@@ -55,6 +57,8 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
           uploadBtnRef,
           setLabelList,
           type: "notepopup",
+          showShadow,
+          setShowShadow,
         }}
       >
         <Popup />
@@ -64,6 +68,15 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
 };
 
 const Popup = () => {
+  const { note } = useContext(PopupContext);
+
+  return Object.keys(note).length === 0 ? null : <PopupWrapper />;
+};
+
+const PopupWrapper = () => {
+  const minWidth = usePopupWidth();
+  const { maxHeight, contentContainerRef, top } = usePopupHeight();
+
   const {
     popupRef,
     labelList,
@@ -74,20 +87,14 @@ const Popup = () => {
     uploadBtnRef,
     setLabelList,
     type,
+    showShadow,
   } = useContext(PopupContext);
-  return Object.keys(note).length === 0 ? null : (
-    <PopupContainer>
-      <PopupSubContainer ref={popupRef}>
+
+  return (
+    <PopupContainer topProp={top} ref={contentContainerRef}>
+      <PopupSubContainer ref={popupRef} widthProp={minWidth}>
         <ContentOuterContainer>
-          <ContentContainer>
-            <UpdateFormContainer labelList={labelList} />
-            <Footer
-              labelList={labelList}
-              noteLabels={noteLabels}
-              note={note}
-              type={type}
-            />
-          </ContentContainer>
+          <ContentContainerWrapper maxHeight={maxHeight} />
           <Controls
             containerRef={popupRef}
             type={type}
@@ -97,10 +104,62 @@ const Popup = () => {
             uploadBtnRef={uploadBtnRef}
             hideModal={hideModal}
             show={true}
+            showShadow={showShadow}
           />
         </ContentOuterContainer>
       </PopupSubContainer>
     </PopupContainer>
+  );
+};
+
+const ContentContainerWrapper = ({ maxHeight }) => {
+  const { labelList, noteLabels, note, type, setShowShadow } =
+    useContext(PopupContext);
+
+  const divRef = useRef(null);
+  const [overflow, setOverflow] = useState(true);
+
+  useEffect(() => {
+    const divRefCurrent = divRef.current;
+
+    const observer = new ResizeObserver((entries) => {
+      const divHeight = entries[0].contentRect.height;
+      if (divHeight === maxHeight) {
+        setOverflow(true);
+      } else {
+        setOverflow(false);
+      }
+    });
+
+    observer.observe(divRefCurrent);
+  }, [maxHeight]);
+
+  const scrollHandler = (e) => {
+    if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
+      setShowShadow(true);
+    } else {
+      setShowShadow(false);
+    }
+  };
+
+  return (
+    <ContentContainer
+      heightProp={maxHeight}
+      ref={divRef}
+      onScroll={scrollHandler}
+      maxHeight={maxHeight}
+      style={{
+        overflowY: overflow ? "scroll" : "",
+      }}
+    >
+      <UpdateFormContainer labelList={labelList} />
+      <Footer
+        labelList={labelList}
+        noteLabels={noteLabels}
+        note={note}
+        type={type}
+      />
+    </ContentContainer>
   );
 };
 
