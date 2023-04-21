@@ -20,6 +20,7 @@ const Controls = ({
   labelList,
   setLabelList,
   hideModal,
+  show,
 }) => {
   return (
     <ControlsContext.Provider
@@ -32,6 +33,7 @@ const Controls = ({
         setLabelList,
         updateBtnRef,
         hideModal,
+        show,
       }}
     >
       <ControlWrapper />
@@ -40,8 +42,10 @@ const Controls = ({
 };
 
 const ControlWrapper = () => {
+  const { show } = useContext(ControlsContext);
+
   return (
-    <ControlsContainerStyled show={true}>
+    <ControlsContainerStyled show={show}>
       <Widgets />
       <Buttons />
     </ControlsContainerStyled>
@@ -49,15 +53,16 @@ const ControlWrapper = () => {
 };
 
 const Buttons = () => {
-  const { containerRef, type } = useContext(ControlsContext);
+  const { type } = useContext(ControlsContext);
 
-  return type === "notepopup" ? (
+  if (type === "note") return null;
+  if (type !== "notepopup") return <AddButton />;
+
+  return (
     <div style={{ display: "flex" }}>
       <UpdateButton />
       <CloseButton />
     </div>
-  ) : (
-    <AddButton />
   );
 };
 
@@ -92,13 +97,13 @@ const NoteOptionsIconContainer = () => {
     e.stopPropagation();
     optionButtonRef.current.click();
   };
-  const { containerRef, type, labelList, setLabelList } =
+  const { containerRef, type, labelList, setLabelList, show } =
     useContext(ControlsContext);
 
   return (
     <>
       <StyledControlsIcons
-        show={true}
+        show={show}
         ref={iconRef}
         img={threedot}
         onClick={handleClick}

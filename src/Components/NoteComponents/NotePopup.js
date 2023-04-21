@@ -90,6 +90,7 @@ const Popup = () => {
             updateBtnRef={updateBtnRef}
             uploadBtnRef={uploadBtnRef}
             hideModal={hideModal}
+            show={true}
           />
         </ContentOuterContainer>
       </PopupSubContainer>

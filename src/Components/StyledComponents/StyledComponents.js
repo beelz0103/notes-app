@@ -11,6 +11,8 @@ const StyledNoteOuterContainer = styled.div.attrs()`
 
   transition-timing-function: ease-in;
 
+  opacity: ${(props) => (props.showNote ? 1 : 0)};
+
   &:hover {
     box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
       0 2px 6px 2px rgba(60, 64, 67, 0.149);

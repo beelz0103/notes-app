@@ -24,12 +24,13 @@ import {
 import NoteImageContainer from "../FormComponents/NoteImageContainer";
 import { useGetLabelList, useNoteLabels } from "../Hooks/useLabels";
 import { ContainerContext } from "../Container";
+import Controls from "./Controls";
 
 const NoteContext = createContext(null);
 
-const NoteOuterContiner = ({ note, showModal }) => {
+const NoteOuterContiner = ({ note, showModal, showNote }) => {
   const { labels } = useContext(ContainerContext);
-  const [visibility, setVisibility] = useState(false);
+  const [widgetVisible, setWidgetVisible] = useState(false);
   const [optionsClicked, setOptionsClicked] = useState(false);
 
   const noteContainerRef = useRef(null);
@@ -43,11 +44,11 @@ const NoteOuterContiner = ({ note, showModal }) => {
   };
 
   const handleMouseEnter = () => {
-    setVisibility(true);
+    setWidgetVisible(true);
   };
 
   const handleMouseLeave = () => {
-    if (!optionsClicked) setVisibility(false);
+    if (!optionsClicked) setWidgetVisible(false);
   };
 
   return (
@@ -57,7 +58,7 @@ const NoteOuterContiner = ({ note, showModal }) => {
         noteContainerRef,
         updateNoteLabels,
         labelList,
-        visibility,
+        widgetVisible,
         setOptionsClicked,
         noteLabels,
       }}
@@ -66,10 +67,16 @@ const NoteOuterContiner = ({ note, showModal }) => {
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        showNote={showNote}
       >
         <NoteInnerContainer ref={noteContainerRef}>
           <ContentCotainer {...note} />
-          <Controls />
+          <Controls
+            containerRef={noteContainerRef}
+            type="note"
+            labelList={labelList}
+            show={widgetVisible}
+          />
         </NoteInnerContainer>
       </StyledNoteOuterContainer>
     </NoteContext.Provider>
@@ -104,102 +111,6 @@ const ContentCotainer = ({ title, content, images, _id }) => {
     </NoteContentContainer>
   );
 };
-
-const Controls = () => {
-  return <ControlWrapper />;
-};
-
-const ControlWrapper = () => {
-  const { visibility } = useContext(NoteContext);
-
-  return (
-    <ControlsContainerStyled show={visibility}>
-      <Widgets />
-    </ControlsContainerStyled>
-  );
-};
-
-const Widgets = () => {
-  return (
-    <StyledWidgetWrapper>
-      <NoteOptionsIconContainer />
-    </StyledWidgetWrapper>
-  );
-};
-
-const NoteOptionsIconContainer = () => {
-  const { noteContainerRef, visibility } = useContext(NoteContext);
-
-  const iconRef = useRef(null);
-  const optionButtonRef = useRef(null);
-
-  const handleClick = (e) => {
-    e.stopPropagation();
-    optionButtonRef.current.click();
-  };
-
-  return (
-    <>
-      <StyledControlsIcons
-        show={visibility}
-        ref={iconRef}
-        img={threedot}
-        onClick={handleClick}
-      ></StyledControlsIcons>
-      <NoteOptions
-        containerRef={noteContainerRef}
-        iconRef={iconRef}
-        optionButtonRef={optionButtonRef}
-      />
-    </>
-  );
-};
-
-const ControlsContainerStyled = styled.div`
-  opacity: ${(props) => (props.show ? 1 : 0)};
-  transition-duration: 0.218s;
-  transition-property: opacity;
-  transition-timing-function: ease-in;
-
-  margin: 4px 0;
-  display: flex;
-  justify-content: space-between;
-
-  box-shadow: ${(props) =>
-    props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};
-`;
-
-const StyledWidgetWrapper = styled.div`
-  display: flex;
-`;
-
-const StyledControlsIcons = styled.div`
-  width: 32px;
-  height: 32px;
-  margin: 0 8px;
-
-  color: #202124;
-
-  opacity: ${(props) => (props.show ? 0.71 : 0)};
-  transition-duration: 0.218s;
-  transition-property: opacity;
-  transition-timing-function: ease-in;
-
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 18px 18px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  cursor: pointer;
-  background-image: url(${(props) => props.img});
-
-  &:hover {
-    border-radius: 50%;
-    background-color: gray;
-    opacity: 0.87;
-    background-color: rgba(95, 99, 104, 0.157);
-  }
-`;
 
 export default NoteOuterContiner;
 export { NoteContext };

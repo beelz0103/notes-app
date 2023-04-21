@@ -105,6 +105,7 @@ const FormContainer = ({ addNote }) => {
             containerRef={formContainerRef}
             labelList={labelList}
             setLabelList={setLabelList}
+            show={true}
           />
         </StyledFormContainer>
       </FormWrapper>
