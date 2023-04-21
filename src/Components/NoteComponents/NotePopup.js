@@ -32,7 +32,6 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
     noteLabels
   );
 
-  labelList.forEach((label) => console.log(label.name, ":", label.checked));
   const updateBtnRef = useRef(null);
   const uploadBtnRef = useRef(null);
 

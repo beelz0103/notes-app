@@ -15,7 +15,6 @@ const NoteOptions = ({
   setLabelList,
   handleDelete,
 }) => {
-  console.log("note options dropdown rendered");
   const [show, setShow] = useState(false);
   const [cords, setCords] = useState({});
   const [showLabel, setShowLabel] = useState(false);

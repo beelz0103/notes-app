@@ -15,12 +15,10 @@ const usePostData = () => {
 
       const data = await response.json();
       setIsLoading(false);
-      console.log(data);
       return data;
     } catch (error) {
       setIsLoading(false);
       setError(error);
-      console.log(error);
     }
   };
 

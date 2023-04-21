@@ -54,7 +54,6 @@ const NoteContainer = memo(function NoteContainer({
   popupNote,
   showNote,
 }) {
-  console.log(popupNote._id);
   return (
     <div style={{ display: "flex", flexDirection: "column-reverse" }}>
       {notes.map((note) => {
