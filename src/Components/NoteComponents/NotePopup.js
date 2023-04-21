@@ -54,6 +54,7 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
           updateBtnRef,
           uploadBtnRef,
           setLabelList,
+          type: "notepopup",
         }}
       >
         <Popup />
@@ -72,6 +73,7 @@ const Popup = () => {
     updateBtnRef,
     uploadBtnRef,
     setLabelList,
+    type,
   } = useContext(PopupContext);
   return Object.keys(note).length === 0 ? null : (
     <PopupContainer>
@@ -79,11 +81,16 @@ const Popup = () => {
         <ContentOuterContainer>
           <ContentContainer>
             <UpdateFormContainer labelList={labelList} />
-            <Footer labelList={labelList} noteLabels={noteLabels} />
+            <Footer
+              labelList={labelList}
+              noteLabels={noteLabels}
+              note={note}
+              type={type}
+            />
           </ContentContainer>
           <Controls
             containerRef={popupRef}
-            type="notepopup"
+            type={type}
             labelList={labelList}
             setLabelList={setLabelList}
             updateBtnRef={updateBtnRef}

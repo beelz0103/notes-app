@@ -8,9 +8,25 @@ import {
   StyledLabelButton,
   StyledFooterWrapper,
 } from "../StyledComponents/StyledPopupComponents";
+import { DateTime } from "luxon";
 
-const Footer = ({ labelList, type }) => {
-  const showFooter = labelList.some((label) => label.checked);
+const formattedDate = (note) => {
+  const today = DateTime.now().day;
+  const year = DateTime.now().year;
+  const noteDt = DateTime.fromISO(note.updatedAt);
+  const noteDay = noteDt.day;
+  const noteYear = noteDt.year;
+
+  if (noteDay - today === 0) return `Edited ${noteDt.toFormat("hh:mm a")}`;
+  if (noteDay - today === 1)
+    return `Edited yesterday ${noteDt.toFormat("hh:mm a")}`;
+  if (noteYear - year === 0) return `Edited ${noteDt.toFormat("LLL dd")}`;
+  return `Edited ${noteDt.toFormat("LLL dd yyyy")}`;
+};
+
+const Footer = ({ labelList, type, note }) => {
+  const showFooter =
+    labelList.some((label) => label.checked) || type === "notepopup";
 
   return (
     <StyledFooterWrapper showFooter={showFooter}>
@@ -22,7 +38,7 @@ const Footer = ({ labelList, type }) => {
             .map((label) => <LabelDisplay key={label.id} label={label} />)
         : null}
       {type !== "notepopup" ? null : (
-        <LastUpdated>Edited yesterday, 17:57</LastUpdated>
+        <LastUpdated>{formattedDate(note)}</LastUpdated>
       )}
     </StyledFooterWrapper>
   );
