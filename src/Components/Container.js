@@ -43,8 +43,7 @@ const Container = () => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     await postData(`http://localhost:3001/note/${_id}/delete`, formData);
-
-    //setLastUpdate(Date.now());
+    setLastUpdate(Date.now());
   };
 
   return (
