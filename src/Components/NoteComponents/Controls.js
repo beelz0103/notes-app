@@ -20,6 +20,7 @@ const Controls = ({
   labelList,
   setLabelList,
   hideModal,
+  handleDelete,
   show,
 }) => {
   return (
@@ -34,6 +35,7 @@ const Controls = ({
         updateBtnRef,
         hideModal,
         show,
+        handleDelete,
       }}
     >
       <ControlWrapper />
@@ -97,7 +99,7 @@ const NoteOptionsIconContainer = () => {
     e.stopPropagation();
     optionButtonRef.current.click();
   };
-  const { containerRef, type, labelList, setLabelList, show } =
+  const { containerRef, type, labelList, setLabelList, show, handleDelete } =
     useContext(ControlsContext);
 
   return (
@@ -109,6 +111,7 @@ const NoteOptionsIconContainer = () => {
         onClick={handleClick}
       ></StyledControlsIcons>
       <NoteOptions
+        handleDelete={handleDelete}
         containerRef={containerRef}
         iconRef={iconRef}
         optionButtonRef={optionButtonRef}

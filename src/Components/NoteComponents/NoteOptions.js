@@ -13,6 +13,7 @@ const NoteOptions = ({
   isNote = true,
   labelList,
   setLabelList,
+  handleDelete,
 }) => {
   console.log("note options dropdown rendered");
   const [show, setShow] = useState(false);
@@ -80,6 +81,7 @@ const NoteOptions = ({
           containerRef,
           labelList,
           setLabelList,
+          handleDelete,
         }}
       >
         <button
@@ -155,6 +157,8 @@ const NoteOptionDropdown = () => {
     setShowLabel(!showLabel);
   };
 
+  const { handleDelete } = useContext(OptionsContext);
+
   return (
     <>
       <LabelForNote
@@ -168,7 +172,7 @@ const NoteOptionDropdown = () => {
         height={"102px"}
         onClick={handleClick}
       >
-        <StyledOptionsDiv>
+        <StyledOptionsDiv onClick={handleDelete}>
           <StyledOptionsContentDiv>Delete note</StyledOptionsContentDiv>
         </StyledOptionsDiv>
         <StyledOptionsDiv>

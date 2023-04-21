@@ -20,6 +20,7 @@ const usePostData = () => {
     } catch (error) {
       setIsLoading(false);
       setError(error);
+      console.log(error);
     }
   };
 

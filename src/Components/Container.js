@@ -39,17 +39,25 @@ const Container = () => {
     setLastUpdate(Date.now());
   };
 
-  const deleteNote = async (_id) => {
+  const deleteNote = async (note, _id) => {
     const formData = new FormData();
-    formData.append("id", _id);
+    formData.append("note", JSON.stringify(note));
     await postData(`http://localhost:3001/note/${_id}/delete`, formData);
-    setLastUpdate(Date.now());
+
+    //setLastUpdate(Date.now());
   };
 
   return (
     <div className="container">
       <ContainerContext.Provider
-        value={{ addNote, updateNote, addLabel, labels, setLastUpdate }}
+        value={{
+          addNote,
+          updateNote,
+          addLabel,
+          labels,
+          setLastUpdate,
+          deleteNote,
+        }}
       >
         <FormContainer addNote={addNote} labels={labels} addLabel={addLabel} />
         <NotesContainer

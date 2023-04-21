@@ -29,7 +29,7 @@ import Controls from "./Controls";
 const NoteContext = createContext(null);
 
 const NoteOuterContiner = ({ note, showModal, showNote }) => {
-  const { labels } = useContext(ContainerContext);
+  const { labels, deleteNote } = useContext(ContainerContext);
   const [widgetVisible, setWidgetVisible] = useState(false);
   const [optionsClicked, setOptionsClicked] = useState(false);
 
@@ -39,7 +39,7 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
 
   const labelList = useGetLabelList(labels, noteLabels);
 
-  const handleClick = (e) => {
+  const handleClick = () => {
     showModal(note);
   };
 
@@ -49,6 +49,10 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
 
   const handleMouseLeave = () => {
     if (!optionsClicked) setWidgetVisible(false);
+  };
+
+  const handleDelete = () => {
+    deleteNote(note, note._id);
   };
 
   return (
@@ -61,6 +65,7 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
         widgetVisible,
         setOptionsClicked,
         noteLabels,
+        handleDelete,
       }}
     >
       <StyledNoteOuterContainer
@@ -76,6 +81,7 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
             type="note"
             labelList={labelList}
             show={widgetVisible}
+            handleDelete={handleDelete}
           />
         </NoteInnerContainer>
       </StyledNoteOuterContainer>
