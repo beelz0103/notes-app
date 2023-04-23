@@ -1,104 +1,155 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import useSidebarDimensions from "./Hooks/useSidebarDimensions";
+import { createContext, useContext } from "react";
 
-const Sidebar = ({ sidebarRef }) => {
-  const [mediaWidth, setMediaWidth] = useState("620px");
-  const [width, setWidth] = useState("280px");
-  const [minWidth, setMinWidth] = useState("280px");
-  const [mouseOverFired, setMouseOverFired] = useState(false);
-  const [hoverData, setHoverData] = useState(null);
-  const mainSideBar = useRef(null);
+const SidebarContext = createContext(null);
 
-  const handleMouseOver = () => {
-    setTimeout(() => {
-      const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
-      if (sidebarWidth === 80) {
-        console.log("mouse enterd");
-        setMouseOverFired(true);
-        setHoverData([width, minWidth, mediaWidth]);
-        setWidth("280px");
-        setMinWidth("80px");
-        setMediaWidth("0px");
-      }
-    }, 200);
-  };
-
-  const handleMouseLeave = () => {
-    if (mouseOverFired) {
-      setMouseOverFired(false);
-      setWidth(hoverData[0]);
-      setMinWidth(hoverData[1]);
-      setMediaWidth(hoverData[2]);
-      setHoverData(null);
-      console.log("mouse left");
-    }
-  };
-
-  const handleClick = () => {
-    const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
-
-    const windowEventFunction = () => {
-      if (window.innerWidth > 620) {
-        const sidebarWidth = mainSideBar.current.getBoundingClientRect().width;
-        if (sidebarWidth === 280) {
-          console.log(280);
-          setMediaWidth("620px");
-          setMinWidth("280px");
-        }
-
-        window.removeEventListener("resize", windowEventFunction);
-      }
-    };
-
-    if (window.innerWidth <= 620) {
-      window.addEventListener("resize", windowEventFunction);
-      if (sidebarWidth === 280) {
-        setWidth("80px");
-        setMinWidth("80px");
-        setMediaWidth("620px");
-      } else {
-        setWidth("280px");
-        setMinWidth("80px");
-        setMediaWidth("0px");
-      }
-    } else {
-      if (sidebarWidth === 280) {
-        setWidth("80px");
-        setMinWidth("80px");
-        setMediaWidth(window.innerWidth + "px");
-      } else {
-        setWidth("280px");
-        setMinWidth("280px");
-        setMediaWidth("620px");
-      }
-    }
-  };
+const Sidebar = ({ sidebarRef, toggleLabel, labels }) => {
+  const {
+    handleClick,
+    handleMouseLeave,
+    handleMouseOver,
+    mainSidebarRef,
+    mediaWidth,
+    minWidth,
+    width,
+  } = useSidebarDimensions();
 
   return (
     <div>
-      <StyledWrapped
-        className="sidebar-container"
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
+      <SidebarContext.Provider
+        value={{ mediaWidth, minWidth, width, toggleLabel, labels }}
       >
-        <button
-          ref={sidebarRef}
-          style={{ display: "none" }}
-          onClick={handleClick}
+        <StyledWrapped
+          onMouseEnter={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
         >
-          Toggle Sidebar
-        </button>
-        <StyledPlaceholder
-          mediaWidth={mediaWidth}
-          minWidth={minWidth}
-        ></StyledPlaceholder>
-        <StyledSidebar ref={mainSideBar} mediaWidth={mediaWidth} width={width}>
-          <NotesIcon mediaWidth={mediaWidth} width={width} />
-        </StyledSidebar>
-      </StyledWrapped>
+          <ToggleButton sidebarRef={sidebarRef} handleClick={handleClick} />
+          <StyledPlaceholder
+            mediaWidth={mediaWidth}
+            minWidth={minWidth}
+          ></StyledPlaceholder>
+          <StyledSidebar
+            ref={mainSidebarRef}
+            mediaWidth={mediaWidth}
+            width={width}
+          >
+            <ItemContainer mediaWidth={mediaWidth} width={width} />
+          </StyledSidebar>
+        </StyledWrapped>
+      </SidebarContext.Provider>
     </div>
   );
 };
+
+const ItemContainer = () => {
+  return (
+    <>
+      <HomeItem />
+      <LabelContainer />
+    </>
+  );
+};
+
+const ToggleButton = ({ sidebarRef, handleClick }) => (
+  <HiddenButton ref={sidebarRef} onClick={handleClick}></HiddenButton>
+);
+
+const HiddenButton = styled.button`
+  display: none;
+`;
+
+const LabelContainer = () => {
+  const { labels } = useContext(SidebarContext);
+  return (
+    <>
+      {labels.map((label) => (
+        <LabelItem key={label._id} label={label} />
+      ))}
+    </>
+  );
+};
+
+const LabelItem = ({ label }) => {
+  const { mediaWidth, width, toggleLabel } = useContext(SidebarContext);
+
+  const handleClick = () => {
+    toggleLabel.updateCurrentLabel(label);
+  };
+
+  return (
+    <Link to={`#label/${label.name}`} style={{ textDecoration: "none" }}>
+      <StyledItem
+        onClick={handleClick}
+        mediaWidth={mediaWidth}
+        width={width}
+        backgroundProp={toggleLabel.displayLabel === label ? "#feefc3" : ""}
+      >
+        <Icon
+          name={label.name}
+          pathString="M 17.63 5.84 C 17.27 5.33 16.67 5 16 5 L 5 5.01 C 3.9 5.01 3 5.9 3 7 v 10 c 0 1.1 0.9 1.99 2 1.99 L 16 19 c 0.67 0 1.27 -0.33 1.63 -0.84 L 22 12 l -4.37 -6.16 Z M 16 17 H 5 V 7 h 11 l 3.55 5 L 16 17 Z"
+        ></Icon>
+      </StyledItem>
+    </Link>
+  );
+};
+
+const HomeItem = () => {
+  const { mediaWidth, width, toggleLabel } = useContext(SidebarContext);
+
+  const handleClick = () => {
+    toggleLabel.updateCurrentLabel(null);
+  };
+
+  return (
+    <Link to={"#home"} style={{ textDecoration: "none" }}>
+      <StyledItem
+        onClick={handleClick}
+        mediaWidth={mediaWidth}
+        width={width}
+        backgroundProp={toggleLabel.displayLabel === null ? "#feefc3" : ""}
+      >
+        <Icon
+          name={"Notes"}
+          pathString="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"
+        />
+      </StyledItem>
+    </Link>
+  );
+};
+
+const Icon = ({ pathString, name }) => {
+  return (
+    <>
+      <StyledSvg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path d={pathString}></path>
+      </StyledSvg>
+      <StyledSpan>{name}</StyledSpan>
+    </>
+  );
+};
+
+const StyledSpan = styled.span`
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 20px;
+`;
+
+const StyledSvg = styled.svg`
+  pointer-events: none;
+  flex-shrink: 0;
+  padding: 0 12px;
+  fill: #202124;
+`;
 
 const StyledWrapped = styled.div`
   z-index: 3;
@@ -136,7 +187,7 @@ const StyledItem = styled.div`
   overflow: hidden;
   width: 100%;
   padding-left: 12px;
-  background-color: #feefc3;
+  background-color: ${(props) => props.backgroundProp};
 
   border-radius: ${(props) =>
     props.width === "280px" ? "0 25px 25px 0" : "50%"};
@@ -183,35 +234,5 @@ const StyledSidebar = styled.div`
     width: 80px;
   }
 `;
-
-const NotesIcon = ({ mediaWidth, width }) => {
-  return (
-    <StyledItem mediaWidth={mediaWidth} width={width}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        style={{
-          flexShrink: 0,
-          padding: "0 12px",
-          fill: "#202124", //fill: #5f6368;
-        }}
-      >
-        <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path>
-      </svg>
-      <span
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          marginLeft: "20px",
-        }}
-      >
-        Notes
-      </span>
-    </StyledItem>
-  );
-};
 
 export default Sidebar;

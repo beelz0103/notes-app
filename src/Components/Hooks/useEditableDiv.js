@@ -49,6 +49,23 @@ const useEditableDiv = (divClass, updateValues = null) => {
     setEmpty(true);
   };
 
+  function handlePaste(event) {
+    // Prevent default paste behavior
+    event.preventDefault();
+
+    // Get pasted text and strip formatting
+    const pastedText = (event.clipboardData || window.clipboardData).getData(
+      "text"
+    );
+    const strippedText = pastedText.replace(/(<([^>]+)>)/gi, "");
+
+    // Insert stripped text into the editable div
+    document
+      .getSelection()
+      .getRangeAt(0)
+      .insertNode(document.createTextNode(strippedText));
+  }
+
   const props = {
     ref: ref,
     onInput: handleOnInput,
@@ -58,6 +75,7 @@ const useEditableDiv = (divClass, updateValues = null) => {
     contentEditable: true,
     "data-placeholder": "Take a note",
     suppressContentEditableWarning: true,
+    onPaste: handlePaste,
   };
 
   return { value, empty, props, resetValue };

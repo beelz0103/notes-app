@@ -1,7 +1,9 @@
 import { useRef } from "react";
 import styled from "styled-components";
+import AppLogo from "./AppLogo";
+import SearchContainer from "./SearchContainer";
 
-const Header = ({ sidebarRef }) => {
+const Header = ({ sidebarRef, toggleLabel }) => {
   const handleClick = () => {
     sidebarRef.current.click();
   };
@@ -9,18 +11,24 @@ const Header = ({ sidebarRef }) => {
   return (
     <div>
       <StyledHeader>
-        <StyledIcon onClick={handleClick}>
-          <svg
-            style={{ color: "#5f6368" }}
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
-          </svg>
-        </StyledIcon>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <HamburgerIcon handleClick={handleClick} />
+          <AppLogo toggleLabel={toggleLabel}></AppLogo>
+        </div>
+        <SearchContainer />
       </StyledHeader>
       <div style={{ height: "64px" }}></div>
     </div>
+  );
+};
+
+const HamburgerIcon = ({ handleClick }) => {
+  return (
+    <StyledIcon onClick={handleClick}>
+      <svg style={{ color: "#5f6368" }} focusable="false" viewBox="0 0 24 24">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+      </svg>
+    </StyledIcon>
   );
 };
 

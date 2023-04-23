@@ -65,6 +65,11 @@ const TitleDiv = styled.div`
   line-height: 1.5rem;
   font-weight: 500;
   box-sizing: border-box;
+
+  display: -webkit-box; /* use old flexbox for better browser support */
+  -webkit-line-clamp: 3; /* limit the text to 3 lines */
+  -webkit-box-orient: vertical; /* set vertical orientation for flexbox */
+  overflow: hidden; /* hide any text that overflows the div */
 `;
 
 const ContentDiv = styled.div`
@@ -75,11 +80,16 @@ const ContentDiv = styled.div`
   line-height: 1.25rem;
   font-weight: 400;
   box-sizing: border-box;
+  max-height: 472px;
+  overflow: hidden; /* hide any text that overflows the div */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* prevent text wrapping */
 `;
 
 const NoteControlsMainContainer = styled.div`
   margin: 4px 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `;
 

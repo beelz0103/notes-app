@@ -167,6 +167,7 @@ const ControlsContainerStyled = styled.div`
   margin: 4px 0;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   box-shadow: ${(props) =>
     props.showShadow ? "0 -2px 5px rgba(0,0,0,.2)" : "none"};

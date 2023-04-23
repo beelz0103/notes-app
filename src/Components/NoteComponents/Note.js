@@ -89,6 +89,12 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
   );
 };
 
+function strip(html) {
+  var tmp = document.createElement("DIV");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText;
+}
+
 const ContentCotainer = ({ title, content, images, _id }) => {
   const { labelList } = useContext(NoteContext);
 
@@ -102,14 +108,18 @@ const ContentCotainer = ({ title, content, images, _id }) => {
           {title === "" ? (
             <div style={{ padding: "0 0 12px 0" }}></div>
           ) : (
-            <TitleDiv>{parse(title)}</TitleDiv>
+            <>
+              <TitleDiv>{strip(title)}</TitleDiv>
+            </>
           )}
         </div>
         <div>
           {content === "" ? (
             <div style={{ padding: "0 0 12px 0" }}></div>
           ) : (
-            <ContentDiv>{parse(content)}</ContentDiv>
+            <>
+              <ContentDiv>{parse(content)}</ContentDiv>
+            </>
           )}
         </div>
         <Footer labelList={labelList} />

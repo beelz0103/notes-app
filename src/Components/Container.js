@@ -11,10 +11,9 @@ const ContainerContext = createContext(null);
 
 export { ContainerContext };
 
-const Container = () => {
-  const [lastUpdate, setLastUpdate] = useState({});
+const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
   const notes = useGetNotes(lastUpdate);
-  const labels = useGetAllLabels(lastUpdate);
+
   const { postData, isLoading, error } = usePostData();
   const { postLabel } = usePostLabel();
 
@@ -56,11 +55,12 @@ const Container = () => {
           labels,
           setLastUpdate,
           deleteNote,
+          toggleLabel,
         }}
       >
         <FormContainer addNote={addNote} labels={labels} addLabel={addLabel} />
         <NotesContainer
-          notes={notes}
+          notes={toggleLabel.filterNotes(notes)}
           labels={labels}
           addLabel={addLabel}
           updateNote={updateNote}
