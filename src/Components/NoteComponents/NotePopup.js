@@ -24,8 +24,40 @@ const PopupContext = createContext(null);
 export { PopupContext };
 
 const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
+  const {
+    labels,
+    deleteNote,
+    pinNote,
+    archiveNote,
+    restoreNote,
+    deletePermanently,
+  } = useContext(ContainerContext);
+
+  const handleDelete = () => {
+    deleteNote(popupNote, popupNote._id);
+    hideModal();
+  };
+
+  const handlePin = () => {
+    pinNote(popupNote, popupNote._id);
+  };
+
+  const handleArchive = () => {
+    archiveNote(popupNote, popupNote._id);
+  };
+
+  const handlePermaDelete = () => {
+    deletePermanently(popupNote, popupNote._id);
+    hideModal();
+  };
+
+  const handleRestore = () => {
+    restoreNote(popupNote, popupNote._id);
+    hideModal();
+  };
+
   const popupRef = useRef(null);
-  const { labels } = useContext(ContainerContext);
+
   const { updateNoteLabels, noteLabels } = useNoteLabels(popupNote);
 
   const { labelList, setLabelList } = useUpdateFormGetLabelList(
@@ -59,6 +91,9 @@ const NotePopup = ({ display, popupNote, updateNote, hideModal }) => {
           type: "notepopup",
           showShadow,
           setShowShadow,
+          handleDelete,
+          handlePermaDelete,
+          handleRestore,
         }}
       >
         <Popup />
@@ -88,6 +123,9 @@ const PopupWrapper = () => {
     setLabelList,
     type,
     showShadow,
+    handleDelete,
+    handlePermaDelete,
+    handleRestore,
   } = useContext(PopupContext);
 
   return (
@@ -105,6 +143,10 @@ const PopupWrapper = () => {
             hideModal={hideModal}
             show={true}
             showShadow={showShadow}
+            handleDelete={handleDelete}
+            handlePermaDelete={handlePermaDelete}
+            handleRestore={handleRestore}
+            note={note}
           />
         </ContentOuterContainer>
       </PopupSubContainer>

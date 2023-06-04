@@ -25,18 +25,35 @@ const useGetAllLabels = (lastUpdate) => {
 
 const useFormGetLabelList = (labels) => {
   const [labelList, setLabelList] = useState([]);
+  const { toggleLabel } = useContext(ContainerContext);
 
   useEffect(() => {
     if (labelList.length !== 0) return;
 
     const list = labels.map(({ name, _id }) => {
+      if (toggleLabel.displayLabel._id === _id)
+        return { name, id: _id, checked: true };
       return { name, id: _id, checked: false };
     });
 
     setLabelList(list);
-  }, [labels]);
+  }, [labels, labelList]);
 
-  return { labelList, setLabelList };
+  useEffect(() => {
+    const list = labels.map(({ name, _id }) => {
+      if (toggleLabel.displayLabel._id === _id)
+        return { name, id: _id, checked: true };
+      return { name, id: _id, checked: false };
+    });
+
+    setLabelList(list);
+  }, [toggleLabel]);
+
+  const resetLabelList = () => {
+    setLabelList([]);
+  };
+
+  return { labelList, setLabelList, resetLabelList };
 };
 
 const useUpdateFormGetLabelList = (labels, noteLabels) => {

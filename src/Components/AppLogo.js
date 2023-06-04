@@ -4,15 +4,25 @@ import ProductSans from "./Resources/product-sans/regular.woff2";
 import { Link } from "react-router-dom";
 
 const AppLogo = ({ toggleLabel }) => {
-  return toggleLabel.displayLabel === null ? (
-    <Link to={`#home`} style={{ textDecoration: "none" }}>
-      <div style={{ position: "relative", top: "2px" }}>
-        <StyledLogoImage src={logo}></StyledLogoImage>
-        <StyledSpan fonturl={ProductSans}>Keep</StyledSpan>
-      </div>
-    </Link>
+  return toggleLabel.displayLabel.isSpecial &&
+    toggleLabel.displayLabel.name === "Home" ? (
+    <div>
+      <Link to={`#home`} style={{ textDecoration: "none" }}>
+        <div style={{ position: "relative", top: "2px" }}>
+          <StyledLogoImage src={logo}></StyledLogoImage>
+          <StyledSpan fonturl={ProductSans}>Keep</StyledSpan>
+        </div>
+      </Link>
+    </div>
   ) : (
-    <div style={{ position: "relative", top: "2px" }}>
+    <div
+      style={{
+        position: "relative",
+        top: "2px",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
       <StyledSpan
         fonturl={ProductSans}
         style={{

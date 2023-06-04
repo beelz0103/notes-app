@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { NoteContext } from "./Note";
 import threedot from "../Resources/threedot.svg";
 import image from "../Resources/image.svg";
+import restore from "../Resources/restore.svg";
+import deletePerm from "../Resources/permadel.svg";
 import NoteOptions from "./NoteOptions";
 import { StyledButton } from "../StyledComponents/StyledPopupComponents";
 import { PopupContext } from "./NotePopup";
@@ -23,10 +25,16 @@ const Controls = ({
   handleDelete,
   show,
   showShadow,
+  setWidgetVisibleLong,
+  setWidgetVisible,
+  note,
+  handlePermaDelete,
+  handleRestore,
 }) => {
   return (
     <ControlsContext.Provider
       value={{
+        note,
         containerRef,
         type,
         uploadBtnRef,
@@ -37,7 +45,11 @@ const Controls = ({
         hideModal,
         show,
         handleDelete,
+        handlePermaDelete,
+        handleRestore,
         showShadow,
+        setWidgetVisibleLong,
+        setWidgetVisible,
       }}
     >
       <ControlWrapper />
@@ -46,10 +58,28 @@ const Controls = ({
 };
 
 const ControlWrapper = () => {
-  const { show, showShadow } = useContext(ControlsContext);
+  const { show, showShadow, setWidgetVisibleLong, setWidgetVisible, type } =
+    useContext(ControlsContext);
+
+  const handleClick = (e) => {
+    if (type !== "note") return;
+    const hideOptions = (e) => {
+      setWidgetVisibleLong(false);
+      setWidgetVisible(false);
+      document.removeEventListener("click", hideOptions);
+    };
+
+    e.stopPropagation();
+    setWidgetVisibleLong(true);
+    document.addEventListener("click", hideOptions);
+  };
 
   return (
-    <ControlsContainerStyled show={show} showShadow={showShadow}>
+    <ControlsContainerStyled
+      show={show}
+      showShadow={showShadow}
+      onClick={handleClick}
+    >
       <Widgets />
       <Buttons />
     </ControlsContainerStyled>
@@ -57,12 +87,12 @@ const ControlWrapper = () => {
 };
 
 const Buttons = () => {
-  const { type } = useContext(ControlsContext);
+  const { type, note } = useContext(ControlsContext);
 
   if (type === "note") return null;
   if (type !== "notepopup") return <AddButton />;
 
-  return (
+  return note && note.deleted ? null : (
     <div style={{ display: "flex" }}>
       <UpdateButton />
       <CloseButton />
@@ -75,16 +105,40 @@ const Widgets = () => {
     <StyledWidgetWrapper>
       <NoteUploadContainer />
       <NoteOptionsIconContainer />
+      <BinIconContainer />
     </StyledWidgetWrapper>
   );
 };
 
+const BinIconContainer = () => {
+  const { handlePermaDelete, handleRestore, type, note } =
+    useContext(ControlsContext);
+
+  return !(note && note.deleted) ? null : (
+    <>
+      <StyledControlsIcons
+        onClick={handlePermaDelete}
+        show={true}
+        img={deletePerm}
+      ></StyledControlsIcons>
+      <StyledControlsIcons
+        onClick={handleRestore}
+        show={true}
+        img={restore}
+      ></StyledControlsIcons>
+    </>
+  );
+};
+
 const NoteUploadContainer = () => {
-  const { uploadBtnRef, type } = useContext(ControlsContext);
+  const { uploadBtnRef, type, note } = useContext(ControlsContext);
   const handleClick = () => {
     uploadBtnRef.current.click();
   };
-  return type === "note" ? null : (
+
+  if (type === "note") return null;
+
+  return note && note.deleted ? null : (
     <StyledControlsIcons
       onClick={handleClick}
       show={true}
@@ -101,10 +155,17 @@ const NoteOptionsIconContainer = () => {
     e.stopPropagation();
     optionButtonRef.current.click();
   };
-  const { containerRef, type, labelList, setLabelList, show, handleDelete } =
-    useContext(ControlsContext);
+  const {
+    containerRef,
+    type,
+    labelList,
+    setLabelList,
+    show,
+    handleDelete,
+    note,
+  } = useContext(ControlsContext);
 
-  return (
+  return note && note.deleted ? null : (
     <>
       <StyledControlsIcons
         show={show}
@@ -120,6 +181,7 @@ const NoteOptionsIconContainer = () => {
         isNote={type === "note"}
         labelList={labelList}
         setLabelList={setLabelList}
+        type={type}
       />
     </>
   );

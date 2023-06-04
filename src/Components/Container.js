@@ -1,11 +1,12 @@
 import { useState } from "react";
 import FormContainer from "./FormContainer";
-import NotesContainer from "./NoteComponents/NotesContainer";
+import NotesSubContainer from "./NoteComponents/NotesSubContainer";
 import useGetNotes from "./Hooks/useGetNotes";
 import usePostData from "./Hooks/usePostData";
 import { useGetAllLabels, usePostLabel } from "./Hooks/useLabels";
 import { useContext, createContext } from "react";
 import { createFormData } from "./JSModules/helperFunctions";
+import Tooltip from "./Tootip";
 
 const ContainerContext = createContext(null);
 
@@ -41,6 +42,41 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
   const deleteNote = async (note, _id) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
+    formData.append("deleted", note.deleted);
+    await postData(`http://localhost:3001/note/${_id}/delete`, formData);
+    setLastUpdate(Date.now());
+  };
+
+  const archiveNote = async (note, _id) => {
+    const formData = new FormData();
+    formData.append("note", JSON.stringify(note));
+    formData.append("archive", note.archive);
+    await postData(`http://localhost:3001/note/${_id}/archive`, formData);
+    setLastUpdate(Date.now());
+  };
+
+  const pinNote = async (note, _id) => {
+    const formData = new FormData();
+    formData.append("note", JSON.stringify(note));
+    formData.append("pinned", note.pinned);
+    await postData(`http://localhost:3001/note/${_id}/pin`, formData);
+    setLastUpdate(Date.now());
+  };
+
+  const deletePermanently = async (note, _id) => {
+    const formData = new FormData();
+    formData.append("note", JSON.stringify(note));
+    await postData(
+      `http://localhost:3001/note/${_id}/delete_permanently`,
+      formData
+    );
+    setLastUpdate(Date.now());
+  };
+
+  const restoreNote = async (note, _id) => {
+    const formData = new FormData();
+    formData.append("note", JSON.stringify(note));
+    formData.append("deleted", note.deleted);
     await postData(`http://localhost:3001/note/${_id}/delete`, formData);
     setLastUpdate(Date.now());
   };
@@ -56,10 +92,20 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
           setLastUpdate,
           deleteNote,
           toggleLabel,
+          pinNote,
+          archiveNote,
+          deletePermanently,
+          restoreNote,
         }}
       >
-        <FormContainer addNote={addNote} labels={labels} addLabel={addLabel} />
-        <NotesContainer
+        {toggleLabel.showForm && (
+          <FormContainer
+            addNote={addNote}
+            labels={labels}
+            addLabel={addLabel}
+          />
+        )}
+        <NotesSubContainer
           notes={toggleLabel.filterNotes(notes)}
           labels={labels}
           addLabel={addLabel}

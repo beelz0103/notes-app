@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useSidebarDimensions from "./Hooks/useSidebarDimensions";
 import { createContext, useContext } from "react";
+import pathStrings from "./pathstrings";
+import GoogleSans from "./Resources/google-sans-cufonfonts-webfont/ProductSans-Medium.woff";
 
 const SidebarContext = createContext(null);
 
@@ -47,8 +49,10 @@ const Sidebar = ({ sidebarRef, toggleLabel, labels }) => {
 const ItemContainer = () => {
   return (
     <>
-      <HomeItem />
+      <SpecialItem label={{ name: "Home", isSpecial: true }} />
       <LabelContainer />
+      <SpecialItem label={{ name: "Archive", isSpecial: true }} />
+      <SpecialItem label={{ name: "Bin", isSpecial: true }} />
     </>
   );
 };
@@ -87,40 +91,42 @@ const LabelItem = ({ label }) => {
         width={width}
         backgroundProp={toggleLabel.displayLabel === label ? "#feefc3" : ""}
       >
-        <Icon
-          name={label.name}
-          pathString="M 17.63 5.84 C 17.27 5.33 16.67 5 16 5 L 5 5.01 C 3.9 5.01 3 5.9 3 7 v 10 c 0 1.1 0.9 1.99 2 1.99 L 16 19 c 0.67 0 1.27 -0.33 1.63 -0.84 L 22 12 l -4.37 -6.16 Z M 16 17 H 5 V 7 h 11 l 3.55 5 L 16 17 Z"
-        ></Icon>
+        <Icon label={label}></Icon>
       </StyledItem>
     </Link>
   );
 };
 
-const HomeItem = () => {
+const SpecialItem = ({ label }) => {
   const { mediaWidth, width, toggleLabel } = useContext(SidebarContext);
 
   const handleClick = () => {
-    toggleLabel.updateCurrentLabel(null);
+    toggleLabel.updateCurrentLabel(label);
+    console.log(label);
   };
 
   return (
-    <Link to={"#home"} style={{ textDecoration: "none" }}>
+    <Link
+      to={`#${label.name.toLowerCase()}`}
+      style={{ textDecoration: "none" }}
+    >
       <StyledItem
         onClick={handleClick}
         mediaWidth={mediaWidth}
         width={width}
-        backgroundProp={toggleLabel.displayLabel === null ? "#feefc3" : ""}
+        backgroundProp={
+          toggleLabel.displayLabel.name === label.name ? "#feefc3" : ""
+        }
       >
-        <Icon
-          name={"Notes"}
-          pathString="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"
-        />
+        <Icon label={label}></Icon>
       </StyledItem>
     </Link>
   );
 };
 
-const Icon = ({ pathString, name }) => {
+const Icon = ({ label }) => {
+  const { toggleLabel } = useContext(SidebarContext);
+
   return (
     <>
       <StyledSvg
@@ -128,27 +134,42 @@ const Icon = ({ pathString, name }) => {
         width="24"
         height="24"
         viewBox="0 0 24 24"
+        pathFill={
+          toggleLabel.displayLabel.name === label.name ? "#202124" : "#5f6368"
+        }
       >
-        <path d={pathString}></path>
+        <path
+          d={label.isSpecial ? pathStrings[label.name] : pathStrings.label}
+        ></path>
+        <path
+          d={label.isSpecial && label.name === "Bin" ? pathStrings["Bin2"] : ""}
+        ></path>
       </StyledSvg>
-      <StyledSpan>{name}</StyledSpan>
+      <StyledSpan fonturl={GoogleSans}>{label.name}</StyledSpan>
     </>
   );
 };
 
 const StyledSpan = styled.span`
+  @font-face {
+    font-family: "Google Sans";
+    src: url(${(props) => props.fonturl}) format("woff");
+  }
+
+  font-family: "Google Sans";
   pointer-events: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-left: 20px;
+  font-weight: 500;
 `;
 
 const StyledSvg = styled.svg`
   pointer-events: none;
   flex-shrink: 0;
   padding: 0 12px;
-  fill: #202124;
+  fill: ${(props) => props.pathFill};
 `;
 
 const StyledWrapped = styled.div`
@@ -212,7 +233,7 @@ const StyledSidebar = styled.div`
   flex-direction: column;
   height: calc(100% - 64px);
   min-height: auto;
-  overflow: hidden;
+
   padding-top: 8px;
   position: fixed;
   top: 64px;
@@ -230,8 +251,16 @@ const StyledSidebar = styled.div`
 
   z-index: 2;
 
+  &:hover {
+    overflow-y: scroll;
+  }
+
   @media only screen and (max-width: ${(props) => props.mediaWidth}) {
     width: 80px;
+
+    &:hover {
+      overflow-y: hidden;
+    }
   }
 `;
 

@@ -25,12 +25,22 @@ import NoteImageContainer from "../FormComponents/NoteImageContainer";
 import { useGetLabelList, useNoteLabels } from "../Hooks/useLabels";
 import { ContainerContext } from "../Container";
 import Controls from "./Controls";
+import Checkbox from "./Checkbox";
+import Pin from "./Pin";
 
 const NoteContext = createContext(null);
 
 const NoteOuterContiner = ({ note, showModal, showNote }) => {
-  const { labels, deleteNote } = useContext(ContainerContext);
+  const {
+    labels,
+    deleteNote,
+    pinNote,
+    archiveNote,
+    restoreNote,
+    deletePermanently,
+  } = useContext(ContainerContext);
   const [widgetVisible, setWidgetVisible] = useState(false);
+  const [widgetVisibleLong, setWidgetVisibleLong] = useState(false);
   const [optionsClicked, setOptionsClicked] = useState(false);
 
   const noteContainerRef = useRef(null);
@@ -48,12 +58,24 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
   };
 
   const handleMouseLeave = () => {
-    if (!optionsClicked) setWidgetVisible(false);
+    if (!optionsClicked && !widgetVisibleLong) setWidgetVisible(false);
   };
 
   const handleDelete = () => {
     deleteNote(note, note._id);
   };
+
+  const handlePin = () => {
+    pinNote(note, note._id);
+  };
+
+  const handleArchive = () => {
+    archiveNote(note, note._id);
+  };
+
+  const handlePermaDelete = () => deletePermanently(note, note._id);
+
+  const handleRestore = () => restoreNote(note, note._id);
 
   return (
     <NoteContext.Provider
@@ -66,6 +88,9 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
         setOptionsClicked,
         noteLabels,
         handleDelete,
+        setWidgetVisibleLong,
+        setWidgetVisible,
+        handlePin,
       }}
     >
       <StyledNoteOuterContainer
@@ -74,14 +99,20 @@ const NoteOuterContiner = ({ note, showModal, showNote }) => {
         onMouseLeave={handleMouseLeave}
         showNote={showNote}
       >
+        <Checkbox />
         <NoteInnerContainer ref={noteContainerRef}>
           <ContentCotainer {...note} />
           <Controls
+            note={note}
             containerRef={noteContainerRef}
             type="note"
             labelList={labelList}
             show={widgetVisible}
             handleDelete={handleDelete}
+            handleRestore={handleRestore}
+            handlePermaDelete={handlePermaDelete}
+            setWidgetVisibleLong={setWidgetVisibleLong}
+            setWidgetVisible={setWidgetVisible}
           />
         </NoteInnerContainer>
       </StyledNoteOuterContainer>
@@ -96,14 +127,15 @@ function strip(html) {
 }
 
 const ContentCotainer = ({ title, content, images, _id }) => {
-  const { labelList } = useContext(NoteContext);
+  const { labelList, note } = useContext(NoteContext);
 
   return (
     <NoteContentContainer>
       <NoteContentImageContainer>
         <NoteImageContainer images={images} />
       </NoteContentImageContainer>
-      <NoteContentInfo>
+      <NoteContentInfo className="note-content-info">
+        {!note.deleted && <Pin />}
         <div>
           {title === "" ? (
             <div style={{ padding: "0 0 12px 0" }}></div>

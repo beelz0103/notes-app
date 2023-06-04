@@ -3,6 +3,7 @@ import Container from "./Container";
 import Sidebar from "./Sidebar";
 import { useRef } from "react";
 import { useGetAllLabels } from "./Hooks/useLabels";
+import Tooltip from "./Tootip";
 import { useState } from "react";
 
 const NotesContainer = ({ sidebarRef, toggleLabel }) => {

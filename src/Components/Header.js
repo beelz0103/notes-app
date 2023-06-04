@@ -2,6 +2,8 @@ import { useRef } from "react";
 import styled from "styled-components";
 import AppLogo from "./AppLogo";
 import SearchContainer from "./SearchContainer";
+import { useState } from "react";
+import Tooltip from "./Tootip";
 
 const Header = ({ sidebarRef, toggleLabel }) => {
   const handleClick = () => {
@@ -13,8 +15,9 @@ const Header = ({ sidebarRef, toggleLabel }) => {
       <StyledHeader>
         <div style={{ display: "flex", alignItems: "center" }}>
           <HamburgerIcon handleClick={handleClick} />
-          <AppLogo toggleLabel={toggleLabel}></AppLogo>
+          <AppLogo toggleLabel={toggleLabel} />
         </div>
+
         <SearchContainer />
       </StyledHeader>
       <div style={{ height: "64px" }}></div>
@@ -23,10 +26,15 @@ const Header = ({ sidebarRef, toggleLabel }) => {
 };
 
 const HamburgerIcon = ({ handleClick }) => {
+  const [fill, setFill] = useState("#5f6368");
+
   return (
     <StyledIcon onClick={handleClick}>
-      <svg style={{ color: "#5f6368" }} focusable="false" viewBox="0 0 24 24">
-        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+      <svg focusable="false" viewBox="0 0 24 24">
+        <path
+          style={{ fill: fill }}
+          d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
+        ></path>
       </svg>
     </StyledIcon>
   );
@@ -44,6 +52,7 @@ const StyledIcon = styled.div`
   width: 24px;
   color: #5f6368;
   flex: 0 0 auto;
+  color: aqua;
 
   &:hover {
     border-radius: 50%;

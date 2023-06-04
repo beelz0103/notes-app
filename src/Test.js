@@ -3,7 +3,32 @@ import styled from "styled-components";
 import positioner from "./Components/Resources/positioner.svg";
 import cross from "./Components/Resources/cross.svg";
 
+const StlyledPlaceholder = styled.div`
+  width: 42px;
+  height: 36px;
+  float: right;
+`;
+
 function Test() {
+  return (
+    <div
+      style={{
+        width: "600px",
+      }}
+    >
+      <StlyledPlaceholder />
+      <div
+        style={{
+          backgroundColor: "beige",
+          width: "600px",
+          height: "38px",
+          padding: "12px 16px 0 16px",
+          boxSizing: "border-box",
+        }}
+      ></div>
+    </div>
+  );
+
   return (
     <div
       style={{

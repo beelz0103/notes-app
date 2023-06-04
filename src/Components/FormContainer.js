@@ -49,9 +49,12 @@ const FormContainer = ({ addNote }) => {
   const formContainerRef = useRef(null);
 
   const { labels } = useContext(ContainerContext);
-  const { labelList, setLabelList } = useFormGetLabelList(labels);
+  const { labelList, resetLabelList, setLabelList } =
+    useFormGetLabelList(labels);
 
   const handleSubmit = () => {
+    console.log(labelList);
+
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("input fields cant be empty"); //I dont want to implement input errors now
       return;
@@ -69,6 +72,7 @@ const FormContainer = ({ addNote }) => {
     contentInputDiv.resetValue();
     titleInputDiv.resetValue();
     fileInput.resetFiles();
+    resetLabelList();
   };
 
   return (
