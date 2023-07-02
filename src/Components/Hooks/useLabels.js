@@ -9,7 +9,7 @@ const useGetAllLabels = (lastUpdate) => {
     const fetchAllLabels = async () => {
       console.log("fetching all labels...");
       try {
-        const response = await fetch("http://localhost:3001/labels");
+        const response = await fetch(process.env.REACT_APP_API_URL + "/labels");
         const labelsData = await response.json();
         setAllLabels(labelsData);
       } catch (error) {
@@ -148,7 +148,7 @@ const useNoteLabels = (note = {}) => {
     formData.append("checked", !checked);
 
     const response = await fetch(
-      `http://localhost:3001/note/${noteId}/labelupdate`,
+      `${process.env.REACT_APP_API_URL}/note/${noteId}/labelupdate`,
       {
         method: "POST",
         body: formData,

@@ -7,7 +7,7 @@ const useGetNotes = (lastUpdate) => {
     const fetchAllNotes = async () => {
       console.log("fetching notes...");
       try {
-        const response = await fetch("http://localhost:3001/notes");
+        const response = await fetch(process.env.REACT_APP_API_URL + "/notes");
         const data = await response.json();
         setNotes(data);
       } catch (error) {

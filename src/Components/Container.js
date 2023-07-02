@@ -20,13 +20,13 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
 
   const addNote = async (note) => {
     const formData = createFormData(note);
-    await postData("http://localhost:3001/note/create", formData);
+    await postData(process.env.REACT_APP_API_URL + "/note/create", formData);
     setLastUpdate(Date.now());
   };
 
   const addLabel = async (label) => {
     const newLabel = await postLabel(
-      "http://localhost:3001/label/create",
+      process.env.REACT_APP_API_URL + "/label/create",
       label
     );
     setLastUpdate(Date.now());
@@ -35,7 +35,10 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
 
   const updateNote = async (note, _id) => {
     const formData = createFormData(note);
-    await postData(`http://localhost:3001/note/${_id}/update`, formData);
+    await postData(
+      `${process.env.REACT_APP_API_URL}/note/${_id}/update`,
+      formData
+    );
     setLastUpdate(Date.now());
   };
 
@@ -43,7 +46,10 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     formData.append("deleted", note.deleted);
-    await postData(`http://localhost:3001/note/${_id}/delete`, formData);
+    await postData(
+      `${process.env.REACT_APP_API_URL}/note/${_id}/delete`,
+      formData
+    );
     setLastUpdate(Date.now());
   };
 
@@ -51,7 +57,10 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     formData.append("archive", note.archive);
-    await postData(`http://localhost:3001/note/${_id}/archive`, formData);
+    await postData(
+      `${process.env.REACT_APP_API_URL}/note/${_id}/archive`,
+      formData
+    );
     setLastUpdate(Date.now());
   };
 
@@ -59,7 +68,7 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     formData.append("pinned", note.pinned);
-    await postData(`http://localhost:3001/note/${_id}/pin`, formData);
+    await postData(`process.env.REACT_APP_API_URL/note/${_id}/pin`, formData);
     setLastUpdate(Date.now());
   };
 
@@ -67,7 +76,7 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     await postData(
-      `http://localhost:3001/note/${_id}/delete_permanently`,
+      `process.env.REACT_APP_API_URL/note/${_id}/delete_permanently`,
       formData
     );
     setLastUpdate(Date.now());
@@ -77,7 +86,10 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     formData.append("deleted", note.deleted);
-    await postData(`http://localhost:3001/note/${_id}/delete`, formData);
+    await postData(
+      `process.env.REACT_APP_API_URL/note/${_id}/delete`,
+      formData
+    );
     setLastUpdate(Date.now());
   };
 

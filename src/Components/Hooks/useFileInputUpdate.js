@@ -8,7 +8,7 @@ const useFileInputUpdate = (imagesArray) => {
   useEffect(() => {
     const imageToFile = async (imageObj) => {
       const ext = imageObj.url.split(".").pop();
-      const imageUrl = "http://localhost:3001/" + imageObj.url;
+      const imageUrl = process.env.REACT_APP_API_URL + "/" + imageObj.url;
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       const file = new File([blob], `id_${imageObj._id}`, {

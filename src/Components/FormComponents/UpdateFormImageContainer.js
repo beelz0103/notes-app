@@ -13,7 +13,7 @@ const UpdateFormImageContainer = ({ images, updatable = false, fromPopup }) => {
         const srcListPromiseArray = images.map(({ url, _id }) => {
           return new Promise((resolve) => {
             const img = new Image();
-            img.src = "http://localhost:3001/" + url;
+            img.src = process.env.REACT_APP_API_URL + "/" + url;
 
             img.onload = () => {
               const aspectRatio = img.width / img.height;
@@ -77,7 +77,7 @@ const ImageDiv = ({ aspectRatio, url, isOne }) => {
   return (
     <div className="upload-image-div" style={divStyle}>
       <img
-        src={"http://localhost:3001/" + url}
+        src={process.env.REACT_APP_API_URL + "/" + url}
         alt="error"
         style={{ borderRadius: "5px" }}
       />
