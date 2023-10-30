@@ -53,8 +53,6 @@ const FormContainer = ({ addNote }) => {
     useFormGetLabelList(labels);
 
   const handleSubmit = () => {
-    console.log(labelList);
-
     if (titleInputDiv.empty || contentInputDiv.empty) {
       console.log("input fields cant be empty"); //I dont want to implement input errors now
       return;

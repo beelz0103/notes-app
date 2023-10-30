@@ -29,7 +29,6 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
       process.env.REACT_APP_API_URL + "/label/create",
       label
     );
-    setLastUpdate(Date.now());
     return newLabel;
   };
 
@@ -68,7 +67,10 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     formData.append("pinned", note.pinned);
-    await postData(`process.env.REACT_APP_API_URL/note/${_id}/pin`, formData);
+    await postData(
+      process.env.REACT_APP_API_URL + `/note/${_id}/pin`,
+      formData
+    );
     setLastUpdate(Date.now());
   };
 
@@ -76,7 +78,7 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     const formData = new FormData();
     formData.append("note", JSON.stringify(note));
     await postData(
-      `process.env.REACT_APP_API_URL/note/${_id}/delete_permanently`,
+      process.env.REACT_APP_API_URL + `/note/${_id}/delete_permanently`,
       formData
     );
     setLastUpdate(Date.now());
@@ -87,7 +89,7 @@ const Container = ({ toggleLabel, labels, lastUpdate, setLastUpdate }) => {
     formData.append("note", JSON.stringify(note));
     formData.append("deleted", note.deleted);
     await postData(
-      `process.env.REACT_APP_API_URL/note/${_id}/delete`,
+      process.env.REACT_APP_API_URL + `/note/${_id}/delete`,
       formData
     );
     setLastUpdate(Date.now());

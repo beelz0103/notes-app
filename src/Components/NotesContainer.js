@@ -7,8 +7,7 @@ import Tooltip from "./Tootip";
 import { useState } from "react";
 
 const NotesContainer = ({ sidebarRef, toggleLabel }) => {
-  const [lastUpdate, setLastUpdate] = useState({});
-  const labels = useGetAllLabels(lastUpdate);
+  const labels = useGetAllLabels();
 
   return (
     <div>
@@ -20,12 +19,7 @@ const NotesContainer = ({ sidebarRef, toggleLabel }) => {
           toggleLabel={toggleLabel}
           labels={labels}
         />
-        <Container
-          toggleLabel={toggleLabel}
-          labels={labels}
-          lastUpdate={lastUpdate}
-          setLastUpdate={setLastUpdate}
-        />
+        <Container toggleLabel={toggleLabel} labels={labels} />
       </div>
     </div>
   );

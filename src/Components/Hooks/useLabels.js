@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { ContainerContext } from "../Container";
 
-const useGetAllLabels = (lastUpdate) => {
+const useGetAllLabels = () => {
   const [allLabels, setAllLabels] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const useGetAllLabels = (lastUpdate) => {
     };
 
     fetchAllLabels();
-  }, [lastUpdate]);
+  }, []);
 
   return allLabels;
 };
@@ -28,6 +28,8 @@ const useFormGetLabelList = (labels) => {
   const { toggleLabel } = useContext(ContainerContext);
 
   useEffect(() => {
+    if (labelList.length === 0) return;
+
     if (labelList.length !== 0) return;
 
     const list = labels.map(({ name, _id }) => {
